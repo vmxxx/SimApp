@@ -27,23 +27,24 @@ public int startingNumberOfHawks = 10;
 
     private void instantiateFormulas()
     {
-payoffResults.Add((10, 10), 0 );
-payoffResults.Add((10, 9), 0 );
-payoffResults.Add((9, 10), 0 );
 payoffResults.Add((9, 9), 0 );
+payoffResults.Add((9, 10), 0 );
+payoffResults.Add((10, 9), 0 );
+payoffResults.Add((10, 10), 0 );
+
     }
 
     private void recalculateFormulas()
     {
-payoffResults[(9, 9)] = V/2;
-payoffResults[(9, 10)] = 0;
+payoffResults[(10, 10)] = (V/2)-(C/2);
 payoffResults[(10, 9)] = V;
-payoffResults[(10, 10)] = (V/2) - (C/2);
+payoffResults[(9, 10)] = 0;
+payoffResults[(9, 9)] = V/2;
+
     }
 
     private void initialize()
     {
-
 for (int i = 0; i < startingNumberOfDoves; i++)
 {
 agent newAgent = new agent();
@@ -74,6 +75,7 @@ Hawks.Add(newAgent);
 totalAmountOfIndividuals = totalAmountOfIndividuals + 1;
 }
 
+
         //WindoGraph.instance.showGraphWithInitialValues();
     }
 
@@ -90,31 +92,42 @@ totalAmountOfIndividuals = totalAmountOfIndividuals + 1;
             initialize();
             //initialize(doves, startingNumberOfDoves);
             initialized = true;
+WindoGraph.instance.addInitialValue(startingNumberOfDoves, "Doves");
+WindoGraph.instance.addInitialValue(startingNumberOfHawks, "Hawks");
+WindoGraph.instance.yMaximum = (Doves.Count > WindoGraph.instance.yMaximum) ? Doves.Count : WindoGraph.instance.yMaximum;
+WindoGraph.instance.yMaximum = (Hawks.Count > WindoGraph.instance.yMaximum) ? Hawks.Count : WindoGraph.instance.yMaximum;
+WindoGraph.instance.realignObjects("Doves");
+WindoGraph.instance.realignObjects("Hawks");
+            Debug.Log("object realigned");
+			
+			WindoGraph.instance.realignLabels();
+			WindoGraph.instance.oldYMaximum = WindoGraph.instance.yMaximum;
         }
 
         //1st phase
 
+killOrDuplicateEachIndividual(Hawks);
+killOrDuplicateEachIndividual(Doves);
         //2nd phase
         recalculateFormulas();
         assignIndividualsInPairwiseContestsAndCalculateTheirFitness();
 
         //3rd phase
-killOrDuplicateEachIndividual(Hawks);
-killOrDuplicateEachIndividual(Doves);
-
+WindoGraph.instance.newValue = Doves.Count;
+WindoGraph.instance.addNewValue("Doves");
+WindoGraph.instance.newValue = Hawks.Count;
+WindoGraph.instance.addNewValue("Hawks");
+WindoGraph.instance.yMaximum = (Doves.Count > WindoGraph.instance.yMaximum) ? Doves.Count : WindoGraph.instance.yMaximum;
+WindoGraph.instance.yMaximum = (Hawks.Count > WindoGraph.instance.yMaximum) ? Hawks.Count : WindoGraph.instance.yMaximum;
+WindoGraph.instance.realignObjects("Doves");
+WindoGraph.instance.realignObjects("Hawks");
+		
         //4th phase
-        printAmountOfIndividuals();
-        //float x = ((float)Hawks.Count / (float)totalAmountOfIndividuals);
-        float x = Hawks.Count;
-        //Debug.Log(x);
-        WindoGraph.instance.newValue = x;
-        WindoGraph.instance.addNewValue();
-        WindoGraph.instance.realignObjects();
-    }
-
-    private void printAmountOfIndividuals()
-    {
-        Debug.Log("Hawks / Doves   (total_amount_of_individuals): " + Hawks.Count + " / " + Doves.Count + "   (" + totalAmountOfIndividuals + ");    Hawk frequency = " + Hawks.Count + " / " + totalAmountOfIndividuals + " = " + ((float)Hawks.Count / (float)totalAmountOfIndividuals) + ";");
+        
+		
+        WindoGraph.instance.daysPassed++;
+        WindoGraph.instance.realignLabels();
+        WindoGraph.instance.oldYMaximum = WindoGraph.instance.yMaximum;
     }
 
     private void killOrDuplicateEachIndividual(SortedSet<agent> agents)
@@ -165,16 +178,15 @@ killOrDuplicateEachIndividual(Doves);
     private void assignIndividualsInPairwiseContestsAndCalculateTheirFitness()
     {
 
+SortedSet<agent> alreadyAssignedDoves = new SortedSet<agent>(new agentComparer());
+SortedSet<agent> alreadyAssignedHawks = new SortedSet<agent>(new agentComparer());
         System.Random rand = new System.Random();
         int randomIndex;
         agent agent1 = new agent();
-SortedSet<agent> alreadyAssignedHawks = new SortedSet<agent>(new agentComparer());
-SortedSet<agent> alreadyAssignedDoves = new SortedSet<agent>(new agentComparer());
         agent agent2 = new agent();
 
-
-        if (totalAmountOfIndividuals % 2 == 1)
-        {
+		if (totalAmountOfIndividuals % 2 == 1)
+		{
 randomIndex = rand.Next(Doves.Count + Hawks.Count);
 if (randomIndex < Doves.Count)
 {
@@ -188,11 +200,8 @@ agent1 = Hawks.ElementAt(randomIndex - (Doves.Count));
 alreadyAssignedHawks.Add(agent1);
 Hawks.Remove(agent1);
 }
-        }
-
-
-
-
+		
+		}
         for (int i = 0; i < totalAmountOfIndividuals / 2; i++)
         {
 randomIndex = rand.Next(Doves.Count + Hawks.Count);
@@ -208,7 +217,6 @@ agent1 = Hawks.ElementAt(randomIndex - (Doves.Count));
 alreadyAssignedHawks.Add(agent1);
 Hawks.Remove(agent1);
 }
-
 randomIndex = rand.Next(Doves.Count + Hawks.Count);
 if (randomIndex < Doves.Count)
 {
@@ -226,8 +234,8 @@ Hawks.Remove(agent2);
             agent1.fitness = agent1.fitness + payoffResults[(agent1.ID, agent2.ID)];
             agent2.fitness = agent2.fitness + payoffResults[(agent2.ID, agent1.ID)];
         }
-Hawks = alreadyAssignedHawks;
 Doves = alreadyAssignedDoves;
+Hawks = alreadyAssignedHawks;
     }
 }
 
