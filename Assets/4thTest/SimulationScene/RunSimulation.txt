@@ -23,10 +23,12 @@ public class RunSimulation : MonoBehaviour
 
     private void instantiateFormulas()
     {
+
     }
 
     private void recalculateFormulas()
     {
+
     }
 
     private void initialize()
@@ -48,6 +50,10 @@ public class RunSimulation : MonoBehaviour
             initialize();
             //initialize(doves, startingNumberOfDoves);
             initialized = true;
+			
+			
+			WindoGraph.instance.realignLabels();
+			WindoGraph.instance.oldYMaximum = WindoGraph.instance.yMaximum;
         }
 
         //1st phase
@@ -57,20 +63,13 @@ public class RunSimulation : MonoBehaviour
         assignIndividualsInPairwiseContestsAndCalculateTheirFitness();
 
         //3rd phase
-
+		
         //4th phase
-        printAmountOfIndividuals();
-        //float x = ((float)Hawks.Count / (float)totalAmountOfIndividuals);
-        float x = Hawks.Count;
-        //Debug.Log(x);
-        WindoGraph.instance.newValue = x;
-        WindoGraph.instance.addNewValue();
-        WindoGraph.instance.realignObjects();
-    }
-
-    private void printAmountOfIndividuals()
-    {
-        Debug.Log("Hawks / Doves   (total_amount_of_individuals): " + Hawks.Count + " / " + Doves.Count + "   (" + totalAmountOfIndividuals + ");    Hawk frequency = " + Hawks.Count + " / " + totalAmountOfIndividuals + " = " + ((float)Hawks.Count / (float)totalAmountOfIndividuals) + ";");
+        
+		
+        WindoGraph.instance.daysPassed++;
+        WindoGraph.instance.realignLabels();
+        WindoGraph.instance.oldYMaximum = WindoGraph.instance.yMaximum;
     }
 
     private void killOrDuplicateEachIndividual(SortedSet<agent> agents)
@@ -126,17 +125,12 @@ public class RunSimulation : MonoBehaviour
         agent agent1 = new agent();
         agent agent2 = new agent();
 
-
-        if (totalAmountOfIndividuals % 2 == 1)
-        {
-        }
-
-
-
-
+		if (totalAmountOfIndividuals % 2 == 1)
+		{
+		
+		}
         for (int i = 0; i < totalAmountOfIndividuals / 2; i++)
         {
-
 
             agent1.fitness = agent1.fitness + payoffResults[(agent1.ID, agent2.ID)];
             agent2.fitness = agent2.fitness + payoffResults[(agent2.ID, agent1.ID)];

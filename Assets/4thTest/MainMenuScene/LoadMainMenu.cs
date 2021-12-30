@@ -19,6 +19,16 @@ public class LoadMainMenu : MonoBehaviour
         Debug.Log("authenticatedUser (Username): " + Buffer.instance.authenticatedUser.username);
         Debug.Log("CurrentSimulation (ID): " + Buffer.instance.currentSimulation.ID);
         //Buffer.instance.printPayoffFormulas();
+
+        Debug.Log(Buffer.instance.currentSimulation.ID);
+        Debug.Log(Buffer.instance.currentSimulation.name);
+        Debug.Log(Buffer.instance.currentSimulation.image);
+        Debug.Log(Buffer.instance.currentSimulation.description);
+        Debug.Log(Buffer.instance.currentSimulation.likesCount);
+        Debug.Log(Buffer.instance.currentSimulation.dislikesCount);
+        Debug.Log(Buffer.instance.currentSimulation.authorID);
+
+
     }
 
     void Start()

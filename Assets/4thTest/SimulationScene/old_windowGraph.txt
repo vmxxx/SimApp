@@ -134,9 +134,11 @@ public class WindoGraph : MonoBehaviour
                 if (lastCircleGameObject != null)
                 {
                     CreateDotConnection(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition, circleGameObject.GetComponent<RectTransform>().anchoredPosition);
+                    /*
                     if (lastYPosition < yPosition) { squareHeight = lastYPosition; triangleDirection = "right"; triangleHeight = yPosition - lastYPosition; }
                     else { squareHeight = yPosition; triangleDirection = "left"; triangleHeight = lastYPosition - yPosition; }
                     CreateSquareAndTriangle(new Vector2(xPosition - (xSize / 2), squareHeight / 2), new Vector2(xPosition - (xSize / 2), squareHeight + (triangleHeight / 2)), xSize, squareHeight, triangleHeight, triangleDirection);
+                    /**/
                 }
                 lastCircleGameObject = circleGameObject;
                 lastXPosition = xPosition;
@@ -154,7 +156,9 @@ public class WindoGraph : MonoBehaviour
             lastYPosition = yPosition;
 
             //append the single square
+            /*
             CreateSquareAndTriangle(new Vector2(graphWidth / 2, graphHeight / 2), new Vector2(0, 0), graphWidth, graphHeight, 0, "left");
+            /**/
         }
         /**/
     }
@@ -228,21 +232,25 @@ public class WindoGraph : MonoBehaviour
         if(valueCount != 2)
         {
             CreateDotConnection(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition, circleGameObject.GetComponent<RectTransform>().anchoredPosition);
+            /*
             if (lastYPosition < yPosition) { squareHeight = lastYPosition; triangleDirection = "right"; triangleHeight = yPosition - lastYPosition; }
             else { squareHeight = yPosition; triangleDirection = "left"; triangleHeight = lastYPosition - yPosition; }
             CreateSquareAndTriangle(new Vector2(xPosition - (xSize / 2), squareHeight / 2), new Vector2(xPosition - (xSize / 2), squareHeight + (triangleHeight / 2)), xSize, squareHeight, triangleHeight, triangleDirection);
+            /**/
         }
         else
         {
 
             CreateDotConnection(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition, circleGameObject.GetComponent<RectTransform>().anchoredPosition);
+            /*
             if (lastYPosition < yPosition) { squareHeight = lastYPosition; triangleDirection = "right"; triangleHeight = yPosition - lastYPosition; }
             else { squareHeight = yPosition; triangleDirection = "left"; triangleHeight = lastYPosition - yPosition; }
             CreateSquareAndTriangle(new Vector2(xPosition - (xSize / 2), squareHeight / 2), new Vector2(xPosition - (xSize / 2), squareHeight + (triangleHeight / 2)), xSize, squareHeight, triangleHeight, triangleDirection);
+            /**/
 
 
-            Destroy(graphContainer.transform.GetChild(2).gameObject);
-            Destroy(graphContainer.transform.GetChild(3).gameObject);
+            //Destroy(graphContainer.transform.GetChild(2).gameObject);
+            //Destroy(graphContainer.transform.GetChild(3).gameObject);
         }
 
         lastCircleGameObject = circleGameObject;
@@ -253,7 +261,8 @@ public class WindoGraph : MonoBehaviour
 
     public void realignObjects()
     {
-        int b = (valueCount == 2) ? 4 : 2;
+        //int b = (valueCount == 2) ? 4 : 2;
+        int b = (valueCount == 2) ? 2 : 2;
         graphWidth = graphContainer.sizeDelta.x;
         graphHeight = graphContainer.sizeDelta.y;
         float oldYMaximum = yMaximum;
@@ -272,10 +281,14 @@ public class WindoGraph : MonoBehaviour
         for (int i = 1; i < valueCount; i++)
         {
             int a = i - 1;
+            circleGameObject = graphContainer.transform.GetChild(b + (2 * a) + 0).gameObject;
+            GameObject dotConnection = graphContainer.transform.GetChild(b + (2 * a) + 1).gameObject;
+            /*
             circleGameObject = graphContainer.transform.GetChild(b + (4 * a) + 0).gameObject;
             GameObject dotConnection = graphContainer.transform.GetChild(b + (4 * a) + 1).gameObject;
             GameObject square = graphContainer.transform.GetChild(b + (4 * a) + 2).gameObject;
             GameObject triangle = graphContainer.transform.GetChild(b + (4 * a) + 3).gameObject;
+            /**/
 
             Y = circleGameObject.GetComponent<RectTransform>().anchoredPosition.y;
             xPosition = (i * xSize);
@@ -288,9 +301,9 @@ public class WindoGraph : MonoBehaviour
             circleGameObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPosition, yPosition);
             realignDotConnection(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition, circleGameObject.GetComponent<RectTransform>().anchoredPosition, dotConnection);
 
+            /*
             if (lastYPosition < yPosition) { squareHeight = lastYPosition; triangleDirection = "right"; triangleHeight = yPosition - lastYPosition; }
             else { squareHeight = yPosition; triangleDirection = "left"; triangleHeight = lastYPosition - yPosition; }
-            /**/
             realignSquareAndTriangle(new Vector2(xPosition - (xSize / 2), squareHeight / 2), new Vector2(xPosition - (xSize / 2), squareHeight + (triangleHeight / 2)), xSize, squareHeight, triangleHeight, triangleDirection, square, triangle);
             /**/
 
