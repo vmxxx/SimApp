@@ -65,8 +65,9 @@ public class LoadSimulationRules : MonoBehaviour
         int f = 0;
         int g = 0;
         int h = 0;
-        foreach (Agent entry in Buffer.instance.agents)
+        for (int i = 0; i < Buffer.instance.agents.Length; i++)
         {
+            Agent entry = Buffer.instance.agents[i];
             //Tiek izveidoti koki ar agentiem (piem., vanagiem un baloziem)
             txtLines.Insert(a + 17, "private SortedSet<agent> " + entry.agentName + "s = new SortedSet<agent>(new agentComparer());"); a = a + 1;
             txtLines.Insert(a + 17, "public int startingNumberOf" + entry.agentName + "s = 10;"); a = a + 1;
@@ -92,8 +93,8 @@ public class LoadSimulationRules : MonoBehaviour
             txtLines.Insert(c + 61, "killOrDuplicateEachIndividual(" + entry.agentName + "s);"); c = c + 1;
 
             d = d + 2 + 14 + 2;
-            txtLines.Insert(d + 65, "WindoGraph.instance.newValue = " + entry.agentName + "s.Count;"); d = d + 1;
-            txtLines.Insert(d + 65, "WindoGraph.instance.addNewValue(\"" + entry.agentName + "s\");"); d = d + 1;
+            txtLines.Insert(d + 65, "WindoGraph.instance.newValue = " + entry.agentName + "s.Count;"); d = d + 1; string entryColor = entry.color.ToString();
+            txtLines.Insert(d + 65, "WindoGraph.instance.addNewValue(\"" + entry.agentName + "s\", new Color(" + entry.color.r + "f, " + entry.color.g  + "f, " + entry.color.b + "f));"); d = d + 1;
 
             e = e + 2 + 14 + 2 + 2;
             txtLines.Insert(e + 65, "WindoGraph.instance.yMaximum = (" + entry.agentName + "s.Count > WindoGraph.instance.yMaximum) ? " + entry.agentName + "s.Count : WindoGraph.instance.yMaximum;"); e = e + 1;
@@ -113,7 +114,8 @@ public class LoadSimulationRules : MonoBehaviour
         int q = b;
         for (int i = 0; i < Buffer.instance.agents.Length; i++)
         {
-            txtLines.Insert(q + 52, "WindoGraph.instance.addInitialValue(startingNumberOf" + Buffer.instance.agents[i].agentName + "s, \"" + Buffer.instance.agents[i].agentName + "s\");"); q = q + 1;
+            Agent entry = Buffer.instance.agents[i];
+            txtLines.Insert(q + 52, "WindoGraph.instance.addInitialValue(startingNumberOf" + Buffer.instance.agents[i].agentName + "s, \"" + Buffer.instance.agents[i].agentName + "s\", new Color(" + entry.color.r + "f, " + entry.color.g + "f, " + entry.color.b + "f));"); q = q + 1;
         }
         for (int i = 0; i < Buffer.instance.agents.Length; i++)
         {

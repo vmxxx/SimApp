@@ -58,7 +58,11 @@ currentSimulation.ID = 0;
     public void newAgentsArray(int n)
     {
         instance.agents = new Agent[n];
-        for (int i = 0; i < instance.agents.Length; i++) { instance.agents[i] = new Agent(); }
+        for (int i = 0; i < instance.agents.Length; i++) 
+        { 
+            instance.agents[i] = new Agent();
+            instance.agents[i].color = new Color( (i < 4) ? 1 : 0, (i % 4 < 2) ? 1 : 0, (i % 2 == 0) ? 1 : 0 );
+        }
 
         /*
         this.agents = new Agent[n];
@@ -213,4 +217,6 @@ public class Agent
     public string agentName;
     public string agentDescription;
     public int authorID;
+
+    public Color color;
 }
