@@ -42,9 +42,11 @@ public class WindoGraph : MonoBehaviour
 
     public void OnSubmit()
     {
+        /*
         newValue = float.Parse(newValInputBox.transform.GetChild(2).GetComponent<Text>().text);
         addNewValue("Hawks");
         realignObjects("Doves");
+        /**/
     }
 
     [SerializeField] private Sprite circleSprite;
@@ -66,11 +68,12 @@ public class WindoGraph : MonoBehaviour
         //ShowGraphWithInitialValueList(initialValueList, "Doves");
     }
 
-    private GameObject CreateCircle(Vector2 anchoredPosition, GameObject agentContainer)
+    private GameObject CreateCircle(Vector2 anchoredPosition, GameObject agentContainer, Color circleColor)
     {
         GameObject gameObject = new GameObject("circle", typeof(Image));
         gameObject.transform.SetParent(agentContainer.transform, false);
         gameObject.GetComponent<Image>().sprite = circleSprite;
+        gameObject.GetComponent<Image>().color = circleColor;
         RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
         rectTransform.anchoredPosition = anchoredPosition;
         rectTransform.sizeDelta = new Vector2(3f, 3f);
@@ -83,7 +86,7 @@ public class WindoGraph : MonoBehaviour
 
     }
 
-    public void addInitialValue(float val, string container)
+    public void addInitialValue(float val, string container, Color agentColor)
     {
         GameObject agentContainer = Instantiate(emptyContainer);
         agentContainer.transform.SetParent(graphContainer.transform);
@@ -103,7 +106,7 @@ public class WindoGraph : MonoBehaviour
 
         float xPosition = (0 * graphWidth);
         float yPosition = (val / yMaximum) * graphHeight;
-        GameObject circleGameObject = CreateCircle(new Vector2(xPosition, yPosition), agentContainer);
+        GameObject circleGameObject = CreateCircle(new Vector2(xPosition, yPosition), agentContainer, agentColor);
         lastCircleGameObject = circleGameObject;
 
         //lastXPosition = xPosition;
@@ -161,7 +164,7 @@ public class WindoGraph : MonoBehaviour
     }
         /**/
 
-    public void addNewValue(string container)
+    public void addNewValue(string container, Color agentColor)
     {
         GameObject agentContainer = graphContainer.transform.Find(container).gameObject;
         //newValue = Int32.Parse(newValInputBox.transform.GetChild(2).GetComponent<Text>().text);
@@ -176,14 +179,14 @@ public class WindoGraph : MonoBehaviour
         float xPosition = (i * xSize);
         float yPosition = (newValue / yMaximum) * graphHeight;
 
-        GameObject circleGameObject = CreateCircle(new Vector2(xPosition, yPosition), agentContainer);
+        GameObject circleGameObject = CreateCircle(new Vector2(xPosition, yPosition), agentContainer, agentColor);
         if(valueCount != 2)
         {
-            CreateDotConnection(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition, circleGameObject.GetComponent<RectTransform>().anchoredPosition, agentContainer);
+            CreateDotConnection(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition, circleGameObject.GetComponent<RectTransform>().anchoredPosition, agentContainer, agentColor);
         }
         else
         {
-            CreateDotConnection(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition, circleGameObject.GetComponent<RectTransform>().anchoredPosition, agentContainer);
+            CreateDotConnection(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition, circleGameObject.GetComponent<RectTransform>().anchoredPosition, agentContainer, agentColor);
         }
 
         lastCircleGameObject = circleGameObject;
@@ -464,11 +467,11 @@ public class WindoGraph : MonoBehaviour
         rectTransform.localEulerAngles = new Vector3(0, 0, GetAngleFromVectorFloat(dir));
     }
 
-    private void CreateDotConnection(Vector2 dotPositionA, Vector2 dotPositionB, GameObject agentContainer)
+    private void CreateDotConnection(Vector2 dotPositionA, Vector2 dotPositionB, GameObject agentContainer, Color connectionColor)
     {
         GameObject gameObject = new GameObject("dotConnection", typeof(Image));
         gameObject.transform.SetParent(agentContainer.transform, false);
-        gameObject.GetComponent<Image>().color = new Color(1, 1, 1, 0.5f);
+        gameObject.GetComponent<Image>().color = connectionColor;
         RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
         Vector2 dir = (dotPositionB - dotPositionA).normalized;
         float distance = Vector2.Distance(dotPositionA, dotPositionB);

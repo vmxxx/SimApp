@@ -92,13 +92,13 @@ totalAmountOfIndividuals = totalAmountOfIndividuals + 1;
             initialize();
             //initialize(doves, startingNumberOfDoves);
             initialized = true;
-WindoGraph.instance.addInitialValue(startingNumberOfDoves, "Doves");
-WindoGraph.instance.addInitialValue(startingNumberOfHawks, "Hawks");
+WindoGraph.instance.addInitialValue(startingNumberOfDoves, "Doves", new Color(1f, 1f, 1f));
+WindoGraph.instance.addInitialValue(startingNumberOfHawks, "Hawks", new Color(1f, 1f, 0f));
 WindoGraph.instance.yMaximum = (Doves.Count > WindoGraph.instance.yMaximum) ? Doves.Count : WindoGraph.instance.yMaximum;
 WindoGraph.instance.yMaximum = (Hawks.Count > WindoGraph.instance.yMaximum) ? Hawks.Count : WindoGraph.instance.yMaximum;
 WindoGraph.instance.realignObjects("Doves");
 WindoGraph.instance.realignObjects("Hawks");
-            Debug.Log("object realigned");
+			
 			
 			WindoGraph.instance.realignLabels();
 			WindoGraph.instance.oldYMaximum = WindoGraph.instance.yMaximum;
@@ -114,9 +114,9 @@ killOrDuplicateEachIndividual(Doves);
 
         //3rd phase
 WindoGraph.instance.newValue = Doves.Count;
-WindoGraph.instance.addNewValue("Doves");
+WindoGraph.instance.addNewValue("Doves", new Color(1f, 1f, 1f));
 WindoGraph.instance.newValue = Hawks.Count;
-WindoGraph.instance.addNewValue("Hawks");
+WindoGraph.instance.addNewValue("Hawks", new Color(1f, 1f, 0f));
 WindoGraph.instance.yMaximum = (Doves.Count > WindoGraph.instance.yMaximum) ? Doves.Count : WindoGraph.instance.yMaximum;
 WindoGraph.instance.yMaximum = (Hawks.Count > WindoGraph.instance.yMaximum) ? Hawks.Count : WindoGraph.instance.yMaximum;
 WindoGraph.instance.realignObjects("Doves");
