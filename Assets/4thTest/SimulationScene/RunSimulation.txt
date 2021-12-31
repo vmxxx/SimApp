@@ -1,0 +1,160 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+using System.IO;
+using System.Linq;
+
+//using static System.Math;
+
+public class RunSimulation : MonoBehaviour
+{
+    public static RunSimulation instance;
+    public float V = 0.4f;
+    public float C = 1f;
+    private int totalAmountOfIndividuals = 0;
+
+    private Dictionary<(int, int), float> payoffResults = new Dictionary<(int, int), float>();
+
+    public bool paused = false;
+    private bool initialized = false;
+
+    private int itr = 0;
+
+    private void instantiateFormulas()
+    {
+
+    }
+
+    private void recalculateFormulas()
+    {
+
+    }
+
+    private void initialize()
+    {
+
+        //WindoGraph.instance.showGraphWithInitialValues();
+    }
+
+    private void FixedUpdate()
+    {
+        if (paused == false && itr % 25 == 0) { playOneRound(); }
+        itr++;
+    }
+
+    public void playOneRound()
+    {
+        if (initialized == false)
+        {
+            initialize();
+            //initialize(doves, startingNumberOfDoves);
+            initialized = true;
+			
+			
+			WindoGraph.instance.realignLabels();
+			WindoGraph.instance.oldYMaximum = WindoGraph.instance.yMaximum;
+        }
+
+        //1st phase
+
+        //2nd phase
+        recalculateFormulas();
+        assignIndividualsInPairwiseContestsAndCalculateTheirFitness();
+
+        //3rd phase
+		
+        //4th phase
+        
+		
+        WindoGraph.instance.daysPassed++;
+        WindoGraph.instance.realignLabels();
+        WindoGraph.instance.oldYMaximum = WindoGraph.instance.yMaximum;
+    }
+
+    private void killOrDuplicateEachIndividual(SortedSet<agent> agents)
+    {
+        int iii = 0;
+        int ii = 0;
+        int totalDuplicatesToMake = 0;
+        Stack removableAgents = new Stack();
+        
+        foreach (agent individual in agents)
+        {
+            if (individual.fitness <= -1)
+            {
+                removableAgents.Push(individual);
+                totalAmountOfIndividuals--;
+            }
+            else if (individual.fitness >= 1)
+            {
+                int duplicatesToMake = (int)System.Math.Floor(individual.fitness);
+                individual.fitness = individual.fitness - duplicatesToMake;
+                totalDuplicatesToMake = totalDuplicatesToMake + duplicatesToMake;
+
+                totalAmountOfIndividuals = totalAmountOfIndividuals + duplicatesToMake;
+            }
+        }
+
+        foreach(agent individual in removableAgents)
+        {
+            agents.Remove(individual);
+        }
+        for (int i = 0; i < totalDuplicatesToMake; i++)
+        {
+
+            agent newAgent = new agent();
+            newAgent.ID = agents.First().ID;
+            newAgent.icon = agents.First().icon;
+            newAgent.agentName = agents.First().agentName;
+            newAgent.agentDescription = agents.First().agentDescription;
+            newAgent.authorID = agents.First().authorID;
+            newAgent.fitness = 0;
+            newAgent.key = agents.Count;
+            while (agents.Contains(newAgent)) { newAgent.key++; }
+
+            agents.Add(newAgent);
+        }
+    }
+
+    private void assignIndividualsInPairwiseContestsAndCalculateTheirFitness()
+    {
+
+        System.Random rand = new System.Random();
+        int randomIndex;
+        agent agent1 = new agent();
+        agent agent2 = new agent();
+
+		if (totalAmountOfIndividuals % 2 == 1)
+		{
+		
+		}
+        for (int i = 0; i < totalAmountOfIndividuals / 2; i++)
+        {
+
+            agent1.fitness = agent1.fitness + payoffResults[(agent1.ID, agent2.ID)];
+            agent2.fitness = agent2.fitness + payoffResults[(agent2.ID, agent1.ID)];
+        }
+    }
+}
+
+public class agent
+{
+    public int ID;
+    public string icon;
+    public string agentName;
+    public string agentDescription;
+    public int authorID;
+
+    public float fitness;
+    public int key;
+}
+
+public class agentComparer : IComparer<agent>
+{
+    public int Compare(agent x, agent y)
+    {
+        // TODO: Handle x or y being null, or them not having names
+        return x.key.CompareTo(y.key);
+    }
+}
