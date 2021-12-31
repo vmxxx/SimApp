@@ -1,0 +1,174 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+using System.IO;
+using System.Linq;
+
+public class RunSimulation : MonoBehaviour
+{
+    public static RunSimulation instance;
+
+    public Dictionary<(int, int), agent> agents = new Dictionary<(int, int), agent>();
+    public float V = 1;
+    public float C = 1.5f;
+    public static int amountOfSpiecies = 2;
+    public int[] amountOfIndivudualsInSpiecies = new int[amountOfSpiecies];
+    public int totalAmountOfIndividuals = 0;
+    public Dictionary<(int, int), PayoffFormula> payoffFormulas = Buffer.instance.payoffFormulas;
+    public bool paused = false;
+
+    public void compilePayoffFormulas()
+    {
+
+
+payoffFormulas[(10, 10)].result = (V/2) - (C/2);
+payoffFormulas[(10, 9)].result = V;
+payoffFormulas[(9, 10)].result = 0;
+payoffFormulas[(9, 9)].result = V/2;
+
+        /* payoffFormulas[entry.Key].result = PayoffFormula[entry.Key].payoffFormula*/
+
+        Debug.Log("BEFORE FOR_EACHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
+        Debug.Log(payoffFormulas.Count);
+        foreach (KeyValuePair<(int, int), PayoffFormula> entry in payoffFormulas)
+        {
+            Debug.Log(entry.Key);
+        }
+
+        int i = 24;
+        string filename = "Assets/4thTest/SimulationScene/RunSimulation.cs";
+        List<string> txtLines = File.ReadAllLines(filename).ToList();   //Fill a list with the lines from the txt file.
+        Debug.Log("TXT_LINESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS: ");
+        foreach (KeyValuePair<(int, int), PayoffFormula> entry in payoffFormulas)
+        {
+            txtLines.Insert(i, "payoffFormulas[" + entry.Key + "].result = " + payoffFormulas[entry.Key].payoffFormula + ";");
+            i++;
+        }
+        File.WriteAllLines("Assets/4thTest/SimulationScene/testfile.txt", txtLines);
+    }
+
+    public void Awake()
+    {
+        if (RunSimulation.instance == null)
+        {
+            instance = this;
+        }
+    }
+
+    public void initialize()
+    {
+        agent newHawk = new agent();
+        newHawk.ID = 10;
+        newHawk.icon = "icon";
+        newHawk.agentName = "Hawk";
+        newHawk.agentDescription = "description";
+        newHawk.authorID = 1;
+        newHawk.fitness = 0;
+
+        for (int i = 0; i < 10; i++)
+        {
+            agents.Add((0, i), newHawk);
+            amountOfIndivudualsInSpiecies[0] = i + 1;
+            totalAmountOfIndividuals = totalAmountOfIndividuals + 1;
+        }
+
+
+        agent newDove = new agent();
+        newDove.ID = 9;
+        newDove.icon = "icon";
+        newDove.agentName = "Dove";
+        newDove.agentDescription = "description";
+        newDove.authorID = 1;
+        newDove.fitness = 0;
+
+        for (int i = 0; i < 10; i++)
+        {
+            agents.Add((1, i), newDove);
+            amountOfIndivudualsInSpiecies[1] = i + 1;
+            totalAmountOfIndividuals = totalAmountOfIndividuals + 1;
+        }
+
+        compilePayoffFormulas();
+
+    }
+
+    // Start is called before the first frame update
+    public void FixedUpdate()
+    {
+        if (paused == false)
+        {
+            //1st phase
+
+            //2nd phase
+            assignIndividualsInPairwiseContestsAndCalculateTheirFitness();
+
+            //3rd phase
+
+            //4th phase
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+
+    public void assignIndividualsInPairwiseContestsAndCalculateTheirFitness()
+    {
+        Dictionary<(int, int), agent> assignedAlready = new Dictionary<(int, int), agent>();
+        System.Random rand = new System.Random();
+
+        for (int i = 0; i < totalAmountOfIndividuals / 2; i++)
+        {
+            int X = (rand.Next(amountOfSpiecies));
+            int Y = rand.Next(amountOfIndivudualsInSpiecies[X]);
+            agent agent1 = agents[(X, Y)];
+            while (assignedAlready.TryGetValue((X, Y), out agent1))
+            {
+                X = (rand.Next(amountOfSpiecies));
+                Y = rand.Next(amountOfIndivudualsInSpiecies[X]);
+                agent1 = agents[(X, Y)];
+            }
+            assignedAlready.Add((X, Y), agent1);
+
+            X = (rand.Next(amountOfSpiecies));
+            Y = rand.Next(amountOfIndivudualsInSpiecies[X]);
+            agent agent2 = agents[(X, Y)];
+            while (assignedAlready.TryGetValue((X, Y), out agent1))
+            {
+                X = (rand.Next(amountOfSpiecies));
+                Y = rand.Next(amountOfIndivudualsInSpiecies[X]);
+                agent2 = agents[(X, Y)];
+            }
+            assignedAlready.Add((X, Y), agent2);
+
+            calculateIndividualsFitness(agent1, agent2);
+        }
+    }
+
+    void calculateIndividualsFitness(agent agent1, agent agent2)
+    {
+        agent1.fitness = agent1.fitness + payoffFormulas[(agent1.ID, agent2.ID)].result;
+        agent2.fitness = agent2.fitness + payoffFormulas[(agent2.ID, agent1.ID)].result;
+    }
+
+    /*
+    string readThisFileAndRememberItAsAString()
+    {
+        
+    }
+    */
+}
+
+public class agent
+{
+    public int ID;
+    public string icon;
+    public string agentName;
+    public string agentDescription;
+    public int authorID;
+
+    public float fitness;
+}
