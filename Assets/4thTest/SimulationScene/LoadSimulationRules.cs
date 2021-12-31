@@ -6,6 +6,7 @@ using System;
 using static System.Math;
 using System.Text.RegularExpressions;
 using UnityEditor;
+using UnityEditor.Compilation;
 
 using System.IO;
 using System.Linq;
@@ -261,7 +262,6 @@ public class LoadSimulationRules : MonoBehaviour
             Regex pattern = new Regex(@"{(.*?)}");
             Buffer.instance.payoffFormulas = new Dictionary<(int, int), PayoffFormula>();
             MatchCollection matches = pattern.Matches(www.text);
-            Debug.Log("Matches.Counttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt:" + matches.Count);
             for (i = 0; i < matches.Count; i++)
             {
 
@@ -280,7 +280,6 @@ public class LoadSimulationRules : MonoBehaviour
                 Buffer.instance.newFormula.agent1 = Int32.Parse(agent1.Substring(7, agent1.Length - 8));
                 Buffer.instance.newFormula.agent2 = Int32.Parse(agent2.Substring(7, agent2.Length - 8));
                 Buffer.instance.newFormula.payoffFormula = payoffFormula.Substring(15, payoffFormula.Length - 17);
-                Debug.Log("simulationID.Length: " + simulationID.Length);
                 Buffer.instance.newFormula.authorID = Int32.Parse(simulationID.Substring(13, simulationID.Length - 14));
 
                 Buffer.instance.payoffFormulas.Add((Buffer.instance.newFormula.agent1, Buffer.instance.newFormula.agent2), Buffer.instance.newFormula);
@@ -294,7 +293,6 @@ public class LoadSimulationRules : MonoBehaviour
             }
 
             agentsArray = agentsArray.Substring(0, agentsArray.Length - 1);
-            Debug.Log("agentsArray: " + agentsArray);
         }
         else
         {
@@ -377,9 +375,14 @@ public class LoadSimulationRules : MonoBehaviour
         }
         /**/
 
+        PayoffMatrix_2.instance.initialize();
+        /*
         compileSimulationRules();
         File.WriteAllLines("Assets/4thTest/SimulationScene/RunSimulation.cs", txtLines);
         AssetDatabase.ImportAsset("Assets/4thTest/SimulationScene/Buffer.cs");
+        AssetDatabase.ImportAsset("Assets/4thTest/SimulationScene/RunSimulation.cs");
+        //UnityEditor.Compilation.CompilationPipeline.RequestScriptCompilation;
+        /**/
     }
 
     /*
