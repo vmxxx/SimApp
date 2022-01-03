@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 
 public class LoadSimulation : MonoBehaviour
 {
+
     public GameObject payoffMatrixPanel;
     public GameObject emptyCell;
 
@@ -59,7 +60,6 @@ public class LoadSimulation : MonoBehaviour
                 Buffer.instance.currentSimulation.likesCount = Int32.Parse(likesCount.Substring(11, likesCount.Length - 12));
                 Buffer.instance.currentSimulation.dislikesCount = Int32.Parse(dislikesCount.Substring(14, dislikesCount.Length - 15));
                 Buffer.instance.currentSimulation.authorID = Int32.Parse(authorID.Substring(9, authorID.Length - 10));
-                /**/
         }
         else
         {
@@ -118,7 +118,6 @@ public class LoadSimulation : MonoBehaviour
                 {
                     agentsArray = agentsArray + agent2.Substring(7, agent2.Length - 7);
                 }
-                /**/
             }
 
             agentsArray = agentsArray.Substring(0, agentsArray.Length - 1);
@@ -172,8 +171,9 @@ public class LoadSimulation : MonoBehaviour
             Debug.Log("Loading simulations failed. Error #" + www.text);
         }
 
+        Debug.Log(Buffer.instance.currentSimulation.name);
         nameInputField.text = Buffer.instance.currentSimulation.name;
-        imageInputField.text = "Temporary image name" /*Buffer.instance.currentSimulation.image*/;
+        imageInputField.text = "Temporary image name"; //Buffer.instance.currentSimulation.image
         descriptionInputField.text = Buffer.instance.currentSimulation.description;
 
         for (i = 1; i < amountOfAgents; i++) { PayoffMatrix.instance.addExtra(); }
@@ -202,6 +202,7 @@ public class LoadSimulation : MonoBehaviour
             PayoffMatrix.instance.tableCells[0, j].transform.Find("AgentID").GetComponent<Text>().text = agentID;
             PayoffMatrix.instance.tableCells[0, j].transform.Find("Button").GetChild(0).GetComponent<Text>().text = agentName;
         }
-        /**/
     }
 }
+        
+        /**/

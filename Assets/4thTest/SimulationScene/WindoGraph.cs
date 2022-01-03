@@ -40,6 +40,13 @@ public class WindoGraph : MonoBehaviour
 
     public float daysPassed = 0f;
 
+
+    public GameObject canvas;
+    private RectTransform canvasRectTransform;
+
+    private float[] prevResolution;
+    private float[] currResolution;
+
     public void OnSubmit()
     {
         /*
@@ -66,6 +73,36 @@ public class WindoGraph : MonoBehaviour
         //addInitialValue(10, "Doves");
         //ShowGraphWithInitialValueList(initialValueList, "Hawks");
         //ShowGraphWithInitialValueList(initialValueList, "Doves");
+    }
+
+
+    public void Start()
+    {
+        canvasRectTransform = canvas.GetComponent<RectTransform>();
+        prevResolution = new float[] { canvasRectTransform.rect.width, canvasRectTransform.rect.height };
+    }
+
+    public void Update()
+    {
+
+        currResolution = new float[2] { canvasRectTransform.rect.width, canvasRectTransform.rect.height };
+
+        if (prevResolution[0] != currResolution[0] || prevResolution[1] != currResolution[1])
+        {
+            Debug.Log("new resolution2");
+            prevResolution = new float[2] { currResolution[0], currResolution[1] };
+            realignAllObjects();
+            realignLabels();
+        }
+    }
+
+    private void realignAllObjects()
+    {
+        //GameObject agentContainer = graphContainer.transform.Find(container).gameObject;
+        for(int i = 0; i < graphContainer.transform.childCount; i++)
+        {
+            realignObjects(graphContainer.transform.GetChild(i).name);
+        }
     }
 
     private GameObject CreateCircle(Vector2 anchoredPosition, GameObject agentContainer, Color circleColor)

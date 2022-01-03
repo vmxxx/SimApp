@@ -13,7 +13,7 @@ public class RunSimulation : MonoBehaviour
     public float V = 0.4f;
     public float C = 1f;
     private int totalAmountOfIndividuals = 0;
-
+    public int speed = 50;
     private Dictionary<(int, int), float> payoffResults = new Dictionary<(int, int), float>();
 private SortedSet<agent> Doves = new SortedSet<agent>(new agentComparer());
 public int startingNumberOfDoves = 10;
@@ -81,7 +81,7 @@ totalAmountOfIndividuals = totalAmountOfIndividuals + 1;
 
     private void FixedUpdate()
     {
-        if (paused == false && itr % 25 == 0) { playOneRound(); }
+        if (paused == false && itr % speed == 0) { playOneRound(); }
         itr++;
     }
 
