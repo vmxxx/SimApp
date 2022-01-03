@@ -1,17 +1,45 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using System;
+using static System.Math;
+using System.Text.RegularExpressions;
 
 public class SearchSimulation : MonoBehaviour
 {
+    public InputField popularSimulationsSearchField;
+    public InputField userSimulationsSearchField;
+
+    public GameObject popularSimulationsPanel;
+    public GameObject userSimulationsPanel;
+    public GameObject entry;
+    private int pN = 1;
+    private int uN = 1;
+
+    public void clearPopular()
+    {
+        popularSimulationsSearchField.text = "";
+        LoadOrRefreshSimulations.instance.loadPopular(true);
+    }
+
+    public void clearUser()
+    {
+        userSimulationsSearchField.text = "";
+        LoadOrRefreshSimulations.instance.loadUser(true);
+    }
+
     public void searchPopular()
     {
-        StartCoroutine(seachPopularSimulations());
+        if (popularSimulationsSearchField.text != "") StartCoroutine(seachPopularSimulations());
+        else clearPopular();
     }
+
 
     public void searchUser()
     {
-        StartCoroutine(searchUserSimulations());
+        if (userSimulationsSearchField.text != "") StartCoroutine(searchUserSimulations());
+        else clearUser();
     }
 
     IEnumerator seachPopularSimulations()
@@ -20,6 +48,7 @@ public class SearchSimulation : MonoBehaviour
         form.AddField("class", "SimulationsController\\simulations");
         form.AddField("function", "read");
         form.AddField("scene", "mainMenu");
+        form.AddField("search", popularSimulationsSearchField.text);
         form.AddField("list", "popular");
         form.AddField("onSearch", "true");
 
@@ -28,7 +57,6 @@ public class SearchSimulation : MonoBehaviour
 
         if (www.text != "" && www.text[0] == '0')
         {
-            /*
             int i = 0;
             int popularSimulationsCount = 0;
             int userrSimulationsCount = 0;
@@ -67,8 +95,7 @@ public class SearchSimulation : MonoBehaviour
             displaySimulations(popularSimulationsPanel, Buffer.instance.popularSimulations);
             //Buffer.instance.printPopularSimulationsArray();
             Debug.Log("0; Load succesful;" + www.text);
-            pN = pN + 1;
-            /**/
+            //pN = pN + 1;
         }
         else
         {
@@ -78,7 +105,64 @@ public class SearchSimulation : MonoBehaviour
 
     IEnumerator searchUserSimulations()
     {
+        WWWForm form = new WWWForm();
+        form.AddField("class", "SimulationsController\\simulations");
+        form.AddField("function", "read");
+        form.AddField("scene", "mainMenu");
+        form.AddField("search", userSimulationsSearchField.text);
+        form.AddField("list", "user");
+        form.AddField("onSearch", "true");
+        form.AddField("authorID", 5);
 
+        WWW www = new WWW("http://localhost/sqlconnect/index.php", form);
+        yield return www; //tells Unity to put this on the backburner. Once we get the info back, we'll run the rest of the code
+
+        if (www.text != "" && www.text[0] == '0')
+        {
+            int i = 0;
+            int popularSimulationsCount = 0;
+            int userrSimulationsCount = 0;
+            removeSimulations(userSimulationsPanel, Buffer.instance.userSimulations);
+
+            MatchCollection entries = Regex.Matches(www.text, @"{{1}(.*?)}{1}");
+            Debug.Log(entries.Count);
+            Buffer.instance.newUserSimulationsArray(entries.Count);
+            int j = 0;
+            foreach (Match entry in entries)
+            {
+                string seperate_entry = entry.ToString();
+                Debug.Log("seperate_entry: " + seperate_entry);
+                string ID = Regex.Match(seperate_entry, @"ID:(.*?),").Value;
+                string name = Regex.Match(seperate_entry, @"name:(.*?),").Value;
+                string image = Regex.Match(seperate_entry, @"image:(.*?),").Value;
+                string description = Regex.Match(seperate_entry, @"description:(.*?),").Value;
+                string likesCount = Regex.Match(seperate_entry, @"likesCount:(.*?),").Value;
+                string dislikesCount = Regex.Match(seperate_entry, @"dislikesCount:(.*?),").Value;
+                string authorID = Regex.Match(seperate_entry, @"authorID:(.*?)}").Value;
+                Debug.Log("authorID" + authorID);
+
+
+                if (ID != "")
+                {
+                    Buffer.instance.userSimulations[j].ID = Int32.Parse(ID.Substring(3, ID.Length - 4));
+                    Buffer.instance.userSimulations[j].name = name.Substring(6, name.Length - 8);
+                    Buffer.instance.userSimulations[j].image = image.Substring(7, image.Length - 9);
+                    Buffer.instance.userSimulations[j].description = description.Substring(13, description.Length - 15);
+                    Buffer.instance.userSimulations[j].likesCount = Int32.Parse(likesCount.Substring(11, likesCount.Length - 12));
+                    Buffer.instance.userSimulations[j].dislikesCount = Int32.Parse(dislikesCount.Substring(14, dislikesCount.Length - 15));
+                    Buffer.instance.userSimulations[j].authorID = Int32.Parse(authorID.Substring(9, authorID.Length - 10));
+                }
+                j++;
+            }
+            displaySimulations(userSimulationsPanel, Buffer.instance.userSimulations);
+            //Buffer.instance.printPopularSimulationsArray();
+            Debug.Log("0; Load succesful;" + www.text);
+            //pN = pN + 1;
+        }
+        else
+        {
+            Debug.Log("Loading simulations failed. Error #" + www.text);
+        }
     }
 
 
@@ -107,4 +191,5 @@ public class SearchSimulation : MonoBehaviour
             newEntry.transform.SetSiblingIndex(currIndex - 1);
         }
     }
+    /**/
 }

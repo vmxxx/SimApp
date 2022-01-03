@@ -43,6 +43,7 @@ public class LoadOrRefreshSimulations : MonoBehaviour
         form.AddField("function", "read");
         form.AddField("scene", "mainMenu");
         form.AddField("list", "popular");
+        form.AddField("onSearch", "false");
         form.AddField("N", N);
 
         WWW www = new WWW("http://localhost/sqlconnect/index.php", form);
@@ -103,6 +104,7 @@ public class LoadOrRefreshSimulations : MonoBehaviour
         form.AddField("function", "read");
         form.AddField("scene", "mainMenu");
         form.AddField("list", "user");
+        form.AddField("onSearch", "false");
         //form.AddField("authorID", Buffer.instance.authenticatedUser.ID);
         form.AddField("authorID", 5);
         form.AddField("N", N);

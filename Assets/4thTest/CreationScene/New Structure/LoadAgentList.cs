@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class LoadAgentList : MonoBehaviour
 {
+    public static LoadAgentList instance;
+
     public GameObject agentsList;
     public GameObject emptyAgentCell;
 
@@ -30,6 +32,7 @@ public class LoadAgentList : MonoBehaviour
 
     public void Awake()
     {
+        instance = this;
         StartCoroutine(loadAgents());
         //refreshAgents();
     }
@@ -42,6 +45,7 @@ public class LoadAgentList : MonoBehaviour
         form.AddField("class", "AgentsController\\agents");
         form.AddField("function", "read");
         form.AddField("fullList", "true");
+        form.AddField("onSearch", "false");
         form.AddField("authorID", Buffer.instance.authenticatedUser.ID);
         //form.AddField("authorID", 5);
 
