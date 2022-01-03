@@ -5,7 +5,7 @@ using System.Linq;
 
 public class RectTransformInPercentage : MonoBehaviour
 {
-
+    
     public GameObject canvas;
     private float[] prevResolution;
     private float[] currResolution;
@@ -38,16 +38,7 @@ public class RectTransformInPercentage : MonoBehaviour
 
     private void Update()
     {
-
-        RectTransform canvasRectTransform = canvas.GetComponent<RectTransform>();
-        currResolution = new float[2] { canvasRectTransform.rect.width, canvasRectTransform.rect.height };
-
-        if (prevResolution[0] != currResolution[0] || prevResolution[1] != currResolution[1])
-        {
-            Debug.Log("new resolution");
-            prevResolution = new float[2] { currResolution[0], currResolution[1] } ;
-            recalculateRectTransform();
-        }
+        recalculateRectTransform();
     }
 
     private void recalculateRectTransform()
@@ -65,11 +56,8 @@ public class RectTransformInPercentage : MonoBehaviour
         rectTransform.offsetMin = new Vector2(recalculatedLeft, recalculatedBottom);
         rectTransform.offsetMax = new Vector2(-recalculatedRight, -recalculatedTop);
 
-        if(PayoffMatrix.instance != null)
-        {
-            PayoffMatrix.instance.alignCells();
-        }
     }
+    /**/
 }
 
 public enum AnchorPreset

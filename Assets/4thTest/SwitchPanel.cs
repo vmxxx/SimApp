@@ -9,8 +9,11 @@ public class SwitchPanel : MonoBehaviour
 
     public void switchPanel(GameObject rightPanel)
     {
-        rightPanel.SetActive(true);
-        currentPanel.SetActive(false);
-        currentPanel = rightPanel;
+        if (rightPanel != currentPanel)
+        {
+            rightPanel.SetActive(true);
+            currentPanel.SetActive(false);
+            currentPanel = rightPanel;
+        }
     }
 }

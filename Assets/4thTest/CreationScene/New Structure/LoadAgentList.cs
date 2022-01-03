@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 using System;
 using UnityEngine.UI;
 
-
 public class LoadAgentList : MonoBehaviour
 {
     public GameObject agentsList;
@@ -86,6 +85,8 @@ public class LoadAgentList : MonoBehaviour
             Debug.Log("Agents initialized!");
             Debug.Log("Authed usr: " + Buffer.instance.authenticatedUser.ID);
             Debug.Log("Buffer.instance.agents.Length: " + Buffer.instance.agents.Length);
+            Debug.Log("AGENTS LOADEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
+            Buffer.instance.printAgents();
             displayAgents();
 
         }
@@ -147,3 +148,5 @@ public class LoadAgentList : MonoBehaviour
     }
     /**/
 }
+
+/**/
