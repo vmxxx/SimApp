@@ -6763,7 +6763,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 246, y: 235}
+  m_AnchoredPosition: {x: 234, y: 234}
   m_SizeDelta: {x: 450, y: 430}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1595916774
@@ -8091,6 +8091,9 @@ MonoBehaviour:
   initialValueList:
   - 10
   newValue: 0
+  windoGraph: {fileID: 1917391373}
+  oldHighestY: -1
+  highestY: -1
   yMaximum: 1
   oldYMaximum: 1
   XAxis: {fileID: 1631042581}
@@ -8116,10 +8119,11 @@ MonoBehaviour:
   - {fileID: 2015191764}
   - {fileID: 1929442218}
   daysPassed: 0
-  canvas: {fileID: 0}
+  canvas: {fileID: 232823365}
   circleSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   graphContainer: {fileID: 1594831200}
   emptyContainer: {fileID: 1471643549}
+  oldGraphHeight: 0
 --- !u!114 &1917391375
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9340,7 +9344,7 @@ MonoBehaviour:
   C: 0.1
   speed: 50
   startingNumberOfDoves: 5
-  startingNumberOfHawks: 7
+  startingNumberOfHawks: 10
   paused: 1
 --- !u!114 &2098573332
 MonoBehaviour:
