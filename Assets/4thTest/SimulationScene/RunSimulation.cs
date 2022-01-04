@@ -92,10 +92,10 @@ totalAmountOfIndividuals = totalAmountOfIndividuals + 1;
             initialize();
             //initialize(doves, startingNumberOfDoves);
             initialized = true;
-WindoGraph.instance.addInitialValue(startingNumberOfDoves, "Doves", new Color(1f, 1f, 1f));
-WindoGraph.instance.addInitialValue(startingNumberOfHawks, "Hawks", new Color(1f, 1f, 0f));
 WindoGraph.instance.yMaximum = (Doves.Count > WindoGraph.instance.yMaximum) ? Doves.Count : WindoGraph.instance.yMaximum;
 WindoGraph.instance.yMaximum = (Hawks.Count > WindoGraph.instance.yMaximum) ? Hawks.Count : WindoGraph.instance.yMaximum;
+WindoGraph.instance.addInitialValue(startingNumberOfDoves, "Doves", new Color(1f, 1f, 1f));
+WindoGraph.instance.addInitialValue(startingNumberOfHawks, "Hawks", new Color(1f, 1f, 0f));
 WindoGraph.instance.realignObjects("Doves");
 WindoGraph.instance.realignObjects("Hawks");
 			

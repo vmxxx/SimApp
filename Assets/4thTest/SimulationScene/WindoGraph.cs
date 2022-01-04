@@ -14,9 +14,11 @@ public class WindoGraph : MonoBehaviour
     public GameObject newValInputBox;
     public List<float> initialValueList = new List<float>() { 1 };
     public float newValue;
+    public RectTransform windoGraph;
+    private RectTransform graphContainerTransform;
 
-
-
+    public  float oldHighestY = -1f;
+    public  float highestY = -1f;
     private float graphWidth;
     private float graphHeight;
     public  float yMaximum = 1;
@@ -49,11 +51,6 @@ public class WindoGraph : MonoBehaviour
 
     public void OnSubmit()
     {
-        /*
-        newValue = float.Parse(newValInputBox.transform.GetChild(2).GetComponent<Text>().text);
-        addNewValue("Hawks");
-        realignObjects("Doves");
-        /**/
     }
 
     [SerializeField] private Sprite circleSprite;
@@ -67,12 +64,6 @@ public class WindoGraph : MonoBehaviour
         {
             instance = this;
         }
-
-
-        //addInitialValue(10, "Hawks");
-        //addInitialValue(10, "Doves");
-        //ShowGraphWithInitialValueList(initialValueList, "Hawks");
-        //ShowGraphWithInitialValueList(initialValueList, "Doves");
     }
 
 
@@ -80,6 +71,12 @@ public class WindoGraph : MonoBehaviour
     {
         canvasRectTransform = canvas.GetComponent<RectTransform>();
         prevResolution = new float[] { canvasRectTransform.rect.width, canvasRectTransform.rect.height };
+
+        graphContainer.sizeDelta = new Vector2(windoGraph.rect.width * 0.8f, windoGraph.rect.height * 0.8f);
+        graphContainer.anchoredPosition = new Vector2(windoGraph.rect.width * 0.5f, windoGraph.rect.height * 0.5f);
+
+        graphHeight = graphContainer.sizeDelta.y;
+        highestY = graphHeight;
     }
 
     public void Update()
@@ -89,12 +86,42 @@ public class WindoGraph : MonoBehaviour
 
         if (prevResolution[0] != currResolution[0] || prevResolution[1] != currResolution[1])
         {
-            Debug.Log("new resolution2");
+            //Debug.Log("new resolution2 " + windoGraph.sizeDelta);
             prevResolution = new float[2] { currResolution[0], currResolution[1] };
-            realignAllObjects();
+
+            graphContainer.sizeDelta = new Vector2(windoGraph.rect.width * 0.8f, windoGraph.rect.height * 0.8f);
+            graphContainer.anchoredPosition = new Vector2(windoGraph.rect.width * 0.5f, windoGraph.rect.height * 0.5f);
+            //realignAllObjects();
+            //realignObjects("Hawks");
+            for (int i = 4; i < graphContainer.transform.childCount; i++)
+            {
+                realignObjects(graphContainer.transform.GetChild(i).name);
+            }
             realignLabels();
+            /*
+            if (graphHeight <= highestY)
+            {
+                Debug.Log("(graphHeight <= highestY)");
+                highestY = graphHeight;
+            }
+            else if (lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition.y > highestY)
+            {
+                Debug.Log("(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition.y > highestY)");
+                highestY = lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition.y;
+            }
+            /**/
+            if (lastCircleGameObject != null && lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition.y > highestY)
+            {
+                //Debug.Log("(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition.y > highestY)");
+                highestY = lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition.y;
+            }
+            else
+            {
+                highestY = graphHeight;
+            }
         }
     }
+
 
     private void realignAllObjects()
     {
@@ -103,6 +130,77 @@ public class WindoGraph : MonoBehaviour
         {
             realignObjects(graphContainer.transform.GetChild(i).name);
         }
+    }
+
+    public float oldGraphHeight;
+
+    public void realignObjects(string container)
+    {
+
+        //value = yPosition / graphHeight = xxx / oldYMaximum
+        //value = xxx = (yPosition * oldYMaximum) / graphHeight
+
+        /*
+        if (lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition.y > highestY) highestY = lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition.y;
+        else if (graphHeight < highestY) highestY = graphHeight;
+        /**/
+
+        GameObject agentContainer = graphContainer.transform.Find(container).gameObject;
+        valueCount = (agentContainer.transform.childCount / 2) + 1;
+        graphWidth = graphContainer.sizeDelta.x;
+        graphHeight = graphContainer.sizeDelta.y;
+
+
+        //highestY = (graphHeight < highestY) ? lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition.y : highestY;
+        //highestY = graphHeight;
+
+        //if (highestY > graphHeight) { highestY = graphHeight; }
+        //float oldYMaximum = yMaximum;
+        //yMaximum = (newValue > yMaximum) ? newValue : yMaximum;
+        xSize = (valueCount - 1 != 0) ? (graphWidth / (valueCount - 1)) : (0);
+
+        GameObject circleGameObject;
+
+        //Debug.Log(valueCount + ": valueCOunt, agnetContainer: " + agentContainer);
+        //Debug.Log("agentContainer.transform.GetChild(0).gameObject: " + agentContainer.transform.GetChild(0).gameObject);
+        lastCircleGameObject = agentContainer.transform.GetChild(0).gameObject;
+        float Y = lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition.y;
+        float oldProportion = Y / highestY; //for hawks this should be 1, for doves this should be 0.7142
+        //float oldProportion = Y / graphHeight;
+        //float value = (Y * oldYMaximum) / highestY;
+        float newY = oldProportion * graphHeight;
+        if (container == "Hawks")
+        {
+            //Debug.Log(" oldProportion = Y / highestY: " + oldProportion + " = " + Y + " / " + highestY + "                                " + " newY = oldProportion * graphHeight: " + newY + " = " + oldProportion + " * " + graphHeight);
+            //Debug.Log();
+        }
+        float xPosition = (0 * xSize);
+        float yPosition = newY;
+        float lastYPosition = yPosition;
+        lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPosition, yPosition);
+        for (int i = 1; i < valueCount; i++)
+        {
+            int a = i - 1;
+            circleGameObject = agentContainer.transform.GetChild(1 + (2 * a) + 0).gameObject;
+            GameObject dotConnection = agentContainer.transform.GetChild(1 + (2 * a) + 1).gameObject;
+
+            Y = circleGameObject.GetComponent<RectTransform>().anchoredPosition.y;
+            oldProportion = Y / highestY;
+            //oldProportion = Y / graphHeight;
+            newY = oldProportion * graphHeight;
+            //value = (Y * oldYMaximum) / highestY;
+            //proportion = yMaximum / highestY;
+            xPosition = (i * xSize);
+            yPosition = newY;
+            //yPosition = ((Y / (yMaximum / oldYMaximum)));
+            circleGameObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPosition, yPosition);
+            realignDotConnection(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition, circleGameObject.GetComponent<RectTransform>().anchoredPosition, dotConnection);
+
+            lastCircleGameObject = circleGameObject;
+            lastYPosition = yPosition;
+        }
+        //highestY = lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition.y;
+
     }
 
     private GameObject CreateCircle(Vector2 anchoredPosition, GameObject agentContainer, Color circleColor)
@@ -140,9 +238,12 @@ public class WindoGraph : MonoBehaviour
         lastYPosition = 0f;
         lastCircleGameObject = null;
 
-
+        //Debug.Log("highestY: " + highestY);
+        //Debug.Log(" val / yMaximum: " + val + " / " + yMaximum + ": " + (val / yMaximum));
         float xPosition = (0 * graphWidth);
-        float yPosition = (val / yMaximum) * graphHeight;
+        float yProportion = val / yMaximum;
+        float yPosition = yProportion * highestY;
+        //float yPosition = (val / yMaximum) * graphHeight;
         GameObject circleGameObject = CreateCircle(new Vector2(xPosition, yPosition), agentContainer, agentColor);
         lastCircleGameObject = circleGameObject;
 
@@ -150,56 +251,9 @@ public class WindoGraph : MonoBehaviour
         //lastYPosition = yPosition;
 
         //oldYMaximum = yMaximum;
+        //highestY = (lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition.y > highestY) ? lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition.y : highestY;
     }
 
-    /*
-    private void ShowGraphWithInitialValueList(List<float> valueList, string container)
-    {
-        GameObject agentContainer = Instantiate(emptyContainer);
-        agentContainer.transform.SetParent(graphContainer.transform);
-        agentContainer.name = container;
-
-        valueCount = valueList.Count;
-        graphWidth = graphContainer.sizeDelta.x;
-        graphHeight = graphContainer.sizeDelta.y;
-        yMaximum = FindHighestValueInAList(valueList);
-        xSize = graphWidth / (valueCount - 1);
-
-        triangleDirection = "";
-        squareHeight = 0;
-        triangleHeight = 0;
-        lastXPosition = 0f;
-        lastYPosition = 0f;
-        lastCircleGameObject = null;
-        if (valueCount != 1)
-        {
-            for (int i = 0; i < valueCount; i++)
-            {
-                float xPosition = (i * xSize);
-                float yPosition = (valueList[i] / yMaximum) * graphHeight;
-                GameObject circleGameObject = CreateCircle(new Vector2(xPosition, yPosition), agentContainer);
-                if (lastCircleGameObject != null)
-                {
-                    CreateDotConnection(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition, circleGameObject.GetComponent<RectTransform>().anchoredPosition, agentContainer);
-                }
-                lastCircleGameObject = circleGameObject;
-                lastXPosition = xPosition;
-                lastYPosition = yPosition;
-            }
-        }
-        else
-        {
-            float xPosition = (0 * graphWidth);
-            float yPosition = (valueList[0] / yMaximum) * graphHeight;
-            GameObject circleGameObject = CreateCircle(new Vector2(xPosition, yPosition), agentContainer);
-            lastCircleGameObject = circleGameObject;
-
-            lastXPosition = xPosition;
-            lastYPosition = yPosition;
-        }
-        oldYMaximum = yMaximum;
-    }
-        /**/
 
     public void addNewValue(string container, Color agentColor)
     {
@@ -208,13 +262,18 @@ public class WindoGraph : MonoBehaviour
         //valueCount = valueCount + 1;
         valueCount = (agentContainer.transform.childCount / 2) + 1 + 1;
         //graphWidth = graphContainer.sizeDelta.x;
-        //graphHeight = graphContainer.sizeDelta.y;
+        graphHeight = graphContainer.sizeDelta.y;
         //yMaximum = (newValue > yMaximum) ? newValue : yMaximum;
         xSize = graphWidth / (valueCount - 1);
         int i = valueCount;
 
+        //Debug.Log("highestY: " + highestY);
+        //Debug.Log(" val / yMaximum: " + newValue + " / " + yMaximum + ": " + (newValue / yMaximum));
         float xPosition = (i * xSize);
-        float yPosition = (newValue / yMaximum) * graphHeight;
+        float yProportion = (newValue / yMaximum);
+        Debug.Log("yProportion = (newValue / yMaximum):  " + yProportion + " = " + newValue + " / " + yMaximum);
+        float yPosition = yProportion * graphHeight;
+        Debug.Log("(" + container + ") xPosition / yPosition: " + xPosition + " / " + yPosition);
 
         GameObject circleGameObject = CreateCircle(new Vector2(xPosition, yPosition), agentContainer, agentColor);
         if(valueCount != 2)
@@ -230,17 +289,27 @@ public class WindoGraph : MonoBehaviour
         lastXPosition = xPosition;
         lastYPosition = yPosition;
 
+        if (yPosition > highestY) highestY = yPosition;
+        //highestY = (lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition.y > highestY) ? lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition.y : highestY;
     }
 
     public void realignLabels()
     {
         
-        Debug.Log("yMaximum: " + yMaximum);
+        //Debug.Log("yMaximum: " + yMaximum);
+
+        graphWidth = graphContainer.sizeDelta.x;
+        graphHeight = graphContainer.sizeDelta.y;
 
         Transform label;
         RectTransform rectTransform;
         float Y;
-         //Y axis
+
+        //Y axis
+        RectTransform YarrowHead1 = YAxis.transform.GetChild(1).GetComponent<RectTransform>();
+        RectTransform YarrowHead2 = YAxis.transform.GetChild(2).GetComponent<RectTransform>();
+        YarrowHead1.anchoredPosition = new Vector2(-6f, graphHeight - 7);
+        YarrowHead2.anchoredPosition = new Vector2( 6f, graphHeight - 9);
         for (int i = YAxis.transform.childCount - 2; i >= 3; i--)
         {
             label = YAxis.transform.GetChild(i);
@@ -250,7 +319,8 @@ public class WindoGraph : MonoBehaviour
             label.Find("Text").GetComponent<Text>().text = ((Y / graphHeight) * yMaximum).ToString();
             Y = rectTransform.anchoredPosition.y;
 
-            if (Y < graphHeight - 30) { label.gameObject.SetActive(true); }
+            if (Y < graphHeight - 30) label.gameObject.SetActive(true);
+            else label.gameObject.SetActive(false);
         }
 
         label = YAxis.transform.GetChild(11);
@@ -270,12 +340,18 @@ public class WindoGraph : MonoBehaviour
                 label.Find("Text").GetComponent<Text>().text = (((float)a / 7f) * yMaximum).ToString();
                 Y = rectTransform.anchoredPosition.y;
 
-                if (Y >= graphHeight - 30) { label.gameObject.SetActive(false); }
+                if (Y >= graphHeight - 30) label.gameObject.SetActive(false);
+                else label.gameObject.SetActive(true);
             }
         }
 
 
         //X axis
+        RectTransform XarrowHead1 = XAxis.transform.GetChild(1).GetComponent<RectTransform>();
+        RectTransform XarrowHead2 = XAxis.transform.GetChild(2).GetComponent<RectTransform>();
+        XarrowHead1.anchoredPosition = new Vector2(graphWidth - 7, -6f);
+        XarrowHead2.anchoredPosition = new Vector2(graphWidth - 9,  6f);
+
         float X;
         for (int i = XAxis.transform.childCount - 2; i >= 3; i--)
         {
@@ -287,7 +363,8 @@ public class WindoGraph : MonoBehaviour
             rectTransform.anchoredPosition = new Vector2(X, 0);
             label.Find("Text").GetComponent<Text>().text = (((float)a / 7f) * daysPassed).ToString();
 
-            if (X < graphWidth - 30) { label.gameObject.SetActive(true); }
+            if (X < graphWidth - 30) label.gameObject.SetActive(true);
+            else label.gameObject.SetActive(false);
         }
 
         label = XAxis.transform.GetChild(11);
@@ -308,189 +385,24 @@ public class WindoGraph : MonoBehaviour
                 label.Find("Text").GetComponent<Text>().text = (((float)a / 7f) * daysPassed).ToString();
                 X = rectTransform.anchoredPosition.x;
 
-                if (X >= graphWidth - 30) { label.gameObject.SetActive(false); }
+                if (X >= graphWidth - 30) label.gameObject.SetActive(false);
+                else label.gameObject.SetActive(true);
             }
-        }
-
-
-
-
-        /*
-        
-        for (int i = 3; i < XAxis.transform.childCount; i++)
-        {
-            Transform label = XAxis.transform.GetChild(i);
-            RectTransform rectTransform = label.GetComponent<RectTransform>();
-            float X = rectTransform.anchoredPosition.x;
-            if (daysPassed > 1) {
-
-                X = (X / ((float)daysPassed / (float)(daysPassed - 1))); 
-            
-            }
-            rectTransform.anchoredPosition = new Vector2(X, 0);
-            rectTransform.transform.GetChild(0).GetComponent<Text>().text = (daysPassed / 7f * (float)(i + 1)).ToString();
-        }
-
-        if (XLabels[8].GetComponent<RectTransform>().anchoredPosition.x < (graphWidth))
-        {
-            XLabels[8].SetActive(false);
-            XLabels[7].SetActive(false);
-            XLabels[6].SetActive(false);
-            
-            for (int i = 0; i < 9; i++)
-            {
-                RectTransform rectTransform = XLabels[i].GetComponent<RectTransform>();
-                float X = (graphWidth / 7 * (i + 1));
-                rectTransform.anchoredPosition = new Vector2(X, 0);
-
-                //Debug.Log("(daysPassed / 7f * (float)(i + 1)): " + (daysPassed / 7f * (float)(i + 1)));
-                XLabels[i].transform.GetChild(0).GetComponent<Text>().text = (daysPassed / 7f * (float)(i + 1)).ToString();
-            }
-        }
-        else if (XLabels[7].GetComponent<RectTransform>().anchoredPosition.x < (graphWidth))
-        {
-            XLabels[7].SetActive(true);
-        }
-        else if (XLabels[6].GetComponent<RectTransform>().anchoredPosition.x < (graphWidth))
-        {
-            XLabels[6].SetActive(true);
-        }
-
-
-
-        /**/
-
-
-    }
-
-    public void realignObjects(string container)
-    {
-
-        GameObject agentContainer = graphContainer.transform.Find(container).gameObject;
-        //int b = (valueCount == 2) ? 4 : 2;
-        //int b = (valueCount == 2) ? 2 : 2;
-        //int b = (valueCount == 1) ? 1 : 1;
-        valueCount = (agentContainer.transform.childCount / 2) + 1;
-        graphWidth = graphContainer.sizeDelta.x;
-        graphHeight = graphContainer.sizeDelta.y;
-        //float oldYMaximum = yMaximum;
-        //yMaximum = (newValue > yMaximum) ? newValue : yMaximum;
-        xSize = (valueCount - 1 != 0) ? (graphWidth / (valueCount - 1)) : (0);
-
-        GameObject circleGameObject;
-        /*
-        GameObject circleGameObject = agentContainer.transform.GetChild(1).gameObject;
-        float Y = circleGameObject.GetComponent<RectTransform>().anchoredPosition.y;
-        float xPosition = (0 * xSize);
-        float yPosition = ((Y / (yMaximum / oldYMaximum)));
-        float lastYPosition = yPosition;
-        circleGameObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPosition, yPosition);
-        /**/
-
-        lastCircleGameObject = agentContainer.transform.GetChild(0).gameObject;
-        float Y = lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition.y;
-        float xPosition = (0 * xSize);
-        float yPosition = (oldYMaximum != 0) ? ((Y / (yMaximum / oldYMaximum))) : Y;
-        float lastYPosition = yPosition;
-        Debug.Log("yMaximum: " + yMaximum);
-        Debug.Log("oldYMaximum: " + oldYMaximum);
-        Debug.Log(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition + " / " + new Vector2(xPosition, yPosition));
-        lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPosition, yPosition);
-        for (int i = 1; i < valueCount; i++)
-        {
-            int a = i - 1;
-            circleGameObject = agentContainer.transform.GetChild(1 + (2 * a) + 0).gameObject;
-            GameObject dotConnection = agentContainer.transform.GetChild(1 + (2 * a) + 1).gameObject;
-
-            Y = circleGameObject.GetComponent<RectTransform>().anchoredPosition.y;
-            xPosition = (i * xSize);
-            yPosition = ((Y / (yMaximum / oldYMaximum)));
-
-
-            //Debug.Log("yPosition = ((Y / (yMaximum / oldYMaximum)) * graphHeight) = " + yPosition + "= ((" + Y + "/" + "(" + yMaximum + "/" + oldYMaximum + ")) *" + ")) *);");
-            //Debug.Log("yPosition = ((Y / (yMaximum / oldYMaximum)) = " + yPosition + "= ((" + Y + "/" + "(" + yMaximum + "/" + oldYMaximum + ")) *);");
-
-            circleGameObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPosition, yPosition);
-            realignDotConnection(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition, circleGameObject.GetComponent<RectTransform>().anchoredPosition, dotConnection);
-
-            lastCircleGameObject = circleGameObject;
-            lastYPosition = yPosition;
         }
 
         /*
         for (int i = 3; i < YAxis.transform.childCount; i++)
         {
-            Transform label = YAxis.transform.GetChild(i);
-            RectTransform rectTransform = label.GetComponent<RectTransform>();
+            label = YAxis.transform.GetChild(i);
+            rectTransform = label.GetComponent<RectTransform>();
             Y = rectTransform.anchoredPosition.y;
-            rectTransform.anchoredPosition = new Vector2(0, ((Y / (yMaximum / oldYMaximum))));
-        }
-        for (int i = 3; i < XAxis.transform.childCount; i++)
-        {
-            Transform label = XAxis.transform.GetChild(i);
-            RectTransform rectTransform = label.GetComponent<RectTransform>();
-            float X = rectTransform.anchoredPosition.x;
-            if (daysPassed > 1) {
 
-                X = (X / ((float)daysPassed / (float)(daysPassed - 1))); 
-            
-            }
-            rectTransform.anchoredPosition = new Vector2(X, 0);
-            rectTransform.transform.GetChild(0).GetComponent<Text>().text = (daysPassed / 7f * (float)(i + 1)).ToString();
-        }
-
-
-        if (YLabels[8].GetComponent<RectTransform>().anchoredPosition.y < (graphHeight ))
-        {
-            YLabels[8].SetActive(false);
-            YLabels[7].SetActive(false);
-            YLabels[6].SetActive(false);
-            for (int i = 0; i < 9; i++)
-            {
-                RectTransform rectTransform = YLabels[i].GetComponent<RectTransform>();
-                Y = (graphHeight / 7 * (i + 1));
-                rectTransform.anchoredPosition = new Vector2(0, Y);
-
-                YLabels[i].transform.GetChild(0).GetComponent<Text>().text = (yMaximum / 7 * (i + 1)).ToString();
-            }
-        }
-        else if (YLabels[7].GetComponent<RectTransform>().anchoredPosition.y < (graphHeight ))
-        {
-            YLabels[7].SetActive(true);
-        }
-        else if (YLabels[6].GetComponent<RectTransform>().anchoredPosition.y < (graphHeight ))
-        {
-            YLabels[6].SetActive(true);
-        }
-
-        
-        //Debug.Log("Days passed: " + daysPassed);
-        if (XLabels[8].GetComponent<RectTransform>().anchoredPosition.x < (graphWidth))
-        {
-            XLabels[8].SetActive(false);
-            XLabels[7].SetActive(false);
-            XLabels[6].SetActive(false);
-            
-            for (int i = 0; i < 9; i++)
-            {
-                RectTransform rectTransform = XLabels[i].GetComponent<RectTransform>();
-                float X = (graphWidth / 7 * (i + 1));
-                rectTransform.anchoredPosition = new Vector2(X, 0);
-
-                //Debug.Log("(daysPassed / 7f * (float)(i + 1)): " + (daysPassed / 7f * (float)(i + 1)));
-                XLabels[i].transform.GetChild(0).GetComponent<Text>().text = (daysPassed / 7f * (float)(i + 1)).ToString();
-            }
-        }
-        else if (XLabels[7].GetComponent<RectTransform>().anchoredPosition.x < (graphWidth))
-        {
-            XLabels[7].SetActive(true);
-        }
-        else if (XLabels[6].GetComponent<RectTransform>().anchoredPosition.x < (graphWidth))
-        {
-            XLabels[6].SetActive(true);
+            if (Y >= graphHeight - 30) label.gameObject.SetActive(false);
+            else label.gameObject.SetActive(true);
         }
         /**/
     }
+
 
     private void realignDotConnection(Vector2 dotPositionA, Vector2 dotPositionB, GameObject dotConnection)
     {
