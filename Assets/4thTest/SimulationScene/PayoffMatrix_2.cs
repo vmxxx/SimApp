@@ -30,7 +30,6 @@ public class PayoffMatrix_2 : MonoBehaviour
     public void setText(string formula, int j, int k)
     {
         tableCells[j, k].transform.Find("Formula").Find("Text").GetComponent<Text>().text = formula;
-        Debug.Log(tableCells[j, k].transform.Find("Formula").Find("Text").GetComponent<Text>().text);
         tableCells[j, k].transform.Find("Formula").Find("Text").name = formula;
     }
 
@@ -41,16 +40,16 @@ public class PayoffMatrix_2 : MonoBehaviour
         if (cell.name[10] == '0')
         {
             int Index = (int)(cell.name[12] - '0');
-            for (int i = 0; i < agentCount; i++) { Debug.Log("XIndex: " + Index + " i: " + i); Destroy(tableCells[i, Index]); }
-            for (int i = 0; i < agentCount; i++) { Debug.Log("i: " + i + " YIndex: " + Index); Destroy(tableCells[Index, i]); }
+            for (int i = 0; i < agentCount; i++) { Destroy(tableCells[i, Index]); }
+            for (int i = 0; i < agentCount; i++) { Destroy(tableCells[Index, i]); }
             childCount = (agentCount - 1) * (agentCount - 1);
             realignCells(Index, agentCount);
         }
         else if (cell.name[12] == '0')
         {
             int Index = (int)(cell.name[10] - '0');
-            for (int i = 0; i < agentCount; i++) { Debug.Log("XIndex: " + Index + " i: " + i); Destroy(tableCells[i, Index]); }
-            for (int i = 0; i < agentCount; i++) { Debug.Log("i: " + i + " YIndex: " + Index); Destroy(tableCells[Index, i]); }
+            for (int i = 0; i < agentCount; i++) { Destroy(tableCells[i, Index]); }
+            for (int i = 0; i < agentCount; i++) { Destroy(tableCells[Index, i]); }
             childCount = (agentCount - 1) * (agentCount - 1);
             realignCells(Index, agentCount);
         }
@@ -95,14 +94,8 @@ public class PayoffMatrix_2 : MonoBehaviour
         //text.text = "Brand new text";
         //instance = this;
         tableCells[0, 0] = payoffMatrixPanel.transform.GetChild(0).GetChild(0).gameObject;
-
-        Debug.Log("Buffer agents::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::");
-        Debug.Log("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
-        Debug.Log("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
-        Debug.Log("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
         for (int i = 0; i < Buffer.instance.agents.Length; i++)
         {
-            Debug.Log(Buffer.instance.agents[i]);
             addExtra(i);
         }
         alignCells();
@@ -164,9 +157,6 @@ public class PayoffMatrix_2 : MonoBehaviour
             //Add new empty cells beneath the old '+'
             for (int j = 1; j < newIndex; j++)
             {
-                //Debug.Log("Instantiate(emptyCell).transform.Find(\"Formula\").Find(\"Text\").GetComponent<Text>(): " + Instantiate(emptyCell).transform.Find("Formula").Find("Text").GetComponent<Text>());
-                //Debug.Log("Instantiate(emptyCell).GetComponentInChildren<TextMesh>().text = \"ASDASFWEADFSDFAS\": " + Instantiate(emptyCell).transform.Find("Formula").Find("Text").GetComponent<TextMesh>().text = "ASDASFWEADFSDFAS");
-
                 formulaID = (Buffer.instance.agents[j - 1].agentID, Buffer.instance.agents[i].agentID);
 
                 tableCells[j, newIndex] = Instantiate(emptyCell) as GameObject;
@@ -348,7 +338,6 @@ public class PayoffMatrix_2 : MonoBehaviour
         float zerothSquarePositionX = fullPanelWidth / (float)(columnLength) / 2f;
         float zerothSquarePositionY = fullPanelHeight / (float)(columnLength) / 2f;
 
-        Debug.Log("squareWidth: " + squareWidth);
         if (squareWidth < 140f) alternateView = true;
         else alternateView = false;
 
@@ -440,7 +429,6 @@ public class PayoffMatrix_2 : MonoBehaviour
                     }
 
 
-                    Debug.Log(tableColumns[i].transform.GetChild(j));
                     tableColumns[i].transform.GetChild(j).GetComponent<RectTransform>().sizeDelta = new Vector2(fullPanelWidth * 0.70f, 90f);
                     //tableColumns[i].transform.GetComponent<RectTransform>().anchoredPosition = new Vector2(50, (45f - (i * 90f) - (offset * visibleChildren)));
                     tableColumns[i].transform.GetComponent<RectTransform>().anchoredPosition = new Vector2(50, (45f - (i * 90f)));
@@ -500,7 +488,6 @@ public class PayoffMatrix_2 : MonoBehaviour
                 //tableColumns[i].transform.GetChild(j).GetComponent<RectTransform>().sizeDelta = new Vector2(fullPanelWidth * 0.70f, 90f);
                 float X = tableColumns[i].transform.GetComponent<RectTransform>().anchoredPosition.x;
                 float Y = tableColumns[i].transform.GetComponent<RectTransform>().anchoredPosition.y;
-                Debug.Log("X / Y: " + X + " / " + Y);
                 if (i > columnIndex) tableColumns[i].transform.GetComponent<RectTransform>().anchoredPosition = new Vector2(X, (Y - offset));
                 //if (columnIndex == i) tableColumns[i].transform.GetComponent<RectTransform>().anchoredPosition = new Vector2(X, Y);
                 //X = tableColumns[i].transform.GetChild(j).GetComponent<RectTransform>().anchoredPosition.x;
@@ -576,7 +563,6 @@ public class PayoffMatrix_2 : MonoBehaviour
             appropriateTableColumn.GetChild(i).gameObject.SetActive(true);
             offset = offset + 90f;
         }
-        Debug.Log("offset: " + offset);
         alignCells(false, columnIndex, offset);
     }
     public void hideDetails(GameObject showButton)
@@ -594,7 +580,6 @@ public class PayoffMatrix_2 : MonoBehaviour
             appropriateTableColumn.GetChild(i).gameObject.SetActive(false);
             offset = offset - 90f;
         }
-        Debug.Log("offset: " + offset);
         alignCells(false, columnIndex, offset);
     }
 }
