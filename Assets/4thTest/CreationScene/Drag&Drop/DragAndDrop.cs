@@ -46,6 +46,11 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
         agentOnDrag.SetActive(false);
     }
 
+    public void MouseMove(PointerEventData eventData)
+    {
+        Debug.Log("OnMouseMove");
+    }
+
     public void OnDrop(PointerEventData eventData)
     {
 

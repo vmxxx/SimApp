@@ -265,8 +265,6 @@ public class PayoffMatrix : MonoBehaviour
         alignCells(true);
     }
 
-    public GameObject payoffMatrix;
-
 
     public void alignCells(bool onCollapse = true, int columnIndex = 0, float offset = 0f)
     {
@@ -274,8 +272,8 @@ public class PayoffMatrix : MonoBehaviour
 
         RectTransform rectTransform;
         int columnLength = (int)Round(Sqrt(childCount));
-        float fullPanelWidth = payoffMatrix.GetComponent<RectTransform>().rect.width;
-        float fullPanelHeight = payoffMatrix.GetComponent<RectTransform>().rect.height;
+        float fullPanelWidth = payoffMatrixPanel.GetComponent<RectTransform>().rect.width;
+        float fullPanelHeight = payoffMatrixPanel.GetComponent<RectTransform>().rect.height;
         float squareWidth = fullPanelWidth / columnLength;
         float squareHeight = fullPanelHeight / columnLength;
         float zerothSquarePositionX = fullPanelWidth / (float)(columnLength) / 2f;
