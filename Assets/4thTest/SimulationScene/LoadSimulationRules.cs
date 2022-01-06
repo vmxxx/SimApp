@@ -376,11 +376,11 @@ public class LoadSimulationRules : MonoBehaviour
         /**/
 
         PayoffMatrix_2.instance.initialize();
-        /*
-        compileSimulationRules();
-        File.WriteAllLines("Assets/4thTest/SimulationScene/RunSimulation.cs", txtLines);
-        AssetDatabase.ImportAsset("Assets/4thTest/SimulationScene/Buffer.cs");
-        AssetDatabase.ImportAsset("Assets/4thTest/SimulationScene/RunSimulation.cs");
+        
+        //compileSimulationRules();
+        //File.WriteAllLines("Assets/4thTest/SimulationScene/RunSimulation.cs", txtLines);
+        //AssetDatabase.ImportAsset("Assets/4thTest/SimulationScene/Buffer.cs");
+        //AssetDatabase.ImportAsset("Assets/4thTest/SimulationScene/RunSimulation.cs");
         //UnityEditor.Compilation.CompilationPipeline.RequestScriptCompilation;
         /**/
     }

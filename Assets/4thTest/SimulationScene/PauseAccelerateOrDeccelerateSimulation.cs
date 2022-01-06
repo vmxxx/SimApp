@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class PauseAccelerateOrDeccelerateSimulation : MonoBehaviour
 {
-
+    
     public void pauseUnpause()
     {
         GameObject buttonCLicked = EventSystem.current.currentSelectedGameObject;
@@ -32,4 +32,5 @@ public class PauseAccelerateOrDeccelerateSimulation : MonoBehaviour
         RunSimulation.instance.speed = RunSimulation.instance.speed / 2;
         speedText.GetComponent<Text>().text = "Speed: " + ((float)RunSimulation.instance.speed / 50f);
     }
+    /**/
 }
