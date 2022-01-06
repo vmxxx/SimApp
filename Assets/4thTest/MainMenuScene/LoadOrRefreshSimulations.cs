@@ -176,8 +176,8 @@ public class LoadOrRefreshSimulations : MonoBehaviour
             newEntry.name = "Entry_" + i;
             newEntry.transform.GetChild(0).GetComponent<Text>().text = simulations[i].ID.ToString();
             newEntry.transform.GetChild(1).GetComponent<Text>().text = simulations[i].name;
-            newEntry.transform.GetChild(6).GetChild(0).GetComponent<Text>().text = "likes/dislikes = " + simulations[i].likesCount + "/" + simulations[i].dislikesCount;
-            newEntry.transform.GetChild(6).GetChild(1).GetComponent<Text>().text = simulations[i].description;
+            newEntry.transform.GetChild(2).GetChild(0).GetChild(0).GetComponent<Text>().text = "likes/dislikes = " + simulations[i].likesCount + "/" + simulations[i].dislikesCount;
+            newEntry.transform.GetChild(2).GetChild(0).GetChild(1).GetComponent<Text>().text = simulations[i].description;
             newEntry.transform.SetParent(panel.transform);
             int currIndex = newEntry.transform.GetSiblingIndex();
             newEntry.transform.SetSiblingIndex(currIndex - 1);
