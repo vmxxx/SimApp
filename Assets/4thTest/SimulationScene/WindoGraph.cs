@@ -5,6 +5,7 @@ using System;
 
 using UnityEngine.UI;
 
+[System.Serializable]
 public class WindoGraph : MonoBehaviour
 {
     public static WindoGraph instance;
@@ -52,6 +53,21 @@ public class WindoGraph : MonoBehaviour
     [SerializeField] private Sprite circleSprite;
     public RectTransform graphContainer;
     public GameObject emptyContainer;
+
+    public void clearGraph()
+    {
+        /*
+        for(int i = graphContainer.transform.childCount - 1; i > 3 ; i++)
+        {
+            Destroy(graphContainer.transform.GetChild(i).gameObject);
+        }
+        /**/
+        for (int i = 4; i < graphContainer.transform.childCount; i++)
+        {
+            Destroy(graphContainer.transform.GetChild(i).gameObject);
+        }
+        /**/
+    }
 
 
 
@@ -358,6 +374,12 @@ public class WindoGraph : MonoBehaviour
 
         oldGraphHeight = graphHeight;
         oldGraphWidth = graphWidth;
+
+
+        if (WindoGraph.instance == null)
+        {
+            instance = this;
+        }
     }
 
     private void Awake()

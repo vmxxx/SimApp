@@ -52,9 +52,29 @@ class payoffFormulas extends core
 		/**/
     }
 
-    public function update()
+    public function update($data)
     {
+		$simulationID = $data["1_1_payoffFormula_simulationID"];
 		
+		$SQL = "DELETE FROM payoffFormulas WHERE authorID = $simulationID;";
+		$this -> con -> query ($SQL);
+		$i = 0; $j = 0;
+		for($i = 1; $i <= $data["agentCount"]; $i++)
+		{
+			for($j = 1; $j <= $data["agentCount"]; $j++)
+			{
+				$agent1 = $data[$i."_".$j."_payoffFormula_agent1"];
+				$agent2 = $data[$i."_".$j."_payoffFormula_agent2"];
+				$payoffFormula = $data[$i."_".$j."_payoffFormula_payoffFormula"];
+				$simulationID = $data[$i."_".$j."_payoffFormula_simulationID"];
+				
+				$SQL = "INSERT INTO payoffFormulas (agent1, agent2, payoffFormula, authorID) VALUES ($agent1, $agent2, \"$payoffFormula\", $simulationID);";
+				
+				$this -> con -> query ($SQL);
+			}
+		}
+		$simulationID = $data["1_1_payoffFormula_simulationID"];
+		echo "0;$simulationID";
     }
 
     public function delete($data)
