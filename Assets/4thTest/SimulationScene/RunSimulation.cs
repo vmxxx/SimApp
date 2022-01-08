@@ -1,29 +1,98 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 using UnityEngine;
+using UnityEngine.UI;
 
 using System.IO;
 using System.Linq;
 
 //using static System.Math;
-
+[System.Serializable]
 public class RunSimulation : MonoBehaviour
 {
     public static RunSimulation instance;
-    public float V = 0.4f;
-    public float C = 1f;
+    //public float V = 0.4f;
+    //public float C = 1f;
     private int totalAmountOfIndividuals = 0;
-    public int speed = 50;
+    public float speed = 50f;
     private Dictionary<(int, int), float> payoffResults = new Dictionary<(int, int), float>();
     private SortedSet<agent> Doves = new SortedSet<agent>(new agentComparer());
     public int startingNumberOfDoves = 10;
     private SortedSet<agent> Hawks = new SortedSet<agent>(new agentComparer());
     public int startingNumberOfHawks = 10;
 
+    public GameObject simulationVariables;
+    public GameObject variableSetting;
+    private int varItr = 0;
+
+    public float V = 0f;
+    public float C = 0f;
+
     public bool paused = false;
     private bool initialized = false;
 
+    public GameObject startPauseButton;
+    public GameObject restartButton;
+    public GameObject accelerateButton;
+    public GameObject deccelerateButton;
+    public GameObject speedText;
+
     private int itr = 0;
+
+
+    void Update()
+    {
+        if (RunSimulation.instance == null)
+        {
+            instance = this;
+        }
+    }
+
+    public void pauseUnpauseSimulation()
+    {
+        GameObject buttonCLicked = EventSystem.current.currentSelectedGameObject;
+        Text buttonName = EventSystem.current.currentSelectedGameObject.transform.GetChild(0).GetComponent<Text>();
+        if (buttonName.text == "Start") { buttonName.text = "Pause"; paused = false; }
+        else if (buttonName.text == "Pause") { buttonName.text = "Unpause"; paused = true; }
+        else if (buttonName.text == "Unpause") { buttonName.text = "Pause"; paused = false; }
+    }
+
+    public void restart(GameObject pauseButton)
+    {
+        pauseButton.transform.GetChild(0).GetComponent<Text>().text = "Start";
+        WindoGraph.instance.clearGraph();
+        initialized = false;
+        paused = true;
+        itr = 0;
+    }
+
+    public void accelerate(GameObject speedText)
+    {
+        speed = speed / 2;
+        float speedVal = float.Parse(speedText.GetComponent<Text>().text.Substring(7, speedText.GetComponent<Text>().text.Length - 7));
+        speedVal = speedVal * 2;
+        speedText.GetComponent<Text>().text = "Speed: " + speedVal;
+    }
+
+    public void deccelerate(GameObject speedText)
+    {
+        Notification.instance.showNotification("The speed cannot be smaller than 0.125");
+        if (speed * 2 > 8) { StartCoroutine(Notification.instance.showNotification("The speed cannot be smaller than 0.125")); }
+        else
+        {
+            speed = speed * 2;
+            float speedVal = float.Parse(speedText.GetComponent<Text>().text.Substring(7, speedText.GetComponent<Text>().text.Length - 7));
+            speedVal = speedVal / 2;
+            speedText.GetComponent<Text>().text = "Speed: " + speedVal;
+        }
+    }
+
+    private float setVariable(GameObject inputField)
+    {
+        float value = float.Parse(inputField.GetComponent<InputField>().text);
+        return value;
+    }
 
     private void instantiateFormulas()
     {
@@ -43,8 +112,54 @@ public class RunSimulation : MonoBehaviour
 
     }
 
+    private void Start()
+    {
+
+        float val;
+
+        GameObject newVariableSetting;
+
+        Debug.Log("works4");
+        newVariableSetting = Instantiate(variableSetting);
+        newVariableSetting.SetActive(true);
+        newVariableSetting.name = "$VSetting";
+        newVariableSetting.transform.Find("CurrentValue").GetComponent<Text>().text = "$V: 0";
+        newVariableSetting.transform.Find("InputField").GetComponent<InputField>().text = "0";
+        newVariableSetting.transform.Find("Button").GetChild(0).GetComponent<Text>().text = "Set $V";
+        newVariableSetting.transform.Find("Button").GetComponent<Button>().onClick.AddListener(delegate
+        {
+            Debug.Log("works5");
+            val = setVariable(simulationVariables.transform.Find("$VSetting").Find("InputField").gameObject);
+            V = val;
+            simulationVariables.transform.Find("$VSetting").Find("CurrentValue").GetComponent<Text>().text = "$V: " + val;
+        });
+        newVariableSetting.transform.SetParent(simulationVariables.transform);
+        newVariableSetting.transform.position = variableSetting.transform.position - new Vector3(0f, (60 * varItr), 0);
+        varItr++;
+
+
+        Debug.Log("works6");
+        newVariableSetting = Instantiate(variableSetting);
+        newVariableSetting.SetActive(true);
+        newVariableSetting.name = "$CSetting";
+        newVariableSetting.transform.Find("CurrentValue").GetComponent<Text>().text = "$C: 0";
+        newVariableSetting.transform.Find("InputField").GetComponent<InputField>().text = "0";
+        newVariableSetting.transform.Find("Button").GetChild(0).GetComponent<Text>().text = "Set $C";
+        newVariableSetting.transform.Find("Button").GetComponent<Button>().onClick.AddListener(delegate
+        {
+            Debug.Log("works7");
+            val = setVariable(simulationVariables.transform.Find("$CSetting").Find("InputField").gameObject);
+            C = val;
+            simulationVariables.transform.Find("$CSetting").Find("CurrentValue").GetComponent<Text>().text = "$C: " + val;
+        });
+        newVariableSetting.transform.SetParent(simulationVariables.transform);
+        newVariableSetting.transform.position = variableSetting.transform.position - new Vector3(0f, (60 * varItr), 0);
+        varItr++;
+    }
+
     private void initialize()
     {
+
         for (int i = 0; i < startingNumberOfDoves; i++)
         {
             agent newAgent = new agent();
@@ -81,12 +196,14 @@ public class RunSimulation : MonoBehaviour
 
     private void FixedUpdate()
     {
+        Debug.Log("(paused == false && itr % speed == 0): " + (paused == false && itr % speed == 0));
         if (paused == false && itr % speed == 0) { playOneRound(); }
         itr++;
     }
 
     public void playOneRound()
     {
+        Debug.Log("V: " + V + ", C: " + C);
         if (initialized == false)
         {
             initialize();
@@ -105,31 +222,33 @@ public class RunSimulation : MonoBehaviour
             WindoGraph.instance.realignLabels();
             WindoGraph.instance.oldYMaximum = WindoGraph.instance.yMaximum;
         }
+        else
+        {
+            //1st phase
 
-        //1st phase
+            killOrDuplicateEachIndividual(Hawks);
+            killOrDuplicateEachIndividual(Doves);
+            //2nd phase
+            recalculateFormulas();
+            assignIndividualsInPairwiseContestsAndCalculateTheirFitness();
 
-        killOrDuplicateEachIndividual(Hawks);
-        killOrDuplicateEachIndividual(Doves);
-        //2nd phase
-        recalculateFormulas();
-        assignIndividualsInPairwiseContestsAndCalculateTheirFitness();
-
-        //3rd phase
-        WindoGraph.instance.newValue = Doves.Count;
-        WindoGraph.instance.addNewValue("Doves", new Color(1f, 1f, 1f));
-        WindoGraph.instance.newValue = Hawks.Count;
-        WindoGraph.instance.addNewValue("Hawks", new Color(1f, 1f, 0f));
-        WindoGraph.instance.yMaximum = (Doves.Count > WindoGraph.instance.yMaximum) ? Doves.Count : WindoGraph.instance.yMaximum;
-        WindoGraph.instance.yMaximum = (Hawks.Count > WindoGraph.instance.yMaximum) ? Hawks.Count : WindoGraph.instance.yMaximum;
-        WindoGraph.instance.realignObjects("Doves");
-        WindoGraph.instance.realignObjects("Hawks");
-        printAmountOfIndividuals();
-        //4th phase
+            //3rd phase
+            WindoGraph.instance.newValue = Doves.Count;
+            WindoGraph.instance.addNewValue("Doves", new Color(1f, 1f, 1f));
+            WindoGraph.instance.newValue = Hawks.Count;
+            WindoGraph.instance.addNewValue("Hawks", new Color(1f, 1f, 0f));
+            WindoGraph.instance.yMaximum = (Doves.Count > WindoGraph.instance.yMaximum) ? Doves.Count : WindoGraph.instance.yMaximum;
+            WindoGraph.instance.yMaximum = (Hawks.Count > WindoGraph.instance.yMaximum) ? Hawks.Count : WindoGraph.instance.yMaximum;
+            WindoGraph.instance.realignObjects("Doves");
+            WindoGraph.instance.realignObjects("Hawks");
+            printAmountOfIndividuals();
+            //4th phase
 
 
-        WindoGraph.instance.daysPassed++;
-        WindoGraph.instance.realignLabels();
-        WindoGraph.instance.oldYMaximum = WindoGraph.instance.yMaximum;
+            WindoGraph.instance.daysPassed++;
+            WindoGraph.instance.realignLabels();
+            WindoGraph.instance.oldYMaximum = WindoGraph.instance.yMaximum;
+        }
     }
 
     private void printAmountOfIndividuals()

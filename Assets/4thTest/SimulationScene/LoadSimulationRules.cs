@@ -24,6 +24,9 @@ public class LoadSimulationRules : MonoBehaviour
     public InputField imageInputField;
     public InputField descriptionInputField;
 
+    public List<string> payoffVariables = new List<string>();
+    public string newPayoffVariable = "";
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -232,6 +235,8 @@ public class LoadSimulationRules : MonoBehaviour
             Buffer.instance.currentSimulation.likesCount = Int32.Parse(likesCount.Substring(11, likesCount.Length - 12));
             Buffer.instance.currentSimulation.dislikesCount = Int32.Parse(dislikesCount.Substring(14, dislikesCount.Length - 15));
             Buffer.instance.currentSimulation.authorID = Int32.Parse(authorID.Substring(9, authorID.Length - 10));
+
+            Buffer.instance.currentSimulationID = Int32.Parse(ID.Substring(3, ID.Length - 4));
             /**/
         }
         else
@@ -346,36 +351,41 @@ public class LoadSimulationRules : MonoBehaviour
         imageInputField.text = "Temporary image name" /*Buffer.instance.currentSimulation.image*/;
         descriptionInputField.text = Buffer.instance.currentSimulation.description;
 
-        /*
-        for (i = 1; i < amountOfAgents; i++) { PayoffMatrix.instance.addExtra(); }
-
-        Debug.Log("Buffer.instance.payoffFormulas.Count: " + Buffer.instance.payoffFormulas.Count);
-        Buffer.instance.printPayoffFormulas();
-
-        i = 0;
-        for (int j = 1; j <= amountOfAgents; j++)
+        bool variableFound = false;
+        foreach (KeyValuePair<(int, int), PayoffFormula> entry in Buffer.instance.payoffFormulas)
         {
-            for (int k = 1; k <= amountOfAgents; k++)
+            Debug.Log("entry: " + entry.Value.payoffFormula);
+            string formula = entry.Value.payoffFormula;
+            for (int j = 0; j < formula.Length; j++)
             {
-                int jj = Buffer.instance.agents[j - 1].agentID;
-                int kk = Buffer.instance.agents[k - 1].agentID;
-
-                PayoffMatrix.instance.tableCells[j, k].transform.Find("Formula").GetComponent<InputField>().text = Buffer.instance.payoffFormulas[(jj, kk)].payoffFormula;
-                i = i + 1;
+                Debug.Log("(formula[j] == '$'): " + (formula[j] == '$'));
+                if (formula[j] == '$') variableFound = true;
+                if (variableFound == true)
+                {
+                    if(!((j + 1 < formula.Length) && ((formula[j + 1] >= 'a' && formula[j + 1] <= 'z') || (formula[j + 1] >= 'A' && formula[j + 1] <= 'Z') || (formula[j + 1] >= '0' && formula[j + 1] <= '9'))))
+                    {
+                        newPayoffVariable = newPayoffVariable + formula[j];
+                        if (!payoffVariables.Contains(newPayoffVariable)) { payoffVariables.Add(newPayoffVariable); } //Push
+                        newPayoffVariable = "";
+                        variableFound = false;
+                    }
+                    else
+                    {
+                        newPayoffVariable = newPayoffVariable + formula[j];
+                    }
+                }
             }
-
-
-
-            string agentID = Buffer.instance.agents[j - 1].agentID.ToString();
-            string agentName = Buffer.instance.agents[j - 1].agentName;
-            PayoffMatrix.instance.tableCells[j, 0].transform.Find("AgentID").GetComponent<Text>().text = agentID;
-            PayoffMatrix.instance.tableCells[j, 0].transform.Find("Button").GetChild(0).GetComponent<Text>().text = agentName;
-            PayoffMatrix.instance.tableCells[0, j].transform.Find("AgentID").GetComponent<Text>().text = agentID;
-            PayoffMatrix.instance.tableCells[0, j].transform.Find("Button").GetChild(0).GetComponent<Text>().text = agentName;
         }
-        /**/
+
+        Debug.Log("payoffVariables.Count: " + payoffVariables.Count);
+        foreach(string entry in payoffVariables)
+        {
+            Debug.Log("PayoffVariable: " + entry);
+        }
+
 
         PayoffMatrix_2.instance.initialize();
+
         
         //compileSimulationRules();
         //File.WriteAllLines("Assets/4thTest/SimulationScene/RunSimulation.cs", txtLines);

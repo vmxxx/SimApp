@@ -3,10 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using static System.Math;
 
+public static class RecompileListener
+{
+    private static bool loaded;
+
+    // This should ban setting Loaded to false outside the class.
+    public static bool Loaded
+    {
+        get { return loaded; }
+        set { if (value != false) loaded = value; }
+    }
+
+    static RecompileListener()
+    {
+        // This is called on code recompile
+        loaded = false;
+    }
+}
+
+//[System.Serializable]
 public class Buffer : MonoBehaviour
 {
     public static Buffer instance;
     public bool assetDatabaseRefreshed = false;
+    public int currentSimulationID;
 
     public User authenticatedUser = new User();
     public Agent[] agents = new Agent[0];
@@ -15,6 +35,8 @@ public class Buffer : MonoBehaviour
     public Simulation currentSimulation = new Simulation();
     public PayoffFormula newFormula = new PayoffFormula();
     public Dictionary<(int, int), PayoffFormula> payoffFormulas = new Dictionary<(int, int), PayoffFormula>();
+    public PayoffFormula[] payoffFormula;
+    //public (int, int) doubleInt = (10, 4);
 
     void Awake()
     {
@@ -25,6 +47,21 @@ public class Buffer : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
         } else { Destroy(this.gameObject); }
         Debug.Log("Buffer initialized!");
+    }
+
+    void Update()
+    {
+        Debug.Log("currentSimulationID: " + currentSimulationID);
+        if (Buffer.instance == null)
+        {
+            Debug.Log("currentSimulationDOTIDBEFORE: " + currentSimulation.ID);
+            this.gameObject.name = "Buffer";
+            instance = this;
+            DontDestroyOnLoad(this.gameObject);
+            Debug.Log("buffer instance SETTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT!");
+            Debug.Log("currentSimulationDOTIDAFTER: " + currentSimulation.ID);
+            Debug.Log("currentSimulationID: " + currentSimulationID);
+        }
     }
 
     void onReinitialize()
@@ -165,7 +202,7 @@ currentSimulation.ID = 0;
         */
     }
 }
-
+[System.Serializable]
 public class PayoffFormula
 {
     public int ID;
@@ -187,13 +224,13 @@ public class PayoffFormula
     }
     /**/
 }
-
+[System.Serializable]
 public class User
 {
     public int ID;
     public string username;
 }
-
+[System.Serializable]
 public class Simulation
 {
     public int ID;
@@ -209,7 +246,7 @@ public class Simulation
 
     //public PayoffMatrix PayoffFormulas[,] = new PayoffMatrix[amountOfCorrespondingAgents, amountOfCorrespondingAgents];
 }
-
+[System.Serializable]
 public class Agent
 {
     public int agentID;

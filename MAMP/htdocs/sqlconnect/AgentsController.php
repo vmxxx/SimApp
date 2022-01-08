@@ -11,8 +11,8 @@ class agents extends core
 		$name = $data["name"];
 		$description = $data["description"];
 		$authorID = $data["authorID"];
-        $namecheckquery = "INSERT INTO agents (icon, name, description, authorID) VALUES (\"$icon\", \"$name\", \"$description\", $authorID);";
-		$this -> con -> query ($namecheckquery);
+        $SQL = "INSERT INTO agents (icon, name, description, authorID) VALUES (\"$icon\", \"$name\", \"$description\", $authorID);";
+		$this -> con -> query ($SQL);
 		echo "0;";
     }
 
@@ -33,16 +33,34 @@ class agents extends core
 		}
 		else //if ($data["fullList"] === "true")
 		{
-			$authorID = $data["authorID"];
-
-			$namecheckquery = 'SELECT * FROM agents WHERE authorID = '.$authorID.' OR authorID = 1;';
-
-			$result = $this -> con -> query ($namecheckquery);
-			echo '0;'.$result->num_rows;
-			for($i = 0; $i < $result->num_rows; $i++)
+			if($data["onSearch"] == "false")
 			{
-				$row = $result -> fetch_assoc();
-				echo'{ID:'.$row["ID"].', icon:"'.$row["icon"].'", name:"'.$row["name"].'", description:"'.$row["description"].'", authorID:'.$row["authorID"].'}';
+				$authorID = $data["authorID"];
+
+				$SQL = 'SELECT * FROM agents WHERE authorID = '.$authorID.' OR authorID = 1;';
+
+				$result = $this -> con -> query ($SQL);
+				echo '0;'.$result->num_rows;
+				for($i = 0; $i < $result->num_rows; $i++)
+				{
+					$row = $result -> fetch_assoc();
+					echo'{ID:'.$row["ID"].', icon:"'.$row["icon"].'", name:"'.$row["name"].'", description:"'.$row["description"].'", authorID:'.$row["authorID"].'}';
+				}
+			}
+			else
+			{
+				$authorID = $data["authorID"];
+				$search = $data["search"];
+
+				$SQL = "SELECT * FROM agents WHERE name LIKE '%$search%' AND(authorID = $authorID OR authorID = 1) LIMIT 10;";
+
+				$result = $this -> con -> query ($SQL);
+				echo '0;'.$result->num_rows;
+				for($i = 0; $i < $result->num_rows; $i++)
+				{
+					$row = $result -> fetch_assoc();
+					echo'{ID:'.$row["ID"].', icon:"'.$row["icon"].'", name:"'.$row["name"].'", description:"'.$row["description"].'", authorID:'.$row["authorID"].'}';
+				}
 			}
 		}
     }
@@ -55,8 +73,8 @@ class agents extends core
 		$description = $data["description"];
 		$authorID = $data["authorID"];
 		
-        $namecheckquery = "UPDATE agents SET icon = \"$icon\", name = \"$name\", description = \"$description\" WHERE agents.ID = $ID;";
-		$this -> con -> query ($namecheckquery);
+        $SQL = "UPDATE agents SET icon = \"$icon\", name = \"$name\", description = \"$description\" WHERE agents.ID = $ID;";
+		$this -> con -> query ($SQL);
 		echo "0;";
 		
     }
@@ -64,8 +82,8 @@ class agents extends core
     public function delete($data)
     {
 		$ID = $data["ID"];
-		$namecheckquery = "DELETE FROM agents WHERE agents.ID = $ID AND agents.authorID != 0;";
-		$this -> con -> query ($namecheckquery);
+		$SQL = "DELETE FROM agents WHERE agents.ID = $ID AND agents.authorID != 0;";
+		$this -> con -> query ($SQL);
 		echo "0;";
     }
 

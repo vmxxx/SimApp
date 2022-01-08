@@ -23,48 +23,8 @@ class simulations extends core
 		//$result = $this -> con -> query ($SQL);
 		$result = $this -> con -> query ($SQL) or die("sql failed!");
 		$last_id = $this -> con -> insert_id;
-		echo "0; $last_id; $SQL";
-		//echo "0;";
-			
-			
-			/*
-		if ($result != "sql failed!") 
-		{
-			$last_id = $this -> con -> insert_id;
-			echo "0; $last_id";
-		} 
-		else {
-			echo "Error: " . $SQL . "<br>" . $this -> con -> error;
-		}
-		/**/
-		/*
-		if ($this -> con -> query ($SQL) === TRUE) 
-		{
-			$last_id = $this -> con -> insert_id;
-			echo "0; $last_id";
-		} 
-		else {
-			echo "Error: " . $SQL . "<br>" . $this -> con -> error;
-		}
-		/**/
-		/*
-		
-		/*
-		for($i = 1; $i <= $data["agentCount"]; $i++)
-		{
-			for($j = 1; $j <= $data["agentCount"]; $j++)
-			{
-				$agent1 = $data[$i."_".$j."_payoffFormula_agent1"];
-				$agent2 = $data[$i."_".$j."_payoffFormula_agent2"];
-				$payoffFormula = $data[$i."_".$j."_payoffFormula_payoffFormula"];
-				$simulationID = $data[$i."_".$j."_payoffFormula_simulationID"];
-				
-				$SQL = "INSERT INTO payoffFormulas (agent1, agent2, payoffFormula, authorID) VALUES ($agent1, $agent2, \"$payoffFormula\", $simulationID);";
-				
-				$this -> con -> query ($SQL);
-			}
-		}
-		/**/
+		echo "0; $last_id";
+		//echo "0; $last_id; $SQL";
 		
     }
 
@@ -82,54 +42,84 @@ class simulations extends core
 		}
 		else if ($data["list"] == "popular")
 		{
-			$N = $data["N"];
-			$LIMIT = 10 * $N;
-			$SQL = 'SELECT * FROM simulations LIMIT '.$LIMIT.';';
-
-			$result = $this -> con -> query ($SQL);
-			echo '0;'.$result->num_rows.'{';
-			for($i = 0; $i < $result->num_rows; $i++)
+			if($data["onSearch"] == "true")
 			{
-				$row = $result -> fetch_assoc();
-				echo'{ID:'.$row["ID"].', name:"'.$row["name"].'", image:"'.$row["image"].'", description:"'.$row["description"].'", likesCount:'.$row["likesCount"].', dislikesCount:'.$row["dislikeCount"].', authorID:'.$row["authorID"].'}';
+				$search = $data["search"];
+				$SQL = "SELECT * FROM simulations WHERE name LIKE '%$search%' LIMIT 10;";
+				
+				$result = $this -> con -> query ($SQL);
+				echo '0;'.$result->num_rows.'{';
+				for($i = 0; $i < $result->num_rows; $i++)
+				{
+					$row = $result -> fetch_assoc();
+					echo'{ID:'.$row["ID"].', name:"'.$row["name"].'", image:"'.$row["image"].'", description:"'.$row["description"].'", likesCount:'.$row["likesCount"].', dislikesCount:'.$row["dislikeCount"].', authorID:'.$row["authorID"].'}';
+				}
+				echo '}0;';
 			}
-			echo '}0;';
+			else
+			{
+				$N = $data["N"];
+				$LIMIT = 10 * $N;
+				$SQL = 'SELECT * FROM simulations LIMIT '.$LIMIT.';';
+
+				$result = $this -> con -> query ($SQL);
+				echo '0;'.$result->num_rows.'{';
+				for($i = 0; $i < $result->num_rows; $i++)
+				{
+					$row = $result -> fetch_assoc();
+					echo'{ID:'.$row["ID"].', name:"'.$row["name"].'", image:"'.$row["image"].'", description:"'.$row["description"].'", likesCount:'.$row["likesCount"].', dislikesCount:'.$row["dislikeCount"].', authorID:'.$row["authorID"].'}';
+				}
+				echo '}0;';
+			}
 		}
 		else //if ($data["list"] == "user")
 		{
-			$N = $data["N"];
-			$LIMIT = 10 * $N;
-			$authorID = $data["authorID"];
-			
-			$SQL = 'SELECT * FROM simulations WHERE authorID = '.$authorID.' LIMIT '.$LIMIT.';';
-			$result = $this -> con -> query ($SQL);
-			echo '0;'.$result->num_rows.'{';
-			for($i = 0; $i < $result->num_rows; $i++)
+			if($data["onSearch"] == "true")
 			{
-				$row = $result -> fetch_assoc();
-				echo'{ID:'.$row["ID"].', name:"'.$row["name"].'", image:"'.$row["image"].'", description:"'.$row["description"].'", likesCount:'.$row["likesCount"].', dislikesCount:'.$row["dislikeCount"].', authorID:'.$row["authorID"].'}';
+				$authorID = $data["authorID"];
+				$search = $data["search"];
+				$SQL = "SELECT * FROM simulations WHERE authorID = $authorID AND name LIKE '%$search%' LIMIT 10;";
+				
+				$result = $this -> con -> query ($SQL);
+				echo '0;'.$result->num_rows.'{';
+				for($i = 0; $i < $result->num_rows; $i++)
+				{
+					$row = $result -> fetch_assoc();
+					echo'{ID:'.$row["ID"].', name:"'.$row["name"].'", image:"'.$row["image"].'", description:"'.$row["description"].'", likesCount:'.$row["likesCount"].', dislikesCount:'.$row["dislikeCount"].', authorID:'.$row["authorID"].'}';
+				}
+				echo '}0;';
 			}
-			echo '}0;';
+			else
+			{
+				$N = $data["N"];
+				$LIMIT = 10 * $N;
+				$authorID = $data["authorID"];
+				
+				$SQL = 'SELECT * FROM simulations WHERE authorID = '.$authorID.' LIMIT '.$LIMIT.';';
+				$result = $this -> con -> query ($SQL);
+				echo '0;'.$result->num_rows.'{';
+				for($i = 0; $i < $result->num_rows; $i++)
+				{
+					$row = $result -> fetch_assoc();
+					echo'{ID:'.$row["ID"].', name:"'.$row["name"].'", image:"'.$row["image"].'", description:"'.$row["description"].'", likesCount:'.$row["likesCount"].', dislikesCount:'.$row["dislikeCount"].', authorID:'.$row["authorID"].'}';
+				}
+				echo '}0;';
+			}
 		}
     }
 
-    public function update()
+    public function update($data)
     {
-		/*
-		$icon = $data["ID"];
+		$ID = $data["ID"];
 		$name = $data["name"];
-		$name = $data["image"];
+		$image = $data["image"];
 		$description = $data["description"];
-		$description = $data["likesCount"];
-		$description = $data["dislikesCount"];
-		$authorID = $data["authorID"];
-        $namecheckquery = "INSERT INTO simulations (name, image, description, likesCount, dislikesCount, authorID) VALUES (\"$name\", \"$image\", \"$description\", 0, 0, $authorID);";
 		
-        $namecheckquery2 = "UPDATE simulations SET name = \"$name\", image = \"$iamge\", description = \"$description\", likesCount = 0, dislikesCount = 0 WHERE simulations.ID = $ID;";
-		$this -> con -> query ($namecheckquery);
-		$this -> con -> query ($namecheckquery2);
-		echo "0;";
-		/**/
+        $SQL = "UPDATE simulations SET name = \"$name\", image = \"$image\", description = \"$description\" WHERE ID = $ID";
+		
+		$result = $this -> con -> query ($SQL) or die("sql failed!");
+		echo "0; $ID";
+		//echo "0; $ID; $SQL";
     }
 
     public function delete($data)
