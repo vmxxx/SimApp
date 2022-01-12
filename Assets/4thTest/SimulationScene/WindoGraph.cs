@@ -62,6 +62,24 @@ public class WindoGraph : MonoBehaviour
             Destroy(graphContainer.transform.GetChild(i).gameObject);
         }
         /**/
+        newValue = 0;
+        yMaximum = 10;
+        oldYMaximum = 10;
+        daysPassed = 1;
+        graphHeight = graphContainer.sizeDelta.y;
+        graphWidth = graphContainer.sizeDelta.x;
+
+        for(int i = 2; i < YAxis.transform.childCount; i++)
+        {
+            YAxis.transform.GetChild(i).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, graphHeight / ((i - 1) * 7));
+            YAxis.transform.GetChild(i).GetChild(0).GetComponent<Text>().text = (10 / ((i - 1) * 7)).ToString();
+        }
+
+        for (int i = 2; i < XAxis.transform.childCount; i++)
+        {
+            XAxis.transform.GetChild(i).gameObject.SetActive(false);
+        }
+
         for (int i = 4; i < graphContainer.transform.childCount; i++)
         {
             Destroy(graphContainer.transform.GetChild(i).gameObject);

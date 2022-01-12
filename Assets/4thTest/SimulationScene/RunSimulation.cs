@@ -12,8 +12,6 @@ using System.Linq;
 public class RunSimulation : MonoBehaviour
 {
     public static RunSimulation instance;
-    //public float V = 0.4f;
-    //public float C = 1f;
     private int totalAmountOfIndividuals = 0;
     public float speed = 50f;
     private Dictionary<(int, int), float> payoffResults = new Dictionary<(int, int), float>();
@@ -109,7 +107,6 @@ public class RunSimulation : MonoBehaviour
         payoffResults[(10, 9)] = V;
         payoffResults[(9, 10)] = 0;
         payoffResults[(9, 9)] = V / 2;
-
     }
 
     private void Start()
@@ -159,7 +156,9 @@ public class RunSimulation : MonoBehaviour
 
     private void initialize()
     {
-
+        Debug.Log("BEFORE Doves.Count: " + Doves.Count);
+        totalAmountOfIndividuals = 0;
+        Doves = new SortedSet<agent>(new agentComparer());
         for (int i = 0; i < startingNumberOfDoves; i++)
         {
             agent newAgent = new agent();
@@ -174,7 +173,10 @@ public class RunSimulation : MonoBehaviour
             Doves.Add(newAgent);
             totalAmountOfIndividuals = totalAmountOfIndividuals + 1;
         }
+        Debug.Log("AFTER Doves.Count: " + Doves.Count);
 
+        Debug.Log("BEFORE Hawks.Count: " + Hawks.Count);
+        Hawks = new SortedSet<agent>(new agentComparer());
         for (int i = 0; i < startingNumberOfHawks; i++)
         {
             agent newAgent = new agent();
@@ -189,6 +191,7 @@ public class RunSimulation : MonoBehaviour
             Hawks.Add(newAgent);
             totalAmountOfIndividuals = totalAmountOfIndividuals + 1;
         }
+        Debug.Log("AFTER Hawks.Count: " + Hawks.Count);
 
 
         //WindoGraph.instance.showGraphWithInitialValues();

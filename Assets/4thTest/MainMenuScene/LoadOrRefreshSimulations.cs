@@ -176,6 +176,17 @@ public class LoadOrRefreshSimulations : MonoBehaviour
             newEntry.name = "Entry_" + i;
             newEntry.transform.GetChild(0).GetComponent<Text>().text = simulations[i].ID.ToString();
             newEntry.transform.GetChild(1).GetComponent<Text>().text = simulations[i].name;
+
+            try
+            {
+                Texture2D newTexture = new Texture2D(1, 1);
+                Debug.Log("i: " + Convert.FromBase64String(simulations[i].image));
+                newTexture.LoadImage(Convert.FromBase64String(simulations[i].image));
+                newTexture.Apply();
+                newEntry.transform.GetChild(2).GetComponent<RawImage>().texture = newTexture;
+            }
+            catch { }
+
             newEntry.transform.GetChild(2).GetChild(0).GetChild(0).GetComponent<Text>().text = "likes/dislikes = " + simulations[i].likesCount + "/" + simulations[i].dislikesCount;
             newEntry.transform.GetChild(2).GetChild(0).GetChild(1).GetComponent<Text>().text = simulations[i].description;
             newEntry.transform.SetParent(panel.transform);

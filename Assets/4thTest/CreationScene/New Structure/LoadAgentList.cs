@@ -30,6 +30,14 @@ public class LoadAgentList : MonoBehaviour
     }
     /**/
 
+    public void Update()
+    {
+        if(LoadAgentList.instance == null)
+        {
+            instance = this;
+        }
+    }
+
     public void Awake()
     {
         instance = this;

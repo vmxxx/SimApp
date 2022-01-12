@@ -40,7 +40,7 @@ public class PayoffMatrix : MonoBehaviour
     {
         GameObject temp;
         int agentCount = (int)Round(Sqrt(childCount));
-        if(cell.name[10] == '0')
+        if (cell.name[10] == '0')
         {
             int Index = (int)(cell.name[12] - '0');
             for (int i = 0; i < agentCount; i++) { Debug.Log("DESTROYED: XIndex: " + Index + " i: " + i + tableCells[i, Index].name); Destroy(tableCells[i, Index]); }
@@ -51,7 +51,7 @@ public class PayoffMatrix : MonoBehaviour
         }
         else if (cell.name[12] == '0')
         {
-            int Index = (int)(cell.name[10] - '0'); 
+            int Index = (int)(cell.name[10] - '0');
             for (int i = 0; i < agentCount; i++) { Debug.Log("XIndex: " + Index + " i: " + i); Destroy(tableCells[i, Index]); }
             for (int i = 0; i < agentCount; i++) { Debug.Log("i: " + i + " YIndex: " + Index); Destroy(tableCells[Index, i]); }
             Destroy(tableColumns[Index]);
@@ -87,7 +87,7 @@ public class PayoffMatrix : MonoBehaviour
         }
         //Debug.Log(tableCells[i - 1, j]);
         //tableCells[i, j] = new GameObject();
-        
+
         Debug.Log("agentCount - 1: " + (agentCount - 1));
         for (i = 0; i < agentCount - 1; i++)
         {
@@ -229,7 +229,7 @@ public class PayoffMatrix : MonoBehaviour
             //tableCells[newIndex, newIndex].transform.Find("Formula").GetComponent<InputField>().text = Buffer.instance.payoffFormulas[formulaID].payoffFormula;
             tableCells[newIndex, newIndex].SetActiveRecursively(true);
 
-            
+
             //Add new unavaible cells beneath the old '+'
             for (int i = 1; i <= newIndex; i++)
             {
@@ -265,6 +265,8 @@ public class PayoffMatrix : MonoBehaviour
         alignCells(true);
     }
 
+    public GameObject payoffMatrix;
+
 
     public void alignCells(bool onCollapse = true, int columnIndex = 0, float offset = 0f)
     {
@@ -272,8 +274,8 @@ public class PayoffMatrix : MonoBehaviour
 
         RectTransform rectTransform;
         int columnLength = (int)Round(Sqrt(childCount));
-        float fullPanelWidth = payoffMatrixPanel.GetComponent<RectTransform>().rect.width;
-        float fullPanelHeight = payoffMatrixPanel.GetComponent<RectTransform>().rect.height;
+        float fullPanelWidth = payoffMatrix.GetComponent<RectTransform>().rect.width;
+        float fullPanelHeight = payoffMatrix.GetComponent<RectTransform>().rect.height;
         float squareWidth = fullPanelWidth / columnLength;
         float squareHeight = fullPanelHeight / columnLength;
         float zerothSquarePositionX = fullPanelWidth / (float)(columnLength) / 2f;
@@ -343,7 +345,7 @@ public class PayoffMatrix : MonoBehaviour
         }
         else
         {
-            
+
             for (int i = 1; i < columnLength; i++)
             {
 
@@ -412,6 +414,11 @@ public class PayoffMatrix : MonoBehaviour
 
     public void Update()
     {
+
+        if (PayoffMatrix.instance == null)
+        {
+            instance = this;
+        }
 
         currResolution = new float[2] { canvasRectTransform.rect.width, canvasRectTransform.rect.height };
 

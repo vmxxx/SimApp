@@ -8,6 +8,8 @@ using UnityEngine.UI;
 public class CreateEditOrRemoveAgent : MonoBehaviour
 {
 
+    public static CreateEditOrRemoveAgent instance;
+
     public InputField IDSetting;
     public InputField iconSetting;
     public InputField nameSetting;
