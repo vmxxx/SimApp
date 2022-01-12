@@ -21,7 +21,7 @@ public static class RecompileListener
     }
 }
 
-//[System.Serializable]
+[System.Serializable]
 public class Buffer : MonoBehaviour
 {
     public static Buffer instance;
@@ -36,6 +36,7 @@ public class Buffer : MonoBehaviour
     public PayoffFormula newFormula = new PayoffFormula();
     public Dictionary<(int, int), PayoffFormula> payoffFormulas = new Dictionary<(int, int), PayoffFormula>();
     public PayoffFormula[] payoffFormula;
+    public int formulaTesterCompilationIndex = 0;
     //public (int, int) doubleInt = (10, 4);
 
     void Awake()
@@ -49,6 +50,7 @@ public class Buffer : MonoBehaviour
         Debug.Log("Buffer initialized!");
     }
 
+    
     void Update()
     {
         Debug.Log("currentSimulationID: " + currentSimulationID);
@@ -63,6 +65,7 @@ public class Buffer : MonoBehaviour
             Debug.Log("currentSimulationID: " + currentSimulationID);
         }
     }
+    /**/
 
     void onReinitialize()
     {
@@ -75,6 +78,11 @@ public class Buffer : MonoBehaviour
 authenticatedUser.ID = 0;
 authenticatedUser.username = "";
 currentSimulation.ID = 0;
+    }
+
+    public void clearPayoffFormulas()
+    {
+        payoffFormulas = new Dictionary<(int, int), PayoffFormula>();
     }
 
     public void newPopularSimulationsArray(int n)

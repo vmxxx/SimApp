@@ -26,4 +26,13 @@ public class Notification : MonoBehaviour
         yield return new WaitForSeconds(2);
         gameObject.GetComponent<Text>().text = "";
     }
+
+    public void Update()
+    {
+        Debug.Log("NOTFIFCATION.INSTANCE == SOMETHING");
+        if(Notification.instance == null)
+        {
+            instance = this;
+        }
+    }
 }
