@@ -13,13 +13,12 @@ public class FormulaTester : MonoBehaviour
 	public int compilationIndex = 0;
 float C = 1f;
 float V = 1f;
-float A = 1f;
 
 	Dictionary<(int, int), float> formulas = new Dictionary<(int, int), float>();
 
 	public void tryToAddFormulas()
 	{
-formulas.Add((9, 9), C - V);
+formulas.Add((10, 10), C - V);
 	}
 	
 	public void Start()
@@ -35,7 +34,7 @@ formulas.Add((9, 9), C - V);
 	{
 		if(FormulaTester.instance == null)
 		{
-compilationIndex = 3; scriptsRecompiled = true;
+compilationIndex = 1; scriptsRecompiled = true;
 			instance = this;
 		}
 	}

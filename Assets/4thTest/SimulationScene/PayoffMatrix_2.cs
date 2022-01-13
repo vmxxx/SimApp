@@ -4,6 +4,7 @@ using UnityEngine;
 using static System.Math;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System;
 
 
 public class PayoffMatrix_2 : MonoBehaviour
@@ -93,7 +94,7 @@ public class PayoffMatrix_2 : MonoBehaviour
 
         //text.text = "Brand new text";
         //instance = this;
-        tableCells[0, 0] = payoffMatrixPanel.transform.GetChild(0).GetChild(0).gameObject;
+        tableCells[0, 0] = tableColumns[0].transform.GetChild(0).gameObject;
         for (int i = 0; i < Buffer.instance.agents.Length; i++)
         {
             addExtra(i);
@@ -137,19 +138,41 @@ public class PayoffMatrix_2 : MonoBehaviour
             //Create a new '+' cell on the 0th vertical column
             Destroy(tableCells[0, newIndex]);
             tableCells[0, newIndex] = Instantiate(dragAndDropCell);
+            tableCells[0, newIndex].GetComponent<RawImage>().color = Buffer.instance.agents[i].color;
             tableCells[0, newIndex].name = "TableCell_0_" + newIndex;
             tableCells[0, newIndex].transform.SetParent(tableColumns[newIndex].transform);
             tableCells[0, newIndex].transform.Find("AgentID").GetComponent<Text>().text = Buffer.instance.agents[i].agentID.ToString();
-            tableCells[0, newIndex].transform.Find("Button").GetChild(0).GetComponent<Text>().text = Buffer.instance.agents[i].agentName;
+
+
+            try
+            {
+                Texture2D newTexture = new Texture2D(1, 1);
+                newTexture.LoadImage(Convert.FromBase64String(Buffer.instance.agents[i].icon));
+                newTexture.Apply();
+                tableCells[0, newIndex].transform.Find("Button").GetChild(1).GetComponent<RawImage>().texture = newTexture;
+            }
+            catch { }
+            tableCells[0, newIndex].transform.Find("Button").GetChild(1).GetChild(0).Find("Name").GetComponent<Text>().text = Buffer.instance.agents[i].agentName;
+            tableCells[0, newIndex].transform.Find("Button").GetChild(1).GetChild(0).Find("Description").GetComponent<Text>().text = Buffer.instance.agents[i].agentDescription;
             tableCells[0, newIndex].transform.Find("Button").GetChild(0).GetComponent<Text>().color = Buffer.instance.agents[i].color;
 
             //Create a new '+' cell on the 0th horizontal column
             Destroy(tableCells[newIndex, 0]);
             tableCells[newIndex, 0] = Instantiate(dragAndDropCell);
+            tableCells[newIndex, 0].GetComponent<RawImage>().color = Buffer.instance.agents[i].color;
             tableCells[newIndex, 0].name = "TableCell_" + newIndex + "_0";
             tableCells[newIndex, 0].transform.SetParent(tableColumns[0].transform);
             tableCells[newIndex, 0].transform.Find("AgentID").GetComponent<Text>().text = Buffer.instance.agents[i].agentID.ToString();
-            tableCells[newIndex, 0].transform.Find("Button").GetChild(0).GetComponent<Text>().text = Buffer.instance.agents[i].agentName;
+            try
+            {
+                Texture2D newTexture = new Texture2D(1, 1);
+                newTexture.LoadImage(Convert.FromBase64String(Buffer.instance.agents[i].icon));
+                newTexture.Apply();
+                tableCells[newIndex, 0].transform.Find("Button").GetChild(1).GetComponent<RawImage>().texture = newTexture;
+            }
+            catch { }
+            tableCells[newIndex, 0].transform.Find("Button").GetChild(1).GetChild(0).Find("Name").GetComponent<Text>().text = Buffer.instance.agents[i].agentName;
+            tableCells[newIndex, 0].transform.Find("Button").GetChild(1).GetChild(0).Find("Description").GetComponent<Text>().text = Buffer.instance.agents[i].agentDescription;
             tableCells[newIndex, 0].transform.Find("Button").GetChild(0).GetComponent<Text>().color = Buffer.instance.agents[i].color;
 
             (int, int) formulaID;
@@ -191,110 +214,9 @@ public class PayoffMatrix_2 : MonoBehaviour
             tableCells[newIndex, newIndex].transform.SetParent(tableColumns[newIndex].transform);
             tableCells[newIndex, newIndex].transform.Find("Formula").GetComponent<InputField>().text = Buffer.instance.payoffFormulas[formulaID].payoffFormula;
             tableCells[newIndex, newIndex].SetActiveRecursively(true);
-
-            /*
-            //Add new unavaible cells beneath the old '+'
-            for (int i = 1; i <= newIndex; i++)
-            {
-                /*
-                Destroy(tableCells[i, newIndex]);
-                unavaibleCell.name = "TableCell_" + i + "_" + newIndex;
-                payoffMatrixPanel.transform.gameObject.AddChild(unavaibleCell);
-                tableCells[i, newIndex] = unavaibleCell;
-                Debug.Log(tableCells[i, newIndex].transform.GetChild(0));
-
-                Destroy(tableCells[i, newIndex]);
-                tableCells[i, newIndex] = Instantiate(unavaibleCell) as GameObject;
-                tableCells[i, newIndex].name = "TableCell_" + i + "_" + newIndex;
-                tableCells[i, newIndex].transform.SetParent(payoffMatrixPanel.transform);
-                tableCells[i, newIndex].SetActiveRecursively(true);
-                /*
-                tableCells[i, newIndex].transform.Find("Formula").Find("Text").GetComponent<Text>().text = "AnotherText";
-                tableCells[i, newIndex].transform.Find("Formula").Find("Text").name = "AnotherText";
-
-                Destroy(tableCells[newIndex, i]);
-                tableCells[newIndex, i] = Instantiate(unavaibleCell) as GameObject;
-                tableCells[newIndex, i].name = "TableCell_" + newIndex + "_" + i;
-                tableCells[newIndex, i].transform.SetParent(payoffMatrixPanel.transform);
-                tableCells[newIndex, i].SetActiveRecursively(true);
-                Debug.Log(tableCells[newIndex, i].transform.Find("Formula"));
-                /*
-                tableCells[newIndex, i].transform.Find("Formula").Find("Text").GetComponent<Text>().text = "AnotherText";
-                tableCells[newIndex, i].transform.Find("Formula").Find("Text").name = "AnotherText";
-            }
-            /**/
-            /**/
         }
     }
 
-    /*
-    public void addExtra()
-    {
-        if (childCount != 100)
-        {
-            int agentCount = (int)Round(Sqrt(childCount)) + 1;
-            int oldLastIndex = agentCount - 2;
-            int newIndex = agentCount - 1;
-            this.childCount = agentCount * agentCount;
-
-            //Destroy the '+' on the 0th horizontal column
-            //Replace it with a new 'drag & drop' cell
-            Destroy(tableCells[0, oldLastIndex]);
-            tableCells[0, oldLastIndex] = Instantiate(dragAndDropCell);
-            tableCells[0, oldLastIndex].name = "TableCell_0_" + (oldLastIndex);
-            tableCells[0, oldLastIndex].transform.SetParent(payoffMatrixPanel.transform);
-
-            //Destroy the '+' on the 0th vertical column
-            //Replace it with a new 'drag & drop' cell
-            Destroy(tableCells[oldLastIndex, 0]);
-            tableCells[oldLastIndex, 0] = Instantiate(dragAndDropCell);
-            tableCells[oldLastIndex, 0].name = "TableCell_" + (oldLastIndex) + "_0";
-            tableCells[oldLastIndex, 0].transform.SetParent(payoffMatrixPanel.transform);
-
-            //Create a new '+' cell on the 0th vertical column
-            Destroy(tableCells[0, newIndex]);
-            tableCells[0, newIndex] = Instantiate(addExtraCell);
-            tableCells[0, newIndex].name = "TableCell_0_" + newIndex;
-            tableCells[0, newIndex].transform.SetParent(payoffMatrixPanel.transform);
-
-            //Create a new '+' cell on the 0th horizontal column
-            Destroy(tableCells[newIndex, 0]);
-            tableCells[newIndex, 0] = Instantiate(addExtraCell);
-            tableCells[newIndex, 0].name = "TableCell_" + newIndex + "_0";
-            tableCells[newIndex, 0].transform.SetParent(payoffMatrixPanel.transform);
-
-            //Add new empty cells beneath the old '+'
-            for (int i = 1; i <= oldLastIndex; i++)
-            {
-                Destroy(tableCells[i, oldLastIndex]);
-                tableCells[i, oldLastIndex] = Instantiate(emptyCell);
-                tableCells[i, oldLastIndex].name = "TableCell_" + i + "_" + oldLastIndex;
-                tableCells[i, oldLastIndex].transform.SetParent(payoffMatrixPanel.transform);
-
-                Destroy(tableCells[oldLastIndex, i]);
-                tableCells[oldLastIndex, i] = Instantiate(emptyCell);
-                tableCells[oldLastIndex, i].name = "TableCell_" + oldLastIndex + "_" + i;
-                tableCells[oldLastIndex, i].transform.SetParent(payoffMatrixPanel.transform);
-            }
-
-            //Add new unavaible cells beneath the old '+'
-            for (int i = 1; i <= newIndex; i++)
-            {
-                Destroy(tableCells[i, newIndex]);
-                tableCells[i, newIndex] = Instantiate(unavaibleCell);
-                tableCells[i, newIndex].name = "TableCell_" + i + "_" + newIndex;
-                tableCells[i, newIndex].transform.SetParent(payoffMatrixPanel.transform);
-
-                Destroy(tableCells[newIndex, i]);
-                tableCells[newIndex, i] = Instantiate(unavaibleCell);
-                tableCells[newIndex, i].name = "TableCell_" + newIndex + "_" + i;
-                tableCells[newIndex, i].transform.SetParent(payoffMatrixPanel.transform);
-            }
-
-            alignCells();
-        }
-    }
-    /**/
 
     public GameObject canvas;
     RectTransform canvasRectTransform;
@@ -338,6 +260,8 @@ public class PayoffMatrix_2 : MonoBehaviour
         float zerothSquarePositionX = fullPanelWidth / (float)(columnLength) / 2f;
         float zerothSquarePositionY = fullPanelHeight / (float)(columnLength) / 2f;
 
+        lastInvisibleColumn.transform.SetSiblingIndex(columnLength);
+
         if (squareWidth < 140f) alternateView = true;
         else alternateView = false;
 
@@ -362,8 +286,6 @@ public class PayoffMatrix_2 : MonoBehaviour
                     {
                         GameObject showDetails = tableColumns[i].transform.GetChild(j).GetChild(0).gameObject;
                         showDetails.SetActive(false);
-                        //showDetails.GetComponent<RectTransform>().sizeDelta = new Vector2(fullPanelWidth * 0.30f, 90f);
-                        //showDetails.GetComponent<RectTransform>().anchoredPosition = new Vector2(-fullPanelWidth * 0.15f, (-45f));
 
                     }
 
@@ -377,16 +299,6 @@ public class PayoffMatrix_2 : MonoBehaviour
         }
         else if(onCollapse == true)
         {
-            /*
-            RectTransform rectTransform;
-            int columnLength = (int)Round(Sqrt(childCount));
-            float fullPanelWidth = payoffMatrixPanel.GetComponent<RectTransform>().rect.width;
-            float fullPanelHeight = payoffMatrixPanel.GetComponent<RectTransform>().rect.height;
-            float squareWidth = fullPanelWidth / columnLength;
-            float squareHeight = fullPanelHeight / columnLength;
-            float zerothSquarePositionX = fullPanelWidth / (float)(columnLength) / 2f;
-            float zerothSquarePositionY = fullPanelHeight / (float)(columnLength) / 2f;
-            /**/
             for (int i = 0; i < columnLength; i++)
             {
                 for (int j = 0; j < columnLength; j++)
@@ -402,22 +314,13 @@ public class PayoffMatrix_2 : MonoBehaviour
 
             for (int j = 0; j < columnLength; j++) tableColumns[0].transform.GetChild(j).gameObject.SetActive(false);
 
-            for (int i = 1; i <= columnLength; i++)
+            for (int i = 1; i < columnLength; i++)
             {
-                //tableColumns[i].transform.GetChild(0).GetComponent<RectTransform>().rect.width = fullPanelWidth * 0.66f;
                 for (int j = 0; j < columnLength; j++)
                 {
                     if (j != 0)
                     {
                         tableColumns[i].transform.GetChild(j).gameObject.SetActive(false);
-                        /*
-                        if (onCollapse == true)
-                        {
-                            tableColumns[i].transform.GetChild(j).gameObject.SetActive(false);
-                            onCollapse = false;
-                        }
-                        else visibleChildren = visibleChildren + 1; 
-                        /**/
                     }
                     else
                     {
@@ -430,123 +333,35 @@ public class PayoffMatrix_2 : MonoBehaviour
 
 
                     tableColumns[i].transform.GetChild(j).GetComponent<RectTransform>().sizeDelta = new Vector2(fullPanelWidth * 0.70f, 90f);
-                    //tableColumns[i].transform.GetComponent<RectTransform>().anchoredPosition = new Vector2(50, (45f - (i * 90f) - (offset * visibleChildren)));
                     tableColumns[i].transform.GetComponent<RectTransform>().anchoredPosition = new Vector2(50, (45f - (i * 90f)));
                     tableColumns[i].transform.GetChild(j).GetComponent<RectTransform>().anchoredPosition = new Vector2(fullPanelWidth * 0.65f, (-45f - (j * 90f)));
-                    /*
-                    rectTransform = tableCells[i, j].GetComponent<RectTransform>();
-                    rectTransform.sizeDelta = new Vector2(squareWidth, squareHeight);
-                    rectTransform.anchoredPosition = new Vector2((fullPanelWidth) * (((float)j * columnLength) / childCount) + zerothSquarePositionX, (-fullPanelHeight) * (((float)i * columnLength) / childCount) - zerothSquarePositionY);
-                    /**/
+                  
                 }
             }
-            /*
-            for (int j = 1; j < agentCount; j++)
-            {
-                //Debug.Log("Instantiate(emptyCell).transform.Find(\"Formula\").Find(\"Text\").GetComponent<Text>(): " + Instantiate(emptyCell).transform.Find("Formula").Find("Text").GetComponent<Text>());
-                //Debug.Log("Instantiate(emptyCell).GetComponentInChildren<TextMesh>().text = \"ASDASFWEADFSDFAS\": " + Instantiate(emptyCell).transform.Find("Formula").Find("Text").GetComponent<TextMesh>().text = "ASDASFWEADFSDFAS");
-
-                formulaID = (Buffer.instance.agents[j - 1].agentID, Buffer.instance.agents[i].agentID);
-
-                tableCells[j, agentCount] = Instantiate(emptyCell) as GameObject;
-                tableCells[j, agentCount].name = "TableCell_" + j + "_" + agentCount;
-                tableCells[j, agentCount].transform.SetParent(tableColumns[newIndex].transform);
-                tableCells[j, agentCount].transform.Find("Formula").GetComponent<InputField>().text = Buffer.instance.payoffFormulas[formulaID].payoffFormula;
-                tableCells[j, agentCount].SetActiveRecursively(true);
-
-
-            }
-                /**/
+            lastInvisibleColumn.transform.GetComponent<RectTransform>().anchoredPosition = new Vector2(50, (45f - (columnLength * 90f)));
         }
         else
         {
-            /*
-            float fullPanelHeight = payoffMatrixPanel.GetComponent<RectTransform>().rect.height;
-            float squareWidth = fullPanelWidth / columnLength;
-            float squareHeight = fullPanelHeight / columnLength;
-            float zerothSquarePositionX = fullPanelWidth / (float)(columnLength) / 2f;
-            float zerothSquarePositionY = fullPanelHeight / (float)(columnLength) / 2f;
-            for (int i = 0; i < columnLength; i++)
-            {
-                for (int j = 0; j < columnLength; j++)
-                {
-                    rectTransform = tableCells[i, j].GetComponent<RectTransform>();
-                    rectTransform.sizeDelta = new Vector2(squareWidth, squareHeight);
-                    rectTransform.anchoredPosition = new Vector2((fullPanelWidth) * (((float)j * columnLength) / childCount) + zerothSquarePositionX, (-fullPanelHeight) * (((float)i * columnLength) / childCount) - zerothSquarePositionY);
-                }
-            }
-            /**/
 
             /*--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-
-
-            //for (int j = 0; j < columnLength; j++) tableColumns[0].transform.GetChild(j).gameObject.SetActive(false);
-
-            for (int i = 1; i <= columnLength; i++)
+            float X;
+            float Y;
+            for (int i = 1; i < columnLength; i++)
             {
-
-                //tableColumns[i].transform.GetChild(j).GetComponent<RectTransform>().sizeDelta = new Vector2(fullPanelWidth * 0.70f, 90f);
-                float X = tableColumns[i].transform.GetComponent<RectTransform>().anchoredPosition.x;
-                float Y = tableColumns[i].transform.GetComponent<RectTransform>().anchoredPosition.y;
+                Debug.Log("i: " + i + ", columnIndex: " + columnIndex);
+                X = tableColumns[i].transform.GetComponent<RectTransform>().anchoredPosition.x;
+                Y = tableColumns[i].transform.GetComponent<RectTransform>().anchoredPosition.y;
                 if (i > columnIndex) tableColumns[i].transform.GetComponent<RectTransform>().anchoredPosition = new Vector2(X, (Y - offset));
-                //if (columnIndex == i) tableColumns[i].transform.GetComponent<RectTransform>().anchoredPosition = new Vector2(X, Y);
-                //X = tableColumns[i].transform.GetChild(j).GetComponent<RectTransform>().anchoredPosition.x;
-                // = tableColumns[i].transform.GetChild(j).GetComponent<RectTransform>().anchoredPosition.y;
-                //if (i > columnIndex) tableColumns[i].transform.GetChild(j).GetComponent<RectTransform>().anchoredPosition = new Vector2(X, (Y - offset));
-                //if (columnIndex == i) tableColumns[i].transform.GetChild(j).GetComponent<RectTransform>().anchoredPosition = new Vector2(X, Y);
-                //set tablecolumn anchoredposition = new Vector2(same, same+offset*idx);
-                //set tablecolumn.transform.getchild(J).anchoredposition = new Vector2(same, same+offset*idx);
-                /**/
 
-                //tableColumns[i].transform.GetChild(0).GetComponent<RectTransform>().rect.width = fullPanelWidth * 0.66f;
-                for (int j = 0; j < columnLength; j++)
-                {
-
-                    /*
-                    //tableColumns[i].transform.GetChild(0).GetComponent<RectTransform>().rect.width = fullPanelWidth * 0.66f;
-                    for (int j = 0; j < columnLength; j++)
-                    {
-                        /*
-                        if (j != 0)
-                        {
-                            tableColumns[i].transform.GetChild(j).gameObject.SetActive(false);
-                            /*
-                            if (onCollapse == true)
-                            {
-                                tableColumns[i].transform.GetChild(j).gameObject.SetActive(false);
-                                onCollapse = false;
-                            }
-                            else visibleChildren = visibleChildren + 1; 
-                        }
-                        else
-                        {
-                            GameObject showDetails = tableColumns[i].transform.GetChild(j).GetChild(0).gameObject;
-                            showDetails.SetActive(true);
-                            showDetails.GetComponent<RectTransform>().sizeDelta = new Vector2(fullPanelWidth * 0.30f, 90f);
-                            showDetails.GetComponent<RectTransform>().anchoredPosition = new Vector2(-fullPanelWidth * 0.15f, (-45f));
-
-                        }
-                        /**/
-                    
-
-                    //tableColumns[i].transform.GetChild(j).GetComponent<RectTransform>().anchoredPosition = new Vector2(fullPanelWidth * 0.65f, (-45f - (j * 90f)));
-
-                    /*
-                    Debug.Log(tableColumns[i].transform.GetChild(j));
-                    tableColumns[i].transform.GetChild(j).GetComponent<RectTransform>().sizeDelta = new Vector2(fullPanelWidth * 0.70f, 90f);
-                    //tableColumns[i].transform.GetComponent<RectTransform>().anchoredPosition = new Vector2(50, (45f - (i * 90f) - (offset * visibleChildren)));
-                    tableColumns[i].transform.GetComponent<RectTransform>().anchoredPosition = new Vector2(50, (45f - (i * 90f)));
-                    tableColumns[i].transform.GetChild(j).GetComponent<RectTransform>().anchoredPosition = new Vector2(fullPanelWidth * 0.65f, (-45f - (j * 90f)));
-                    /**/
-                    /*
-                    rectTransform = tableCells[i, j].GetComponent<RectTransform>();
-                    rectTransform.sizeDelta = new Vector2(squareWidth, squareHeight);
-                    rectTransform.anchoredPosition = new Vector2((fullPanelWidth) * (((float)j * columnLength) / childCount) + zerothSquarePositionX, (-fullPanelHeight) * (((float)i * columnLength) / childCount) - zerothSquarePositionY);
-                    /**/
-                }
             }
+
+            X = lastInvisibleColumn.transform.GetComponent<RectTransform>().anchoredPosition.x;
+            Y = lastInvisibleColumn.transform.GetComponent<RectTransform>().anchoredPosition.y;
+            lastInvisibleColumn.transform.GetComponent<RectTransform>().anchoredPosition = new Vector2(X, (Y - offset));
         }
     }
+
+    public GameObject lastInvisibleColumn;
 
     public void showDetails(GameObject hideButton)
     {

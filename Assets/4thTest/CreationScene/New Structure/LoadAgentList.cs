@@ -119,46 +119,22 @@ public class LoadAgentList : MonoBehaviour
             agentCells[i].SetActive(true);
             agentCells[i].name = "Agent_" + i;
             agentCells[i].transform.Find("ID").GetComponent<Text>().text = Buffer.instance.agents[i].agentID.ToString();
+
+            try
+            {
+                Debug.Log(Convert.FromBase64String(Buffer.instance.agents[i].icon));
+                Texture2D newTexture = new Texture2D(1, 1);
+                newTexture.LoadImage(Convert.FromBase64String(Buffer.instance.agents[i].icon));
+                newTexture.Apply();
+                agentCells[i].transform.Find("Icon").GetComponent<RawImage>().texture = newTexture;
+            }
+            catch {  }
             agentCells[i].transform.Find("Name").GetComponent<Text>().text = Buffer.instance.agents[i].agentName;
+            agentCells[i].transform.Find("Icon").GetChild(0).Find("Name").GetComponent<Text>().text = Buffer.instance.agents[i].agentName;
+            agentCells[i].transform.Find("Icon").GetChild(0).Find("Description").GetComponent<Text>().text = Buffer.instance.agents[i].agentDescription;
         }
 
     }
-
-    /*
-    private void displayAgents()
-    {
-        GameObject[] agentCells = new GameObject[minAmountOfEmptyAgentCells];
-        for (int i = 0; i < minAmountOfEmptyAgentCells; i++)
-        {
-            agentCells[i] = Instantiate(emptyAgentCell);
-            agentCells[i].transform.SetParent(myAgentsList.transform);
-            agentCells[i].SetActive(true);
-            agentCells[i].name = "Agent_" + i;
-        }
-
-        Debug.Log("Buffer.instance.agents.Length - agentCells.Length: " + (Buffer.instance.agents.Length - agentCells.Length));
-        GameObject[] extraCells = new GameObject[Buffer.instance.agents.Length - agentCells.Length];
-        for (int i = 0; i < extraCells.Length; i++)
-        {
-            extraCells[i] = Instantiate(emptyAgentCell);
-            extraCells[i].transform.SetParent(myAgentsList.transform);
-            extraCells[i].SetActive(true);
-            extraCells[i].name = "Agent_" + (agentCells.Length + i);
-        }
-
-        GameObject[] totalCells = new GameObject[Buffer.instance.agents.Length];
-        agentCells.CopyTo(totalCells, 0);
-        extraCells.CopyTo(totalCells, agentCells.Length);
-
-
-        for (int i = 0; i < Buffer.instance.agents.Length; i++)
-        {
-            totalCells[i].transform.GetChild(0).GetComponent<Text>().text = Buffer.instance.agents[i].agentID.ToString();
-            totalCells[i].transform.GetChild(1).GetComponent<Text>().text = Buffer.instance.agents[i].agentName;
-        }
-
-    }
-    /**/
 }
 
 /**/

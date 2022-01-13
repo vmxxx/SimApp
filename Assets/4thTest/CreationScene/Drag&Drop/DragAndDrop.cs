@@ -60,7 +60,8 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
     {
         Debug.Log("OnPointerDown");
         agentOnDrag.transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = gameObject.transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text;
-        agentOnDrag.transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = gameObject.transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text;
+        agentOnDrag.transform.GetChild(1).GetComponent<RawImage>().texture = gameObject.transform.GetChild(1).GetComponent<RawImage>().texture;
+        agentOnDrag.transform.GetChild(2).GetComponent<UnityEngine.UI.Text>().text = gameObject.transform.GetChild(2).GetComponent<UnityEngine.UI.Text>().text;
         OnBeginDrag(eventData); OnDrag(eventData);
         agentOnDrag.SetActive(true);
     }

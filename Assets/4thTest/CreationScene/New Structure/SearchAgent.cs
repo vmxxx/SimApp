@@ -8,11 +8,21 @@ using System.Text.RegularExpressions;
 
 public class SearchAgent : MonoBehaviour
 {
+    public static SearchAgent instance;
+
     public InputField agentsSearchField;
 
     public GameObject agentsListPanel;
 
     public GameObject emptyAgentCell;
+
+    public void Update()
+    {
+        if(SearchAgent.instance == null)
+        {
+            instance = this;
+        }
+    }
 
     public void clearAgents()
     {
