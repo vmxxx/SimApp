@@ -23,9 +23,10 @@ public class ItemSlot : MonoBehaviour, IDropHandler
         {
             int agentID = Int32.Parse(agentOnDrag.transform.GetChild(0).GetComponent<Text>().text);
             Debug.Log("agentID" + agentID);
-            string agentName = agentOnDrag.transform.GetChild(1).GetComponent<Text>().text;
+            string agentName = agentOnDrag.transform.GetChild(2).GetComponent<Text>().text;
             gameObject.transform.GetChild(1).GetComponent<Text>().text = agentID.ToString();
             gameObject.transform.GetChild(2).GetChild(0).GetComponent<Text>().text = agentName;
+            gameObject.transform.GetChild(2).GetChild(1).GetComponent<RawImage>().texture = agentOnDrag.transform.GetChild(1).GetComponent<RawImage>().texture;
             int indexX = (int)(gameObject.name[12] - '0');
             int indexY = (int)(gameObject.name[10] - '0');
             if (indexX == 0)
@@ -40,6 +41,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler
             Debug.Log(oppositeCell.name);
             oppositeCell.transform.GetChild(1).GetComponent<Text>().text = agentID.ToString();
             oppositeCell.transform.GetChild(2).GetChild(0).GetComponent<Text>().text = agentName;
+            oppositeCell.transform.GetChild(2).GetChild(1).GetComponent<RawImage>().texture = agentOnDrag.transform.GetChild(1).GetComponent<RawImage>().texture;
         }
     }
 }

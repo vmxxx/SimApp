@@ -8,15 +8,14 @@ using UnityEngine.Networking;
 public class SetImage : MonoBehaviour
 {
     string path;
-    public RawImage rawImage;
 
-    public void setImage()
+    public void setImage(RawImage rawImage)
     {
         path = EditorUtility.OpenFilePanel("Show all images (.png) ", "", "png");
-        StartCoroutine(getTexture());
+        StartCoroutine(getTexture(rawImage));
     }
 
-    IEnumerator getTexture()
+    IEnumerator getTexture(RawImage rawImage)
     {
         UnityWebRequest www = UnityWebRequestTexture.GetTexture("file:///" + path);
 

@@ -11,7 +11,7 @@ public class CreateEditOrRemoveAgent : MonoBehaviour
     public static CreateEditOrRemoveAgent instance;
 
     public InputField IDSetting;
-    public InputField iconSetting;
+    public GameObject iconSetting;
     public InputField nameSetting;
     public InputField descriptionSetting;
 
@@ -47,8 +47,9 @@ public class CreateEditOrRemoveAgent : MonoBehaviour
 
     public void save()
     {
+        Debug.Log("Convert.ToBase64String(ImageConversion.EncodeToPNG((Texture2D)iconSetting.GetComponent<RawImage>().texture)): " + Convert.ToBase64String(ImageConversion.EncodeToPNG((Texture2D)iconSetting.GetComponent<RawImage>().texture)));
         StartCoroutine(saveAgent());
-        refreshAgents();
+        SearchAgent.instance.clearAgents();
     }
 
     private IEnumerator saveAgent()
@@ -57,7 +58,7 @@ public class CreateEditOrRemoveAgent : MonoBehaviour
         form.AddField("class", "AgentsController\\agents");
         form.AddField("function", "update");
         form.AddField("ID", IDSetting.text);
-        form.AddField("icon", iconSetting.text);
+        form.AddField("icon", Convert.ToBase64String(ImageConversion.EncodeToPNG((Texture2D)iconSetting.GetComponent<RawImage>().texture)));
         form.AddField("name", nameSetting.text);
         form.AddField("description", descriptionSetting.text);
         //form.AddField("authorID", Buffer.instance.authenticatedUser.ID);
@@ -79,7 +80,7 @@ public class CreateEditOrRemoveAgent : MonoBehaviour
     public void createAsNew()
     {
         StartCoroutine(createAgentAsNew());
-        refreshAgents();
+        SearchAgent.instance.clearAgents();
     }
 
     private IEnumerator createAgentAsNew()
@@ -88,7 +89,7 @@ public class CreateEditOrRemoveAgent : MonoBehaviour
         WWWForm form = new WWWForm();
         form.AddField("class", "AgentsController\\agents");
         form.AddField("function", "create");
-        form.AddField("icon", iconSetting.text);
+        form.AddField("icon", Convert.ToBase64String(ImageConversion.EncodeToPNG((Texture2D)iconSetting.GetComponent<RawImage>().texture)));
         form.AddField("name", nameSetting.text);
         form.AddField("description", descriptionSetting.text);
         //form.AddField("authorID", Buffer.instance.authenticatedUser.ID);
@@ -120,7 +121,12 @@ public class CreateEditOrRemoveAgent : MonoBehaviour
         int authorID = Buffer.instance.agents[index].authorID;
 
         IDSetting.GetComponent<InputField>().text = agentID.ToString();
-        iconSetting.GetComponent<InputField>().text = icon;
+
+        Debug.Log("Convert.FromBase64String(icon): " + Convert.FromBase64String(icon));
+        Texture2D newTexture = new Texture2D(1, 1);
+        newTexture.LoadImage(Convert.FromBase64String(icon));
+        newTexture.Apply();
+        iconSetting.GetComponent<RawImage>().texture = newTexture;
         nameSetting.GetComponent<InputField>().text = agentName;
         descriptionSetting.GetComponent<InputField>().text = agentDescription;
     }

@@ -255,16 +255,41 @@ public class LoadSimulation : MonoBehaviour
             }
 
             string agentID = Buffer.instance.agents[j - 1].agentID.ToString();
+            string agentIcon = Buffer.instance.agents[j - 1].icon;
             string agentName = Buffer.instance.agents[j - 1].agentName;
+            string agentDescription = Buffer.instance.agents[j - 1].agentDescription;
 
 
             //In the zeroth table column we set the agent names (and hide their IDs, so its easier to reference them later)
             PayoffMatrix.instance.tableCells[j].cell[0].transform.Find("AgentID").GetComponent<Text>().text = agentID;
             PayoffMatrix.instance.tableCells[j].cell[0].transform.Find("Button").GetChild(0).GetComponent<Text>().text = agentName;
+            try
+            {
+                newTexture = new Texture2D(1, 1);
+                newTexture.LoadImage(Convert.FromBase64String(agentIcon));
+                newTexture.Apply();
+                PayoffMatrix.instance.tableCells[j].cell[0].transform.Find("Button").GetChild(1).GetComponent<RawImage>().texture = newTexture;
+            }
+            catch { }
+            PayoffMatrix.instance.tableCells[j].cell[0].transform.Find("Button").GetChild(1).GetChild(0).Find("Name").GetComponent<Text>().text = agentName;
+            PayoffMatrix.instance.tableCells[j].cell[0].transform.Find("Button").GetChild(1).GetChild(0).Find("Description").GetComponent<Text>().text = agentDescription;
 
             //In the zeroth table row we set the agent names (and hide their IDs, so its easier to reference them later)
             PayoffMatrix.instance.tableCells[0].cell[j].transform.Find("AgentID").GetComponent<Text>().text = agentID;
             PayoffMatrix.instance.tableCells[0].cell[j].transform.Find("Button").GetChild(0).GetComponent<Text>().text = agentName;
+
+            try
+            {
+                newTexture = new Texture2D(1, 1);
+                newTexture.LoadImage(Convert.FromBase64String(agentIcon));
+                newTexture.Apply();
+                PayoffMatrix.instance.tableCells[0].cell[j].transform.Find("Button").GetChild(1).GetComponent<RawImage>().texture = newTexture;
+            }
+            catch { }
+            PayoffMatrix.instance.tableCells[0].cell[j].transform.Find("Button").GetChild(1).GetChild(0).Find("Name").GetComponent<Text>().text = agentName;
+            PayoffMatrix.instance.tableCells[0].cell[j].transform.Find("Button").GetChild(1).GetChild(0).Find("Description").GetComponent<Text>().text = agentDescription;
         }
+
+        SearchAgent.instance.clearAgents();
     }
 }
