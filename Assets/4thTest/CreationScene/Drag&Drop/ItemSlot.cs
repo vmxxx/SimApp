@@ -18,7 +18,6 @@ public class ItemSlot : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
-        Debug.Log("OnDrop");
         if (eventData.pointerDrag != null)
         {
             int agentID = Int32.Parse(agentOnDrag.transform.GetChild(0).GetComponent<Text>().text);

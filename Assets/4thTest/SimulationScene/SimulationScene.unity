@@ -2889,7 +2889,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2098573336}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: LoadMainMenu, Assembly-CSharp
         m_MethodName: showBuffer
         m_Mode: 1
@@ -4110,7 +4110,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 2127355241}
   m_Direction: 2
   m_Value: 0.5
-  m_Size: 0.69181037
+  m_Size: 0.6465517
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4236,7 +4236,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2098573335}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: RecompileScripts, Assembly-CSharp
         m_MethodName: recompile
         m_Mode: 1
@@ -10124,7 +10124,7 @@ MonoBehaviour:
   topInPercentage: 1
   rightInPercentage: 1
   bottomInPercentage: 1
-  left: 5
+  left: 52.5
   top: 20
   right: 5
   bottom: 50
@@ -11910,8 +11910,8 @@ GameObject:
   - component: {fileID: 2098573332}
   - component: {fileID: 2098573333}
   - component: {fileID: 2098573334}
-  - component: {fileID: 2098573335}
-  - component: {fileID: 2098573336}
+  - component: {fileID: 2098573338}
+  - component: {fileID: 2098573337}
   m_Layer: 0
   m_Name: Scripts
   m_TagString: Untagged
@@ -11976,18 +11976,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 50
-  startingNumberOfDoves: 5
-  startingNumberOfHawks: 10
-  simulationVariables: {fileID: 627505204}
-  variableSetting: {fileID: 759335348}
-  V: 0
-  C: 0
-  paused: 1
   startPauseButton: {fileID: 1298823733}
   restartButton: {fileID: 130084067}
   accelerateButton: {fileID: 886461919}
   deccelerateButton: {fileID: 482171738}
   speedText: {fileID: 1699169119}
+  simulationVariables: {fileID: 627505204}
+  variableSetting: {fileID: 759335348}
+  paused: 1
+  V: 0
+  C: 0
+  startingNumberOfDoves: 10
+  startingNumberOfHawks: 10
 --- !u!114 &2098573332
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12048,7 +12048,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf422134435e3d84ca556664b71837f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2098573335
+--- !u!114 &2098573337
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -12057,11 +12057,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2098573327}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38a2f034e616f2e4da746b7750b1af52, type: 3}
+  m_Script: {fileID: 11500000, guid: 5e01a2b094fb949488739e06a40d01f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scriptsRecompiled: 0
---- !u!114 &2098573336
+--- !u!114 &2098573338
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -12070,13 +12069,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2098573327}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed827bb1002f6dd4ea8f97b4389e53e2, type: 3}
+  m_Script: {fileID: 11500000, guid: c01e1c7f5a0a8f047b0c55ba35c6a39b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loginRegisterButton: {fileID: 0}
-  createSimulationButton: {fileID: 0}
-  logoutButton: {fileID: 0}
-  profileSettingsButton: {fileID: 0}
 --- !u!1 &2114746912
 GameObject:
   m_ObjectHideFlags: 0

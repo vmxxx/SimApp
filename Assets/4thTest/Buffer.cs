@@ -47,13 +47,11 @@ public class Buffer : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(this.gameObject);
         } else { Destroy(this.gameObject); }
-        Debug.Log("Buffer initialized!");
     }
 
     
     void Update()
     {
-        Debug.Log("currentSimulationID: " + currentSimulationID);
         if (Buffer.instance == null)
         {
             Debug.Log("currentSimulationDOTIDBEFORE: " + currentSimulation.ID);
@@ -220,17 +218,6 @@ public class PayoffFormula
     public int authorID;
 
     public float result;
-
-    /*
-    public PayoffFormula(int id, int a1, int a2, string formula, int author_id)
-    {
-        ID = id;
-        agent1 = a1;
-        agent2 = a1;
-        payoffFormula = formula;
-        authorID = author_id;
-    }
-    /**/
 }
 [System.Serializable]
 public class User

@@ -30,27 +30,20 @@ public class ShowDetailsOnHover : MonoBehaviour, IPointerEnterHandler, IPointerE
         
         if(detailsOnHover.active == true)
         {
-            //detailsOnHover.GetComponent<RectTransform>().anchoredPosition = Input.mousePosition;
-
             //get the Input from Horizontal axis
             float horizontalInput = Input.GetAxis("Horizontal");
             //get the Input from Vertical axis
             float verticalInput = Input.GetAxis("Vertical");
-
-            Debug.Log("horizontalInput: " + horizontalInput + ", verticalInput: " + verticalInput);
-            Debug.Log(detailsOnHover.transform.position);
 
 
             //update the position
             detailsOnHover.transform.position = Input.mousePosition + new Vector3(85f, -50f, 0f);
 
         }
-        /**/
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("OnPointerEnter");
         detailsOnHover.SetActive(true);
 
         detailsOnHover.transform.GetChild(0).GetComponent<Text>().text = agentDetails.transform.GetChild(0).GetComponent<Text>().text;
@@ -59,9 +52,6 @@ public class ShowDetailsOnHover : MonoBehaviour, IPointerEnterHandler, IPointerE
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        
-        Debug.Log("OnPointerExit");
         detailsOnHover.SetActive(false);
-        /**/
     }
 }
