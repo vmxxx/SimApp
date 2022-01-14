@@ -15,7 +15,8 @@ public class Register : MonoBehaviour
     //When the user click on "Submit" button this function gets called
     public void CallRegister()
     {
-        StartCoroutine(DoRegister());
+        if (passwordField.text != confirmPasswordField.text) StartCoroutine(Notification.instance.showNotification("Unmatching passwords!"));
+        else StartCoroutine(DoRegister());
     }
 
     IEnumerator DoRegister()
@@ -35,17 +36,14 @@ public class Register : MonoBehaviour
         if (www.text != "" && www.text[0] == '0')
         {
             //Display the notification
-            StartCoroutine( Notification.instance.showNotification(www.text));
+            StartCoroutine( Notification.instance.showNotification("Registration successful!"));
 
             //Login the user
-            //Login.instance.CallLogin();
-
-            //Switch to main menu scene
-            //UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+            StartCoroutine(Login.instance.LoginPlayer(usernameField.text, passwordField.text));
         }
         else //Display error notification
         {
-            if (www.text != "") StartCoroutine( Notification.instance.showNotification("Loading agents failed. Error #" + www.text) );
+            if (www.text != "") StartCoroutine( Notification.instance.showNotification(www.text) );
             else StartCoroutine( Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet.") );
         }
     }
@@ -53,8 +51,8 @@ public class Register : MonoBehaviour
     //This function gets automatically called every time the user changes a value in the input fields
     public void VerifyInputs()
     {
-        //if the username and the password is less than 8 chars long, and the passwords dont match: submitButton.greyedOut becomes = true
+        //if the username and the password is less than 8 chars long: submitButton.greyedOut = true
         //else: submitButton.greyedOut = false
-        submitButton.interactable = (usernameField.text.Length >= 8 && passwordField.text.Length >= 8) && passwordField.text == confirmPasswordField.text;
+        submitButton.interactable = (usernameField.text.Length >= 8 && passwordField.text.Length >= 8);
     }
 }

@@ -12,7 +12,8 @@ public class LoadOrRefreshSimulations : MonoBehaviour
 
     public GameObject popularSimulationsPanel;
     public GameObject userSimulationsPanel;
-    public GameObject entry;
+    public GameObject popularSimulationEntry;
+    public GameObject userSimulationEntry;
 
     private int pN = 1;
     private int uN = 1;
@@ -57,13 +58,11 @@ public class LoadOrRefreshSimulations : MonoBehaviour
             removeSimulations(popularSimulationsPanel, Buffer.instance.popularSimulations);
 
                     MatchCollection entries = Regex.Matches(www.text, @"{{1}(.*?)}{1}");
-                    Debug.Log(entries.Count);
                     Buffer.instance.newPopularSimulationsArray(entries.Count);
                     int j = 0;
                     foreach (Match entry in entries)
                     {
                         string seperate_entry = entry.ToString();
-                        Debug.Log("seperate_entry: " + seperate_entry);
                         string ID = Regex.Match(seperate_entry, @"ID:(.*?),").Value;
                         string name = Regex.Match(seperate_entry, @"name:(.*?),").Value;
                         string image = Regex.Match(seperate_entry, @"image:(.*?),").Value;
@@ -71,8 +70,6 @@ public class LoadOrRefreshSimulations : MonoBehaviour
                         string likesCount = Regex.Match(seperate_entry, @"likesCount:(.*?),").Value;
                         string dislikesCount = Regex.Match(seperate_entry, @"dislikesCount:(.*?),").Value;
                         string authorID = Regex.Match(seperate_entry, @"authorID:(.*?)}").Value;
-                        Debug.Log("authorID" + authorID);
-
 
                         if (ID != "")
                         {
@@ -86,14 +83,13 @@ public class LoadOrRefreshSimulations : MonoBehaviour
                         }
                         j++;
                     }
-            displaySimulations(popularSimulationsPanel, Buffer.instance.popularSimulations);
-            //Buffer.instance.printPopularSimulationsArray();
-            Debug.Log("0; Load succesful;" + www.text);
+            displaySimulations(popularSimulationEntry, popularSimulationsPanel, Buffer.instance.popularSimulations);
             pN = pN + 1;
         }
         else
         {
-            Debug.Log("Loading simulations failed. Error #" + www.text);
+            if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
+            else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
         }
     }
 
@@ -105,8 +101,7 @@ public class LoadOrRefreshSimulations : MonoBehaviour
         form.AddField("scene", "mainMenu");
         form.AddField("list", "user");
         form.AddField("onSearch", "false");
-        //form.AddField("authorID", Buffer.instance.authenticatedUser.ID);
-        form.AddField("authorID", 5);
+        form.AddField("authorID", Buffer.instance.authenticatedUser.ID);
         form.AddField("N", N);
 
         WWW www = new WWW("http://localhost/sqlconnect/index.php", form);
@@ -120,12 +115,10 @@ public class LoadOrRefreshSimulations : MonoBehaviour
 
                     int j = 0;
                     MatchCollection entries = Regex.Matches(www.text, @"{{1}(.*?)}{1}");
-                    Debug.Log("entries.Count: " + entries.Count);
                     Buffer.instance.newUserSimulationsArray(entries.Count);
                     foreach (Match entry in entries)
                     {
                         string seperate_entry = entry.ToString();
-                        Debug.Log("seperate_entry: " + seperate_entry);
                         string ID = Regex.Match(seperate_entry, @"ID:(.*?),").Value;
                         string name = Regex.Match(seperate_entry, @"name:(.*?),").Value;
                         string image = Regex.Match(seperate_entry, @"image:(.*?),").Value;
@@ -145,16 +138,15 @@ public class LoadOrRefreshSimulations : MonoBehaviour
                         }
                         j++;
                     }
-                    /***/
-            displaySimulations(userSimulationsPanel, Buffer.instance.userSimulations);
-            //Debug.Log("POPULAR SIMULATIONS SPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP");
+
+            displaySimulations(userSimulationEntry, userSimulationsPanel, Buffer.instance.userSimulations);
             Buffer.instance.printPopularSimulationsArray();
-            Debug.Log("0; Load succesful;" + www.text);
             uN = uN + 1;
         }
         else
         {
-            Debug.Log("Loading simulations failed. Error #" + www.text);
+            if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
+            else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
         }
     }
 
@@ -166,9 +158,8 @@ public class LoadOrRefreshSimulations : MonoBehaviour
         }
     }
 
-    private void displaySimulations(GameObject panel, Simulation[] simulations)
+    private void displaySimulations(GameObject entry, GameObject panel, Simulation[] simulations)
     {
-        Debug.Log(simulations.Length);
         for (int i = 0; i < simulations.Length; i++)
         {
             GameObject newEntry = Instantiate(entry);
@@ -177,16 +168,13 @@ public class LoadOrRefreshSimulations : MonoBehaviour
             newEntry.transform.GetChild(0).GetComponent<Text>().text = simulations[i].ID.ToString();
             newEntry.transform.GetChild(1).GetComponent<Text>().text = simulations[i].name;
 
-            try
+            if(simulations[i].image != "")
             {
                 Texture2D newTexture = new Texture2D(1, 1);
-                Debug.Log("i: " + Convert.FromBase64String(simulations[i].image));
                 newTexture.LoadImage(Convert.FromBase64String(simulations[i].image));
                 newTexture.Apply();
                 newEntry.transform.GetChild(2).GetComponent<RawImage>().texture = newTexture;
             }
-            catch { }
-
             newEntry.transform.GetChild(2).GetChild(0).GetChild(0).GetComponent<Text>().text = "likes/dislikes = " + simulations[i].likesCount + "/" + simulations[i].dislikesCount;
             newEntry.transform.GetChild(2).GetChild(0).GetChild(1).GetComponent<Text>().text = simulations[i].description;
             newEntry.transform.SetParent(panel.transform);

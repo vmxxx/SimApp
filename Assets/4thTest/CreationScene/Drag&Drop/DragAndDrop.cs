@@ -25,7 +25,6 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        Debug.Log("OnBeginDrag");
         canvasGroup.alpha = 0.6f;
         //agentName.GetComponent<Text>().text = agentOnDrag.transform.GetChild(1).GetComponent<Text>().text;
         canvasGroup.blocksRaycasts = false;
@@ -33,14 +32,12 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
 
     public void OnDrag(PointerEventData eventData)
     {
-        Debug.Log("OnDrag");
         rectTransform.anchoredPosition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
         //rectTransform.anchoredPosition += eventData.delta; 
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        Debug.Log("OnEndDrag");
         canvasGroup.alpha = 1f;
         canvasGroup.blocksRaycasts = true;
         agentOnDrag.SetActive(false);
@@ -48,7 +45,6 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
 
     public void MouseMove(PointerEventData eventData)
     {
-        Debug.Log("OnMouseMove");
     }
 
     public void OnDrop(PointerEventData eventData)
@@ -58,7 +54,6 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        Debug.Log("OnPointerDown");
         agentOnDrag.transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = gameObject.transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text;
         agentOnDrag.transform.GetChild(1).GetComponent<RawImage>().texture = gameObject.transform.GetChild(1).GetComponent<RawImage>().texture;
         agentOnDrag.transform.GetChild(2).GetComponent<UnityEngine.UI.Text>().text = gameObject.transform.GetChild(2).GetComponent<UnityEngine.UI.Text>().text;

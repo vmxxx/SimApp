@@ -72,7 +72,6 @@ public class PayoffMatrix_2 : MonoBehaviour
             }
             tableCells[j, i] = new GameObject();
         }
-        //tableCells[Index, i] = new GameObject();
 
         for (i = 0; i < agentCount; i++)
         {
@@ -83,7 +82,6 @@ public class PayoffMatrix_2 : MonoBehaviour
             }
             tableCells[i, j] = new GameObject();
         }
-        //tableCells[i, Index] = new GameObject();
 
         alignCells();
 
@@ -108,27 +106,6 @@ public class PayoffMatrix_2 : MonoBehaviour
         agentCount = newIndex;
         if (childCount != 100)
         {
-            /*
-            int agentCount = (int)Round(Sqrt(childCount)) + 1;
-            //int oldLastIndex = agentCount - 2;
-            this.childCount = agentCount * agentCount;
-            /**/
-
-            /*
-            //Destroy the '+' on the 0th horizontal column
-            //Replace it with a new 'drag & drop' cell
-            Destroy(tableCells[0, oldLastIndex]);
-            tableCells[0, oldLastIndex] = Instantiate(dragAndDropCell);
-            tableCells[0, oldLastIndex].name = "TableCell_0_" + (oldLastIndex);
-            tableCells[0, oldLastIndex].transform.SetParent(payoffMatrixPanel.transform);
-
-            //Destroy the '+' on the 0th vertical column
-            //Replace it with a new 'drag & drop' cell
-            Destroy(tableCells[oldLastIndex, 0]);
-            tableCells[oldLastIndex, 0] = Instantiate(dragAndDropCell);
-            tableCells[oldLastIndex, 0].name = "TableCell_" + (oldLastIndex) + "_0";
-            tableCells[oldLastIndex, 0].transform.SetParent(payoffMatrixPanel.transform);
-            /**/
 
             tableColumns[newIndex] = Instantiate(tableColumn);
             tableColumns[newIndex].name = "TableColumn_" + newIndex;
@@ -187,15 +164,6 @@ public class PayoffMatrix_2 : MonoBehaviour
                 tableCells[j, newIndex].transform.SetParent(tableColumns[newIndex].transform);
                 tableCells[j, newIndex].transform.Find("Formula").GetComponent<InputField>().text = Buffer.instance.payoffFormulas[formulaID].payoffFormula;
                 tableCells[j, newIndex].SetActiveRecursively(true);
-
-
-                //tableCells[i, oldLastIndex].GetComponentInChildren<TextMesh>().text = "ASDASFWEADFSDFAS";
-
-
-                /*
-                text = tableCells[i, oldLastIndex].transform.Find("AnotherFormulaName").Find("AnotherText").GetComponent<Text>();
-                this.text.text = "AnotherText";
-                /**/
 
                 formulaID = (Buffer.instance.agents[i].agentID, Buffer.instance.agents[j - 1].agentID);
 

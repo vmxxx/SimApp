@@ -63,13 +63,11 @@ public class SearchSimulation : MonoBehaviour
             removeSimulations(popularSimulationsPanel, Buffer.instance.popularSimulations);
 
             MatchCollection entries = Regex.Matches(www.text, @"{{1}(.*?)}{1}");
-            Debug.Log(entries.Count);
             Buffer.instance.newPopularSimulationsArray(entries.Count);
             int j = 0;
             foreach (Match entry in entries)
             {
                 string seperate_entry = entry.ToString();
-                Debug.Log("seperate_entry: " + seperate_entry);
                 string ID = Regex.Match(seperate_entry, @"ID:(.*?),").Value;
                 string name = Regex.Match(seperate_entry, @"name:(.*?),").Value;
                 string image = Regex.Match(seperate_entry, @"image:(.*?),").Value;
@@ -77,7 +75,6 @@ public class SearchSimulation : MonoBehaviour
                 string likesCount = Regex.Match(seperate_entry, @"likesCount:(.*?),").Value;
                 string dislikesCount = Regex.Match(seperate_entry, @"dislikesCount:(.*?),").Value;
                 string authorID = Regex.Match(seperate_entry, @"authorID:(.*?)}").Value;
-                Debug.Log("authorID" + authorID);
 
 
                 if (ID != "")
@@ -93,13 +90,11 @@ public class SearchSimulation : MonoBehaviour
                 j++;
             }
             displaySimulations(popularSimulationsPanel, Buffer.instance.popularSimulations);
-            //Buffer.instance.printPopularSimulationsArray();
-            Debug.Log("0; Load succesful;" + www.text);
-            //pN = pN + 1;
         }
         else
         {
-            Debug.Log("Loading simulations failed. Error #" + www.text);
+            if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
+            else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
         }
     }
 
@@ -125,13 +120,11 @@ public class SearchSimulation : MonoBehaviour
             removeSimulations(userSimulationsPanel, Buffer.instance.userSimulations);
 
             MatchCollection entries = Regex.Matches(www.text, @"{{1}(.*?)}{1}");
-            Debug.Log(entries.Count);
             Buffer.instance.newUserSimulationsArray(entries.Count);
             int j = 0;
             foreach (Match entry in entries)
             {
                 string seperate_entry = entry.ToString();
-                Debug.Log("seperate_entry: " + seperate_entry);
                 string ID = Regex.Match(seperate_entry, @"ID:(.*?),").Value;
                 string name = Regex.Match(seperate_entry, @"name:(.*?),").Value;
                 string image = Regex.Match(seperate_entry, @"image:(.*?),").Value;
@@ -139,8 +132,6 @@ public class SearchSimulation : MonoBehaviour
                 string likesCount = Regex.Match(seperate_entry, @"likesCount:(.*?),").Value;
                 string dislikesCount = Regex.Match(seperate_entry, @"dislikesCount:(.*?),").Value;
                 string authorID = Regex.Match(seperate_entry, @"authorID:(.*?)}").Value;
-                Debug.Log("authorID" + authorID);
-
 
                 if (ID != "")
                 {
@@ -155,13 +146,11 @@ public class SearchSimulation : MonoBehaviour
                 j++;
             }
             displaySimulations(userSimulationsPanel, Buffer.instance.userSimulations);
-            //Buffer.instance.printPopularSimulationsArray();
-            Debug.Log("0; Load succesful;" + www.text);
-            //pN = pN + 1;
         }
         else
         {
-            Debug.Log("Loading simulations failed. Error #" + www.text);
+            if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
+            else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
         }
     }
 
@@ -176,7 +165,6 @@ public class SearchSimulation : MonoBehaviour
 
     private void displaySimulations(GameObject panel, Simulation[] simulations)
     {
-        Debug.Log(simulations.Length);
         for (int i = 0; i < simulations.Length; i++)
         {
             GameObject newEntry = Instantiate(entry);
@@ -184,12 +172,19 @@ public class SearchSimulation : MonoBehaviour
             newEntry.name = "Entry_" + i;
             newEntry.transform.GetChild(0).GetComponent<Text>().text = simulations[i].ID.ToString();
             newEntry.transform.GetChild(1).GetComponent<Text>().text = simulations[i].name;
-            newEntry.transform.GetChild(5).GetChild(0).GetComponent<Text>().text = "likes/dislikes = " + simulations[i].likesCount + "/" + simulations[i].dislikesCount;
-            newEntry.transform.GetChild(5).GetChild(1).GetComponent<Text>().text = simulations[i].description;
+
+            if (simulations[i].image != "")
+            {
+                Texture2D newTexture = new Texture2D(1, 1);
+                newTexture.LoadImage(Convert.FromBase64String(simulations[i].image));
+                newTexture.Apply();
+                newEntry.transform.GetChild(2).GetComponent<RawImage>().texture = newTexture;
+            }
+            newEntry.transform.GetChild(2).GetChild(0).GetChild(0).GetComponent<Text>().text = "likes/dislikes = " + simulations[i].likesCount + "/" + simulations[i].dislikesCount;
+            newEntry.transform.GetChild(2).GetChild(0).GetChild(1).GetComponent<Text>().text = simulations[i].description;
             newEntry.transform.SetParent(panel.transform);
             int currIndex = newEntry.transform.GetSiblingIndex();
             newEntry.transform.SetSiblingIndex(currIndex - 1);
         }
     }
-    /**/
 }

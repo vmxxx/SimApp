@@ -246,43 +246,6 @@ public class WindoGraph : MonoBehaviour
         float X;
         float xPosition;
         float XlabelValue;
-
-        /*
-        for (int i = XAxis.transform.childCount - 2; i >= 2; i--)
-        {
-            int a = i - 1;
-            label = XAxis.transform.GetChild(i);
-            rectTransform = label.GetComponent<RectTransform>();
-            X = rectTransform.anchoredPosition.x;
-            if (daysPassed > 1) { X = (X / ((float)daysPassed / (float)(daysPassed - 1))); }
-            rectTransform.anchoredPosition = new Vector2(X, 0);
-            label.Find("Text").GetComponent<Text>().text = (((float)a / 7f) * daysPassed).ToString();
-
-            if (X < graphWidth - 30) { label.gameObject.SetActive(true); }
-        }
-
-        label = XAxis.transform.GetChild(11);
-        rectTransform = label.GetComponent<RectTransform>();
-        X = rectTransform.anchoredPosition.x;
-        if (daysPassed > 1) { X = (X / ((float)daysPassed / (float)(daysPassed - 1))); }
-        rectTransform.anchoredPosition = new Vector2(X, 0);
-        label.Find("Text").GetComponent<Text>().text = ((9f / 7f) * daysPassed).ToString();
-
-        if (X < graphWidth - 30)
-        {
-            for (int i = XAxis.transform.childCount - 1; i >= 2; i--)
-            {
-                int a = i - 1;
-                label = XAxis.transform.GetChild(i);
-                rectTransform = label.GetComponent<RectTransform>();
-                rectTransform.anchoredPosition = new Vector2((((float)a / 7f) * graphWidth), 0);
-                label.Find("Text").GetComponent<Text>().text = (((float)a / 7f) * daysPassed).ToString();
-                X = rectTransform.anchoredPosition.x;
-
-                if (X >= graphWidth - 30) { label.gameObject.SetActive(false); }
-            }
-        }
-        /**/
         
         for (int i = XAxis.transform.childCount - 2; i >= 2; i--)
         {

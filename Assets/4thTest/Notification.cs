@@ -21,7 +21,6 @@ public class Notification : MonoBehaviour
 
     public IEnumerator showNotification(string notification)
     {
-        Debug.Log("SHOWING NOTIFICATION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         gameObject.GetComponent<Text>().text = notification;
         yield return new WaitForSeconds(2);
         gameObject.GetComponent<Text>().text = "";
@@ -29,7 +28,6 @@ public class Notification : MonoBehaviour
 
     public void Update()
     {
-        Debug.Log("NOTFIFCATION.INSTANCE == SOMETHING");
         if(Notification.instance == null)
         {
             instance = this;
