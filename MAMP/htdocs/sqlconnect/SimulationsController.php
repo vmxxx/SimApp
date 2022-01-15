@@ -12,19 +12,11 @@ class simulations extends core
 		$description = $data["description"];
 		$authorID = $data["authorID"];
         $SQL = "INSERT INTO simulations (name, image, description, likesCount, dislikeCount, authorID) VALUES (\"$name\", \"$image\", \"$description\", 0, 0, $authorID);";
-        //$namecheckquery = "INSERT INTO simulations (name, image, description, likesCount, dislikeCount, authorID) VALUES (\"name\", \"image\", \"description\", 0, 0, 5);";
-        //$namecheckquery = "INSERT INTO agents (icon, name, description, authorID) VALUES (\"icon\", \"name\", \"description\", 5);";
 		
-		/*
-		$result = $this -> con -> query ($SQL) or die("sql failed!");
+		echo $image;
+		$result = $this -> con -> query ($SQL);
 		$last_id = $this -> con -> insert_id;
 		echo "0; $last_id";
-		/**/
-		//$result = $this -> con -> query ($SQL);
-		$result = $this -> con -> query ($SQL) or die("sql failed!");
-		$last_id = $this -> con -> insert_id;
-		echo "0; $last_id";
-		//echo "0; $last_id; $SQL";
 		
     }
 
@@ -45,7 +37,7 @@ class simulations extends core
 			if($data["onSearch"] == "true")
 			{
 				$search = $data["search"];
-				$SQL = "SELECT * FROM simulations WHERE name LIKE '%$search%' LIMIT 10;";
+				$SQL = "SELECT * FROM simulations WHERE name LIKE '%$search%' 10;";
 				
 				$result = $this -> con -> query ($SQL);
 				echo '0;'.$result->num_rows.'{';
@@ -60,7 +52,7 @@ class simulations extends core
 			{
 				$N = $data["N"];
 				$LIMIT = 10 * $N;
-				$SQL = 'SELECT * FROM simulations LIMIT '.$LIMIT.';';
+				$SQL = 'SELECT * FROM simulations ORDER BY likesCount DESC LIMIT '.$LIMIT.';';
 
 				$result = $this -> con -> query ($SQL);
 				echo '0;'.$result->num_rows.'{';
@@ -95,7 +87,7 @@ class simulations extends core
 				$LIMIT = 10 * $N;
 				$authorID = $data["authorID"];
 				
-				$SQL = 'SELECT * FROM simulations WHERE authorID = '.$authorID.' LIMIT '.$LIMIT.';';
+				$SQL = 'SELECT * FROM simulations WHERE authorID = '.$authorID.' ORDER BY likesCount DESC LIMIT '.$LIMIT.';';
 				$result = $this -> con -> query ($SQL);
 				echo '0;'.$result->num_rows.'{';
 				for($i = 0; $i < $result->num_rows; $i++)
