@@ -17,7 +17,7 @@ public class LoadSimulationRules : MonoBehaviour
 {
     
     public bool assetDatabaseRefreshed = false;
-    private List<string> txtLines = File.ReadAllLines("Assets/4thTest/SimulationScene/RunSimulation.txt").ToList();
+    private List<string> txtLines = File.ReadAllLines("Assets/TheApp/SimulationScene/RunSimulation.txt").ToList();
 
     private int amountOfFormulas;
     private int amountOfAgents;
@@ -250,7 +250,7 @@ public class LoadSimulationRules : MonoBehaviour
         }
 
         //Generate the simulation code
-        File.WriteAllLines("Assets/4thTest/SimulationScene/RunSimulation.cs", txtLines);
+        File.WriteAllLines("Assets/TheApp/SimulationScene/RunSimulation.cs", txtLines);
         AssetDatabase.Refresh();
         yield return new RecompileScripts();
     }

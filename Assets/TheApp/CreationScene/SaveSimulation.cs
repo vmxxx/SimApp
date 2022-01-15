@@ -45,7 +45,7 @@ public class SaveSimulation : MonoBehaviour
             //If it doesnt then we cant save the simulation
 
             //Copy the script template into memory
-            txtLines = File.ReadAllLines("Assets/4thTest/CreationScene/formulaTester.txt").ToList();
+            txtLines = File.ReadAllLines("Assets/TheApp/CreationScene/formulaTester.txt").ToList();
 
             int a = 0;
             //Insert "float payoffVariable = 1f;" into the template copy (for each payoff variable)
@@ -65,7 +65,7 @@ public class SaveSimulation : MonoBehaviour
             txtLines.Insert(a + 44, "compilationIndex = " + Buffer.instance.formulaTesterCompilationIndex + "; scriptsRecompiled = true;"); a = a + 1;
 
             //Write them to the file
-            File.WriteAllLines("Assets/4thTest/CreationScene/formulaTester.cs", txtLines);
+            File.WriteAllLines("Assets/TheApp/CreationScene/formulaTester.cs", txtLines);
 
         //After we've generated a formula tester script:
 
@@ -173,10 +173,11 @@ public class SaveSimulation : MonoBehaviour
 
                 GameObject agent1Cell = payoffMatrixPanel.transform.Find("TableColumn_0").Find("TableCell_" + i + "_0").gameObject;
                 GameObject agent2Cell = payoffMatrixPanel.transform.Find("TableColumn_" + j).Find("TableCell_0_" + j).gameObject;
+                GameObject tableCell = payoffMatrixPanel.transform.Find("TableColumn_" + j).Find("TableCell_" + i + "_" + j).gameObject;
 
+                string payoffFormula = tableCell.transform.GetChild(0).GetComponent<InputField>().text;
                 int agent1 = Int32.Parse(agent1Cell.transform.Find("AgentID").GetComponent<Text>().text);
                 int agent2 = Int32.Parse(agent2Cell.transform.Find("AgentID").GetComponent<Text>().text);
-                string payoffFormula = Buffer.instance.payoffFormulas[(agent1, agent2)].payoffFormula;
 
                 form.AddField(i + "_" + j + "_payoffFormula_agent1", agent1);
                 form.AddField(i + "_" + j + "_payoffFormula_agent2", agent2);

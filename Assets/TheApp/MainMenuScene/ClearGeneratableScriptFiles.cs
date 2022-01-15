@@ -23,10 +23,10 @@ public class ClearGeneratableScriptFiles : MonoBehaviour
 
     IEnumerator clearGeneratableScriptFiles()
     {
-        List<string> txtLines = File.ReadAllLines("Assets/4thTest/SimulationScene/RunSimulation.txt").ToList();
-        File.WriteAllLines("Assets/4thTest/SimulationScene/RunSimulation.cs", txtLines);
-        txtLines = File.ReadAllLines("Assets/4thTest/CreationScene/formulaTester.txt").ToList();
-        File.WriteAllLines("Assets/4thTest/CreationScene/FormulaTester.cs", txtLines);
+        List<string> txtLines = File.ReadAllLines("Assets/TheApp/SimulationScene/RunSimulation.txt").ToList();
+        File.WriteAllLines("Assets/TheApp/SimulationScene/RunSimulation.cs", txtLines);
+        txtLines = File.ReadAllLines("Assets/TheApp/CreationScene/formulaTester.txt").ToList();
+        File.WriteAllLines("Assets/TheApp/CreationScene/FormulaTester.cs", txtLines);
         AssetDatabase.Refresh();
         yield return new RecompileScripts();
     }
