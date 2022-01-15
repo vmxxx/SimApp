@@ -1,0 +1,12 @@
+ÿlocalhost                                                                                                                                                                           performance_schema                                                                                                                                                                              mysql.session                                                                                   ÿlocalhost                                                                                                                                                                           sys                                                                                                                                                                                             mysql.sys                                                                                       2022-01-13T22:37:57.287549Z 0 [Note] Event Scheduler: Loaded 0 events
+2022-01-13T22:37:57.288080Z 0 [Note] C:\MAMP\\bin\mysql\bin\mysqld.exe: ready for connections.
+Version: '5.7.24'  socket: ''  port: 3306  MySQL Community Server (GPL)
+2022-01-13T22:37:57.398143Z 2 [Note] Got an error reading communication packets
+2022-01-13T22:44:18.555857Z 3 [Warning] InnoDB: Table mysql/innodb_table_stats has length mismatch in the column name table_name.  Please run mysql_upgrade
+2022-01-13T22:44:18.556585Z 3 [Warning] InnoDB: Table mysql/innodb_index_stats has length mismatch in the column name table_name.  Please run mysql_upgrade
+2022-01-13T23:50:54.992308Z 27 [Warning] InnoDB: Table mysql/innodb_table_stats has length mismatch in the column name table_name.  Please run mysql_upgrade
+2022-01-13T23:50:54.993372Z 27 [Warning] InnoDB: Table mysql/innodb_index_stats has length mismatch in the column name table_name.  Please run mysql_upgrade
+2022-01-13T23:50:59.266409Z 30 [Warning] InnoDB: Table mysql/innodb_table_stats has length mismatch in the column name table_name.  Please run mysql_upgrade
+2022-01-13T23:50:59.267283Z 30 [Warning] InnoDB: Table mysql/innodb_index_stats has length mismatch in the column name table_name.  Please run mysql_upgrade
+2022-01-13T23:50:59.756332Z 32 [Warning] InnoDB: Table mysql/innodb_table_stats has length mismatch in the column name table_name.  Please run mysql_upgrade
+2022-01-13T23:50:59.757100Z 32 [Warning] InnoDB: Table mysql/innodb_index_stats has length mismatch in the column name table_name.  Please run mysql_upgrade

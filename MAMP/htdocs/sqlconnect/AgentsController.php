@@ -82,9 +82,20 @@ class agents extends core
     public function delete($data)
     {
 		$ID = $data["ID"];
-		$SQL = "DELETE FROM agents WHERE agents.ID = $ID AND agents.authorID != 0;";
-		$this -> con -> query ($SQL);
-		echo "0;";
+        $SQL = "SELECT * FROM payoffFormulas WHERE agent1 = $ID;";
+        //check if name exists
+        $result = mysqli_query($this->con, $SQL);
+
+        if(mysqli_num_rows($result) > 0)
+        {
+            echo "Can't delete agent! Such agent is inside some simulation!";
+        }
+		else
+		{
+			$SQL = "DELETE FROM agents WHERE agents.ID = $ID AND agents.authorID != 0;";
+			$this -> con -> query ($SQL);
+			echo "0; Agent deleted successfully!";
+		}
     }
 
 }

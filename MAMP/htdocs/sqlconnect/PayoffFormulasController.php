@@ -34,22 +34,8 @@ class payoffFormulas extends core
 		{
 			$row = $result -> fetch_assoc();
 			echo'{ID:'.$row["payoffFormulaID"].', agent1:'.$row["agent1"].', agent2:'.$row["agent2"].', payoffFormula:"'.$row["payoffFormula"].'", simulationID:'.$row["authorID"].'}';
-			//if ($i < sqrt($result->num_rows)) $sql2 = $sql2.", ".$row["agent2"];
 		}
 		
-		/*
-		$sql2 = "SELECT * FROM agents WHERE ID IN (0";
-		$sql2 = $sql2.");";
-		$result2 = $this -> con -> query ($sql2) or die("sql failed!");
-		echo '}0;'.$result2->num_rows.'{';
-		
-		for($i = 0; $i < $result2->num_rows; $i++)
-		{
-			$row = $result2 -> fetch_assoc();
-			echo'{ID:'.$row["ID"].', icon:'.$row["icon"].', name:'.$row["name"].', description:"'.$row["description"].'", authorID:'.$row["authorID"].'}';
-		}
-		echo '}';
-		/**/
     }
 
     public function update($data)
