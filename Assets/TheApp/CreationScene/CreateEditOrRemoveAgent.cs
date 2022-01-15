@@ -61,8 +61,7 @@ public class CreateEditOrRemoveAgent : MonoBehaviour
         form.AddField("icon", Convert.ToBase64String(ImageConversion.EncodeToPNG((Texture2D)iconSetting.GetComponent<RawImage>().texture)));
         form.AddField("name", nameSetting.text);
         form.AddField("description", descriptionSetting.text);
-        //form.AddField("authorID", Buffer.instance.authenticatedUser.ID);
-        form.AddField("authorID", 5);
+        form.AddField("authorID", Buffer.instance.authenticatedUser.ID);
 
         WWW www = new WWW("http://localhost/sqlconnect/index.php", form);
         yield return www; //tells Unity to put this on the backburner. Once we get the info back, we'll run the rest of the code
@@ -93,8 +92,7 @@ public class CreateEditOrRemoveAgent : MonoBehaviour
         form.AddField("icon", Convert.ToBase64String(ImageConversion.EncodeToPNG((Texture2D)iconSetting.GetComponent<RawImage>().texture)));
         form.AddField("name", nameSetting.text);
         form.AddField("description", descriptionSetting.text);
-        //form.AddField("authorID", Buffer.instance.authenticatedUser.ID);
-        form.AddField("authorID", 5);
+        form.AddField("authorID", Buffer.instance.authenticatedUser.ID);
 
         WWW www = new WWW("http://localhost/sqlconnect/index.php", form);
         yield return www; //tells Unity to put this on the backburner. Once we get the info back, we'll run the rest of the code
