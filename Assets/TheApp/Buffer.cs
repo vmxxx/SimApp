@@ -188,24 +188,6 @@ currentSimulation.ID = 0;
         {
             Debug.Log("Buffer.instance.agents == null"); 
         }
-
-        /*
-        if (this.agents != null)
-        {
-            for (int i = 0; i < this.agents.Length; i++)
-            {
-                Debug.Log(i + ". agentID: " + this.agents[i].agentID);
-                Debug.Log(i + ". icon: " + this.agents[i].icon);
-                Debug.Log(i + ". agentName: " + this.agents[i].agentName);
-                Debug.Log(i + ". agentDescription: " + this.agents[i].agentDescription);
-                Debug.Log(i + ". authorID: " + this.agents[i].authorID);
-            }
-        }
-        else
-        {
-            Debug.Log("Buffer.instance.agents == null");
-        }
-        */
     }
 }
 [System.Serializable]

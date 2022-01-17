@@ -30,12 +30,18 @@ public class RunSimulation : MonoBehaviour
 
 	//These are created by the code generator
 	
+public float VV = 0f;
+public float CC = 0f;
 	//The starting totalAmountOfIndividuals = 0
     private int totalAmountOfIndividuals = 0;
     private Dictionary<(int, int), float> payoffResults = new Dictionary<(int, int), float>();
 	
 	//The code generator has created 4 new lines which initializes the agent sets and their starting amount
 	
+private SortedSet<agent> Doves = new SortedSet<agent>(new agentComparer());
+public int startingNumberOfDoves = 10;
+private SortedSet<agent> Hawks = new SortedSet<agent>(new agentComparer());
+public int startingNumberOfHawks = 10;
     private int varItr = 0;
 	
     private bool initialized = false;
@@ -117,6 +123,10 @@ public class RunSimulation : MonoBehaviour
 		
 		//The code generator creates these 4 lines
 		//(dove.ID = 9, hawk.ID = 10)
+payoffResults.Add((9, 9), 0 );
+payoffResults.Add((9, 10), 0 );
+payoffResults.Add((10, 9), 0 );
+payoffResults.Add((10, 10), 0 );
 
     }
 
@@ -126,6 +136,10 @@ public class RunSimulation : MonoBehaviour
     {
 		//The code generator creates these 4 lines
 		//(dove.ID = 9, hawk.ID = 10)
+payoffResults[(9, 9)] = VV / 2;
+payoffResults[(9, 10)] = 0;
+payoffResults[(10, 9)] = VV;
+payoffResults[(10, 10)] = (VV - CC) / 2;
     }
 
 	//Start() gets called before the first frame update
@@ -138,6 +152,40 @@ public class RunSimulation : MonoBehaviour
 
         GameObject newVariableSetting;
 
+//We have to create a "Set$VV" button
+newVariableSetting = Instantiate(variableSetting);
+newVariableSetting.SetActive(true);
+newVariableSetting.name = "$VVSetting";
+newVariableSetting.transform.Find("CurrentValue").GetComponent<Text>().text = "$VV: 0";
+newVariableSetting.transform.Find("InputField").GetComponent<InputField>().text = "0";
+newVariableSetting.transform.Find("Button").GetChild(0).GetComponent<Text>().text = "Set $VV";
+newVariableSetting.transform.Find("Button").GetComponent<Button>().onClick.AddListener(delegate
+{
+val = setVariable(simulationVariables.transform.Find("$VVSetting").Find("InputField").gameObject);
+VV = val;
+simulationVariables.transform.Find("$VVSetting").Find("CurrentValue").GetComponent<Text>().text = "$VV: " + val;
+});
+newVariableSetting.transform.SetParent(simulationVariables.transform);
+newVariableSetting.transform.position = variableSetting.transform.position - new Vector3(0f, (60 * varItr), 0);
+varItr++;
+
+//We have to create a "Set$CC" button
+newVariableSetting = Instantiate(variableSetting);
+newVariableSetting.SetActive(true);
+newVariableSetting.name = "$CCSetting";
+newVariableSetting.transform.Find("CurrentValue").GetComponent<Text>().text = "$CC: 0";
+newVariableSetting.transform.Find("InputField").GetComponent<InputField>().text = "0";
+newVariableSetting.transform.Find("Button").GetChild(0).GetComponent<Text>().text = "Set $CC";
+newVariableSetting.transform.Find("Button").GetComponent<Button>().onClick.AddListener(delegate
+{
+val = setVariable(simulationVariables.transform.Find("$CCSetting").Find("InputField").gameObject);
+CC = val;
+simulationVariables.transform.Find("$CCSetting").Find("CurrentValue").GetComponent<Text>().text = "$CC: " + val;
+});
+newVariableSetting.transform.SetParent(simulationVariables.transform);
+newVariableSetting.transform.position = variableSetting.transform.position - new Vector3(0f, (60 * varItr), 0);
+varItr++;
+
     }
 
     private void initialize()
@@ -145,6 +193,42 @@ public class RunSimulation : MonoBehaviour
 		
         totalAmountOfIndividuals = 0;
 		
+//These next 15 lines are created by the code generator
+//The simulation starts with 10 Doves (at the start (or at the restart))
+Doves = new SortedSet<agent>(new agentComparer());
+for (int i = 0; i < startingNumberOfDoves; i++)
+{
+agent newAgent = new agent();
+newAgent.ID = 9;
+newAgent.agentName = "Dove";
+newAgent.agentDescription = "";
+newAgent.authorID = 5;
+newAgent.fitness = 0;
+
+while (Doves.Contains(newAgent)) { newAgent.key++; }
+
+Doves.Add(newAgent);
+totalAmountOfIndividuals = totalAmountOfIndividuals + 1;
+}
+
+//These next 15 lines are created by the code generator
+//The simulation starts with 10 Hawks (at the start (or at the restart))
+Hawks = new SortedSet<agent>(new agentComparer());
+for (int i = 0; i < startingNumberOfHawks; i++)
+{
+agent newAgent = new agent();
+newAgent.ID = 10;
+newAgent.agentName = "Hawk";
+newAgent.agentDescription = "";
+newAgent.authorID = 5;
+newAgent.fitness = 0;
+
+while (Hawks.Contains(newAgent)) { newAgent.key++; }
+
+Hawks.Add(newAgent);
+totalAmountOfIndividuals = totalAmountOfIndividuals + 1;
+}
+
 		
     }
 
@@ -164,6 +248,12 @@ public class RunSimulation : MonoBehaviour
             initialized = true;
 			
 			//These next 6 lines are created by the code generator
+WindoGraph.instance.addInitialValue(startingNumberOfDoves, "Doves", new Color(1f, 1f, 1f));
+WindoGraph.instance.addInitialValue(startingNumberOfHawks, "Hawks", new Color(1f, 1f, 1f));
+WindoGraph.instance.yMaximum = (Doves.Count > WindoGraph.instance.yMaximum) ? Doves.Count : WindoGraph.instance.yMaximum;
+WindoGraph.instance.yMaximum = (Hawks.Count > WindoGraph.instance.yMaximum) ? Hawks.Count : WindoGraph.instance.yMaximum;
+WindoGraph.instance.realignObjects("Doves");
+WindoGraph.instance.realignObjects("Hawks");
 
 			//redraw the graph
             WindoGraph.instance.realignLabels();
@@ -178,8 +268,18 @@ public class RunSimulation : MonoBehaviour
             assignIndividualsInPairwiseContestsAndCalculateTheirFitness();
 
             //3rd phase
+killOrDuplicateEachIndividual(Doves);
+killOrDuplicateEachIndividual(Hawks);
 			
             //4th phase
+WindoGraph.instance.newValue = Doves.Count;
+WindoGraph.instance.addNewValue("Doves", new Color(1f, 1f, 1f));
+WindoGraph.instance.newValue = Hawks.Count;
+WindoGraph.instance.addNewValue("Hawks", new Color(1f, 1f, 0f));
+WindoGraph.instance.yMaximum = (Doves.Count > WindoGraph.instance.yMaximum) ? Doves.Count : WindoGraph.instance.yMaximum;
+WindoGraph.instance.yMaximum = (Hawks.Count > WindoGraph.instance.yMaximum) ? Hawks.Count : WindoGraph.instance.yMaximum;
+WindoGraph.instance.realignObjects("Doves");
+WindoGraph.instance.realignObjects("Hawks");
 
 			//Redraw the graph
             WindoGraph.instance.daysPassed++;
@@ -244,6 +344,8 @@ public class RunSimulation : MonoBehaviour
 		//These 2 lines are created by the code generator
 		//They are needed so we can't assign some individual to another which is already in a contest with someone else
         
+SortedSet<agent> alreadyAssignedDoves = new SortedSet<agent>(new agentComparer());
+SortedSet<agent> alreadyAssignedHawks = new SortedSet<agent>(new agentComparer());
 		
 		
 		System.Random rand = new System.Random();
@@ -256,12 +358,51 @@ public class RunSimulation : MonoBehaviour
 		//have to ignore someone so that he isn't later assigned to NULL
         if (totalAmountOfIndividuals % 2 == 1)
         {
+randomIndex = rand.Next(Doves.Count + Hawks.Count);
+if (randomIndex < Doves.Count)
+{
+agent1 = Doves.ElementAt(randomIndex);
+alreadyAssignedDoves.Add(agent1);
+Doves.Remove(agent1);
+}
+else if (randomIndex < Doves.Count + Hawks.Count)
+{
+agent1 = Hawks.ElementAt(randomIndex - (Doves.Count));
+alreadyAssignedHawks.Add(agent1);
+Hawks.Remove(agent1);
+}
 
         }
 		
 		//For each individual
         for (int i = 0; i < totalAmountOfIndividuals / 2; i++)
         {
+randomIndex = rand.Next(Doves.Count + Hawks.Count);
+if (randomIndex < Doves.Count)
+{
+agent1 = Doves.ElementAt(randomIndex);
+alreadyAssignedDoves.Add(agent1);
+Doves.Remove(agent1);
+}
+else if (randomIndex < Doves.Count + Hawks.Count)
+{
+agent1 = Hawks.ElementAt(randomIndex - (Doves.Count));
+alreadyAssignedHawks.Add(agent1);
+Hawks.Remove(agent1);
+}
+randomIndex = rand.Next(Doves.Count + Hawks.Count);
+if (randomIndex < Doves.Count)
+{
+agent2 = Doves.ElementAt(randomIndex);
+alreadyAssignedDoves.Add(agent2);
+Doves.Remove(agent2);
+}
+else if (randomIndex < Doves.Count + Hawks.Count)
+{
+agent2 = Hawks.ElementAt(randomIndex - (Doves.Count));
+alreadyAssignedHawks.Add(agent2);
+Hawks.Remove(agent2);
+}
 
 			//Recalculate the first one's fitness
             agent1.fitness = agent1.fitness + payoffResults[(agent1.ID, agent2.ID)];
@@ -270,6 +411,8 @@ public class RunSimulation : MonoBehaviour
         }
 		
 		//Once we're done we put the agents back in their original sets (with their new fitnesses)
+Doves = alreadyAssignedDoves;
+Hawks = alreadyAssignedHawks;
 
     }
 }
