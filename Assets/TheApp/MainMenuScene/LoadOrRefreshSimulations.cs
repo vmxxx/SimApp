@@ -177,6 +177,11 @@ public class LoadOrRefreshSimulations : MonoBehaviour
             }
             newEntry.transform.GetChild(2).GetChild(0).GetChild(0).GetComponent<Text>().text = "likes/dislikes = " + simulations[i].likesCount + "/" + simulations[i].dislikesCount;
             newEntry.transform.GetChild(2).GetChild(0).GetChild(1).GetComponent<Text>().text = simulations[i].description;
+
+
+            newEntry.transform.Find("LikesCount").GetComponent<Text>().text = simulations[i].likesCount.ToString();
+            newEntry.transform.Find("DislikesCount").GetComponent<Text>().text = simulations[i].dislikesCount.ToString();
+            newEntry.transform.Find("Description").GetComponent<Text>().text = simulations[i].description;
             newEntry.transform.SetParent(panel.transform);
             int currIndex = newEntry.transform.GetSiblingIndex();
             newEntry.transform.SetSiblingIndex(currIndex - 1);

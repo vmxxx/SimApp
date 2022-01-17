@@ -13,24 +13,25 @@ public class SwitchScene : MonoBehaviour
 
     public void switchScene(string scene_name)
     {
-
-        //Debug.Log("GAMEOBJECT NAME" + gameObject.name);
-
-        //Debug.Log("SIMULATION IDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
-        //Debug.Log("SIMULATION_ID: " + EventSystem.current.currentSelectedGameObject.transform.GetChild(0).name);
         GameObject objectClicked = EventSystem.current.currentSelectedGameObject;
         if (objectClicked.name == "Edit" || objectClicked.name == "Run")
         {
-            string simulationID = objectClicked.transform.parent.GetChild(0).GetComponent<Text>().text;
+            string simulationID = objectClicked.transform.parent.Find("ID").GetComponent<Text>().text;
+            string simulationName = objectClicked.transform.parent.Find("Name").GetComponent<Text>().text;
+            //Texture2D simulationImageTexture = (Texture2D)objectClicked.transform.parent.Find("Image").GetComponent<RawImage>().texture;
+            //string simulationImage = (simulationImageTexture != null) ? Convert.ToBase64String( ImageConversion.EncodeToPNG(simulationImageTexture)) : "";
+            string simulationLikesCount = objectClicked.transform.parent.Find("LikesCount").GetComponent<Text>().text;
+            string simulationDislikesCount = objectClicked.transform.parent.Find("DislikesCount").GetComponent<Text>().text;
+            string simulationDescription = objectClicked.transform.parent.Find("Description").GetComponent<Text>().text;
+            /**/
             if (simulationID != "Text")
             {
                 Buffer.instance.currentSimulation.ID = Int32.Parse(simulationID);
-                //Set the name too
-                //Set the image too
-                //Set the description too
-                //Set the likesCount too
-                //Set the dislikesCount too
-                //Set the authorID too
+                Buffer.instance.currentSimulation.name = simulationName;
+                //Buffer.instance.currentSimulation.image = simulationImage;
+                Buffer.instance.currentSimulation.description = simulationDescription;
+                Buffer.instance.currentSimulation.likesCount = Int32.Parse(simulationLikesCount);
+                Buffer.instance.currentSimulation.dislikesCount = Int32.Parse(simulationDislikesCount);
             }
         }
         else if (objectClicked.name == "CreateSimulation")

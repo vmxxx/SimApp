@@ -10,14 +10,12 @@ class likesDislikes extends core
 		$userID = $data["userID"];
 		$simulationID = $data["simulationID"];
 		$isLike = $data["isLike"];
-		if($isLike == 1) $newLikesCount = $data["currLikesCount"] + 1;
-		else $newDislikesCount = $data["currDislikesCount"] + 1;
 		
         $SQL = "INSERT INTO likesdislikes (userID, simulationID, isLike) VALUES ($userID, $simulationID, $isLike);";
         $result = mysqli_query($this->con, $SQL);
 		
-		if ($isLike == 1) $SQL = "UPDATE simulations SET likesCount = $newLikesCount;";
-		else $SQL = "UPDATE simulations SET dislikesCount = $newDislikesCount;";
+		if ($isLike == 1) $SQL = "UPDATE simulations SET likesCount = likesCount + 1 WHERE ID = $simulationID;";
+		else $SQL = "UPDATE simulations SET dislikeCount = dislikeCount + 1 WHERE ID = $simulationID;";
         $result = mysqli_query($this->con, $SQL);
 
 		echo "0; Like or dislike added successfully!";
@@ -47,31 +45,28 @@ class likesDislikes extends core
 		$userID = $data["userID"];
 		$simulationID = $data["simulationID"];
 		$isLike = $data["isLike"];
-		if ($isLike == 1) { $newLikesCount = $data["currLikesCount"] + 1; $newDislikesCount = $data["currDislikesCount"] - 1; }
-		else { $newLikesCount = $data["currLikesCount"] - 1; $newDislikesCount = $data["currDislikesCount"] + 1; }
 		
-        $SQL = "UPDATE likesdislikes SET userID = $userID, simulationID = $simulationID, isLike = $isLike;";
+        $SQL = "UPDATE likesdislikes SET isLike = $isLike WHERE userID = $userID AND simulationID = $simulationID;";
         $result = mysqli_query($this->con, $SQL);
 		
-		$SQL = "UPDATE simulations SET likesCount = $newLikesCount, dislikesCount = $newDislikesCountikesCount;";
+		if ($isLike == 1) { $SQL = "UPDATE simulations SET likesCount = likesCount + 1, dislikeCount = dislikeCount - 1 WHERE ID = $simulationID;"; }
+		else { $SQL = "UPDATE simulations SET likesCount = likesCount - 1, dislikeCount = dislikeCount + 1 WHERE ID = $simulationID;"; }
         $result = mysqli_query($this->con, $SQL);
 
-		echo "0; Like or dislike added successfully!";
+		echo "0; Like or dislike updated successfully!";
     }
 
     public function delete($data)
     {
 		$userID = $data["userID"];
 		$simulationID = $data["simulationID"];
-		$isLike = $data["isLike"];
-		if ($isLike == 1) $newLikesCount = $data["currLikesCount"] - 1;
-		else $newDislikesCount = $data["currDislikesCount"] - 1;
+		$wasLike = $data["wasLike"];
 		
         $SQL = "DELETE FROM likesdislikes WHERE userID = $userID AND simulationID = $simulationID;";
         $result = mysqli_query($this->con, $SQL);
 		
-		if ($isLike == 1) $SQL = "UPDATE simulations SET likesCount = $newLikesCount;";
-		else $SQL = "UPDATE simulations SET dislikesCount = $newDislikesCount;";
+		if ($wasLike == 1) $SQL = "UPDATE simulations SET likesCount = likesCount - 1 WHERE ID = $simulationID;";
+		else $SQL = "UPDATE simulations SET dislikeCount = dislikeCount - 1 WHERE ID = $simulationID;";
         $result = mysqli_query($this->con, $SQL);
 
 		echo "0; Like or dislike removed successfully!";

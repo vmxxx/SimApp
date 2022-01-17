@@ -22,6 +22,8 @@ public class LoadSimulationRules : MonoBehaviour
     private int amountOfFormulas;
     private int amountOfAgents;
 
+    public Text likesCountText;
+    public Text dislikesCountText;
     public InputField nameInputField;
     public InputField imageInputField;
     public InputField descriptionInputField;
@@ -30,7 +32,7 @@ public class LoadSimulationRules : MonoBehaviour
     public string newPayoffVariable = "";
 
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
         StartCoroutine(loadSimlation());
     }
@@ -269,8 +271,6 @@ public class LoadSimulationRules : MonoBehaviour
 
         if (www.text != "" && www.text[0] == '0')
         {
-            Debug.Log("0; Load succesful;" + www.text);
-
             Regex pattern = new Regex(@"{(.*?)}");
             MatchCollection matches = pattern.Matches(www.text);
 
@@ -401,6 +401,8 @@ public class LoadSimulationRules : MonoBehaviour
             Debug.Log("Loading simulations failed. Error #" + www.text);
         }
 
+        likesCountText.text = Buffer.instance.currentSimulation.likesCount.ToString();
+        dislikesCountText.text = Buffer.instance.currentSimulation.dislikesCount.ToString();
         nameInputField.text = Buffer.instance.currentSimulation.name;
         imageInputField.text = "Temporary image name";
         descriptionInputField.text = Buffer.instance.currentSimulation.description;
