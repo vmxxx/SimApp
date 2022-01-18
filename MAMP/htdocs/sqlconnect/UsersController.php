@@ -27,7 +27,7 @@ class users extends core
 
             $salt = "\$5\$rounds=5000\$"."steamedhams".$username."\$"; //this is gonna run through 5000 rounds of shifting characters around and coming up with really long and garbled mess of code
             $hash = crypt($password, $salt);
-            $SQL = "INSERT INTO users (username, hash, salt) VALUES (\"$username\", \"$hash\", \"$salt\");";
+            $SQL = "INSERT INTO users (username, hash, salt, isAdmin) VALUES (\"$username\", \"$hash\", \"$salt\", 0);";
             mysqli_query($this->con, $SQL);
 
             echo "0; Registration succesful!";
@@ -66,8 +66,9 @@ class users extends core
             {
 				$ID = $existinginfo["ID"];
 				$username = $existinginfo["username"];
+				$isAdmin = $existinginfo["isAdmin"];
 				
-				echo "0; {ID:$ID, username:\"$username\"}";
+				echo "0; {ID:$ID, username:\"$username\", isAdmin:$isAdmin}";
             }
 		}
     }

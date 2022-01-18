@@ -24,6 +24,8 @@ public class LoadSimulationRules : MonoBehaviour
 
     public Text likesCountText;
     public Text dislikesCountText;
+    public Text approvedValText;
+    public GameObject approveButton;
     public InputField nameInputField;
     public InputField imageInputField;
     public InputField descriptionInputField;
@@ -282,6 +284,7 @@ public class LoadSimulationRules : MonoBehaviour
             string description = Regex.Match(match.Value, @"description:(.*?),").Value;
             string likesCount = Regex.Match(match.Value, @"likesCount:(.*?),").Value;
             string dislikesCount = Regex.Match(match.Value, @"dislikesCount:(.*?),").Value;
+            string approved = Regex.Match(match.Value, @"approved:(.*?),").Value;
             string authorID = Regex.Match(match.Value, @"authorID:(.*?)}").Value;
 
             Buffer.instance.currentSimulation.ID = Int32.Parse(ID.Substring(3, ID.Length - 4));
@@ -290,6 +293,7 @@ public class LoadSimulationRules : MonoBehaviour
             Buffer.instance.currentSimulation.description = description.Substring(13, description.Length - 15);
             Buffer.instance.currentSimulation.likesCount = Int32.Parse(likesCount.Substring(11, likesCount.Length - 12));
             Buffer.instance.currentSimulation.dislikesCount = Int32.Parse(dislikesCount.Substring(14, dislikesCount.Length - 15));
+            Buffer.instance.currentSimulation.approved = (approved.Substring(9, approved.Length - 10) == "1") ? true : false;
             Buffer.instance.currentSimulation.authorID = Int32.Parse(authorID.Substring(9, authorID.Length - 10));
 
             Buffer.instance.currentSimulationID = Int32.Parse(ID.Substring(3, ID.Length - 4));
@@ -401,12 +405,16 @@ public class LoadSimulationRules : MonoBehaviour
             Debug.Log("Loading simulations failed. Error #" + www.text);
         }
 
-        likesCountText.text = Buffer.instance.currentSimulation.likesCount.ToString();
-        dislikesCountText.text = Buffer.instance.currentSimulation.dislikesCount.ToString();
         nameInputField.text = Buffer.instance.currentSimulation.name;
         imageInputField.text = "Temporary image name";
         descriptionInputField.text = Buffer.instance.currentSimulation.description;
-
+        likesCountText.text = Buffer.instance.currentSimulation.likesCount.ToString();
+        dislikesCountText.text = Buffer.instance.currentSimulation.dislikesCount.ToString();
+        approvedValText.text = (Buffer.instance.currentSimulation.approved == true) ? "yes" : "no";
+        approveButton.transform.GetChild(0).GetComponent<Text>().text = (Buffer.instance.currentSimulation.approved == true) ? "Unapprove" : "Approve";
+        Debug.Log("likesCountText: " + Buffer.instance.currentSimulation.likesCount.ToString());
+        Debug.Log("dislikesCountText: " + Buffer.instance.currentSimulation.dislikesCount.ToString());
+        Debug.Log("approved: " + Buffer.instance.currentSimulation.approved.ToString());
         bool variableFound = false;
         foreach (KeyValuePair<(int, int), PayoffFormula> entry in Buffer.instance.payoffFormulas)
         {

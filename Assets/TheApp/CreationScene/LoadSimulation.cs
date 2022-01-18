@@ -70,6 +70,7 @@ public class LoadSimulation : MonoBehaviour
             string description = Regex.Match(match.Value, @"description:(.*?),").Value;
             string likesCount = Regex.Match(match.Value, @"likesCount:(.*?),").Value;
             string dislikesCount = Regex.Match(match.Value, @"dislikesCount:(.*?),").Value;
+            string approved = Regex.Match(match.Value, @"approved:(.*?),").Value;
             string authorID = Regex.Match(match.Value, @"authorID:(.*?)}").Value;
 
             //Convert numbers to their appropriate data types, let the strings stay as strings
@@ -80,6 +81,7 @@ public class LoadSimulation : MonoBehaviour
             Buffer.instance.currentSimulation.description = description.Substring(13, description.Length - 15);
             Buffer.instance.currentSimulation.likesCount = Int32.Parse(likesCount.Substring(11, likesCount.Length - 12));
             Buffer.instance.currentSimulation.dislikesCount = Int32.Parse(dislikesCount.Substring(14, dislikesCount.Length - 15));
+            Buffer.instance.currentSimulation.approved = (approved.Substring(9, approved.Length - 10) == "1") ? true : false;
             Buffer.instance.currentSimulation.authorID = Int32.Parse(authorID.Substring(9, authorID.Length - 10));
         }
         else //Display error notification
