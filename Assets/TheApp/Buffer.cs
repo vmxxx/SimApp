@@ -206,6 +206,7 @@ public class User
 {
     public int ID;
     public string username;
+    public bool isAdmin;
 }
 [System.Serializable]
 public class Simulation
@@ -217,6 +218,7 @@ public class Simulation
     public int likesCount;
     public int dislikesCount;
     public int authorID;
+    public bool approved;
 
     private int amountOfCorrespondingFormulas;
     //private int amountOfCorrespondingAgents = sqrt(amountOfCorrespondingFormulas);

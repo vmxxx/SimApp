@@ -69,6 +69,7 @@ public class LoadOrRefreshSimulations : MonoBehaviour
                         string description = Regex.Match(seperate_entry, @"description:(.*?),").Value;
                         string likesCount = Regex.Match(seperate_entry, @"likesCount:(.*?),").Value;
                         string dislikesCount = Regex.Match(seperate_entry, @"dislikesCount:(.*?),").Value;
+                        string approved = Regex.Match(seperate_entry, @"approved:(.*?),").Value;
                         string authorID = Regex.Match(seperate_entry, @"authorID:(.*?)}").Value;
 
                         if (ID != "")
@@ -79,6 +80,7 @@ public class LoadOrRefreshSimulations : MonoBehaviour
                             Buffer.instance.popularSimulations[j].description = description.Substring(13, description.Length - 15);
                             Buffer.instance.popularSimulations[j].likesCount = Int32.Parse(likesCount.Substring(11, likesCount.Length - 12));
                             Buffer.instance.popularSimulations[j].dislikesCount = Int32.Parse(dislikesCount.Substring(14, dislikesCount.Length - 15));
+                            Buffer.instance.popularSimulations[j].approved = (approved.Substring(9, approved.Length - 10) == "1") ? true : false;
                             Buffer.instance.popularSimulations[j].authorID = Int32.Parse(authorID.Substring(9, authorID.Length - 10));
                         }
                         j++;
@@ -125,6 +127,7 @@ public class LoadOrRefreshSimulations : MonoBehaviour
                         string description = Regex.Match(seperate_entry, @"description:(.*?),").Value;
                         string likesCount = Regex.Match(seperate_entry, @"likesCount:(.*?),").Value;
                         string dislikesCount = Regex.Match(seperate_entry, @"dislikesCount:(.*?),").Value;
+                        string approved = Regex.Match(seperate_entry, @"approved:(.*?),").Value;
                         string authorID = Regex.Match(seperate_entry, @"authorID:(.*?)}").Value;
                         if (ID != "")
                         {
@@ -134,6 +137,7 @@ public class LoadOrRefreshSimulations : MonoBehaviour
                             Buffer.instance.userSimulations[j].description = description.Substring(13, description.Length - 15);
                             Buffer.instance.userSimulations[j].likesCount = Int32.Parse(likesCount.Substring(11, likesCount.Length - 12));
                             Buffer.instance.userSimulations[j].dislikesCount = Int32.Parse(dislikesCount.Substring(14, dislikesCount.Length - 15));
+                            Buffer.instance.userSimulations[j].approved = (approved.Substring(9, approved.Length - 10) == "1") ? true : false;
                             Buffer.instance.userSimulations[j].authorID = Int32.Parse(authorID.Substring(9, authorID.Length - 10));
                         }
                         j++;

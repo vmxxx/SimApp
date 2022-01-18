@@ -17,8 +17,8 @@ public class LikeOrDislike : MonoBehaviour
 
     public void Start()
     {
-        likesCountText.text = Buffer.instance.currentSimulation.likesCount.ToString();
-        dislikesCountText.text = Buffer.instance.currentSimulation.dislikesCount.ToString();
+        //likesCountText.text = Buffer.instance.currentSimulation.likesCount.ToString();
+        //dislikesCountText.text = Buffer.instance.currentSimulation.dislikesCount.ToString();
         likeButtonText = likeButton.transform.GetChild(0).GetComponent<Text>();
         dislikeButtonText = dislikeButton.transform.GetChild(0).GetComponent<Text>();
         if (Buffer.instance.authenticatedUser.ID == 0) { likeButton.SetActive(false); dislikeButton.SetActive(false); }

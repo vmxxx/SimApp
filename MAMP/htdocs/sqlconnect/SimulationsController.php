@@ -11,7 +11,7 @@ class simulations extends core
 		$image = $data["image"];
 		$description = $data["description"];
 		$authorID = $data["authorID"];
-        $SQL = "INSERT INTO simulations (name, image, description, likesCount, dislikeCount, authorID) VALUES (\"$name\", \"$image\", \"$description\", 0, 0, $authorID);";
+        $SQL = "INSERT INTO simulations (name, image, description, likesCount, dislikeCount, authorID, approved) VALUES (\"$name\", \"$image\", \"$description\", 0, 0, $authorID, 0);";
 		
 		echo $image;
 		$result = $this -> con -> query ($SQL);
@@ -29,7 +29,7 @@ class simulations extends core
 			$result = $this -> con -> query ($SQL);
 			
             $existinginfo = mysqli_fetch_assoc($result);
-			echo'0;{ID:'.$existinginfo["ID"].', name:"'.$existinginfo["name"].'", image:"'.$existinginfo["image"].'", description:"'.$existinginfo["description"].'", likesCount:'.$existinginfo["likesCount"].', dislikesCount:'.$existinginfo["dislikeCount"].', authorID:'.$existinginfo["authorID"].'}';
+			echo'0;{ID:'.$existinginfo["ID"].', name:"'.$existinginfo["name"].'", image:"'.$existinginfo["image"].'", description:"'.$existinginfo["description"].'", likesCount:'.$existinginfo["likesCount"].', dislikesCount:'.$existinginfo["dislikeCount"].', approved:'.$existinginfo["approved"].', authorID:'.$existinginfo["authorID"].'}';
 
 		}
 		else if ($data["list"] == "popular")
@@ -44,7 +44,7 @@ class simulations extends core
 				for($i = 0; $i < $result->num_rows; $i++)
 				{
 					$row = $result -> fetch_assoc();
-					echo'{ID:'.$row["ID"].', name:"'.$row["name"].'", image:"'.$row["image"].'", description:"'.$row["description"].'", likesCount:'.$row["likesCount"].', dislikesCount:'.$row["dislikeCount"].', authorID:'.$row["authorID"].'}';
+					echo'{ID:'.$row["ID"].', name:"'.$row["name"].'", image:"'.$row["image"].'", description:"'.$row["description"].'", likesCount:'.$row["likesCount"].', dislikesCount:'.$row["dislikeCount"].', approved:'.$row["approved"].', authorID:'.$row["authorID"].'}';
 				}
 				echo '}0;';
 			}
@@ -59,7 +59,7 @@ class simulations extends core
 				for($i = 0; $i < $result->num_rows; $i++)
 				{
 					$row = $result -> fetch_assoc();
-					echo'{ID:'.$row["ID"].', name:"'.$row["name"].'", image:"'.$row["image"].'", description:"'.$row["description"].'", likesCount:'.$row["likesCount"].', dislikesCount:'.$row["dislikeCount"].', authorID:'.$row["authorID"].'}';
+					echo'{ID:'.$row["ID"].', name:"'.$row["name"].'", image:"'.$row["image"].'", description:"'.$row["description"].'", likesCount:'.$row["likesCount"].', dislikesCount:'.$row["dislikeCount"].', approved:'.$row["approved"].', authorID:'.$row["authorID"].'}';
 				}
 				echo '}0;';
 			}
@@ -77,7 +77,7 @@ class simulations extends core
 				for($i = 0; $i < $result->num_rows; $i++)
 				{
 					$row = $result -> fetch_assoc();
-					echo'{ID:'.$row["ID"].', name:"'.$row["name"].'", image:"'.$row["image"].'", description:"'.$row["description"].'", likesCount:'.$row["likesCount"].', dislikesCount:'.$row["dislikeCount"].', authorID:'.$row["authorID"].'}';
+					echo'{ID:'.$row["ID"].', name:"'.$row["name"].'", image:"'.$row["image"].'", description:"'.$row["description"].'", likesCount:'.$row["likesCount"].', dislikesCount:'.$row["dislikeCount"].', approved:'.$row["approved"].', authorID:'.$row["authorID"].'}';
 				}
 				echo '}0;';
 			}
@@ -93,7 +93,7 @@ class simulations extends core
 				for($i = 0; $i < $result->num_rows; $i++)
 				{
 					$row = $result -> fetch_assoc();
-					echo'{ID:'.$row["ID"].', name:"'.$row["name"].'", image:"'.$row["image"].'", description:"'.$row["description"].'", likesCount:'.$row["likesCount"].', dislikesCount:'.$row["dislikeCount"].', authorID:'.$row["authorID"].'}';
+					echo'{ID:'.$row["ID"].', name:"'.$row["name"].'", image:"'.$row["image"].'", description:"'.$row["description"].'", likesCount:'.$row["likesCount"].', dislikesCount:'.$row["dislikeCount"].', approved:'.$row["approved"].', authorID:'.$row["authorID"].'}';
 				}
 				echo '}0;';
 			}
@@ -102,16 +102,27 @@ class simulations extends core
 
     public function update($data)
     {
-		$ID = $data["ID"];
-		$name = $data["name"];
-		$image = $data["image"];
-		$description = $data["description"];
-		
-        $SQL = "UPDATE simulations SET name = \"$name\", image = \"$image\", description = \"$description\" WHERE ID = $ID";
-		
-		$result = $this -> con -> query ($SQL) or die("sql failed!");
-		echo "0; $ID";
-		//echo "0; $ID; $SQL";
+		if($data["approval"] === "true")
+		{
+			$ID = $data["ID"];
+			$approved = $data["approved"];
+			$SQL = "UPDATE simulations SET approved = $approved WHERE ID = $ID";
+			$result = $this -> con -> query ($SQL) or die("sql failed!");
+			echo "0; Simulation approved successfully!";
+		}
+		else
+		{
+			$ID = $data["ID"];
+			$name = $data["name"];
+			$image = $data["image"];
+			$description = $data["description"];
+			
+			$SQL = "UPDATE simulations SET name = \"$name\", image = \"$image\", description = \"$description\" WHERE ID = $ID";
+			
+			$result = $this -> con -> query ($SQL) or die("sql failed!");
+			echo "0; $ID";
+			//echo "0; $ID; $SQL";
+		}
     }
 
     public function delete($data)
