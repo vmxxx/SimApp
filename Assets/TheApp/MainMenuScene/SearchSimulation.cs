@@ -8,6 +8,8 @@ using System.Text.RegularExpressions;
 
 public class SearchSimulation : MonoBehaviour
 {
+    public static SearchSimulation instance;
+
     public InputField popularSimulationsSearchField;
     public InputField userSimulationsSearchField;
 
@@ -16,6 +18,11 @@ public class SearchSimulation : MonoBehaviour
     public GameObject entry;
     private int pN = 1;
     private int uN = 1;
+
+    private void Update()
+    {
+        if (SearchSimulation.instance == null) instance = this;
+    }
 
     public void clearPopular()
     {
@@ -97,6 +104,7 @@ public class SearchSimulation : MonoBehaviour
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
+            yield break;
         }
     }
 
@@ -155,6 +163,7 @@ public class SearchSimulation : MonoBehaviour
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
+            yield break;
         }
     }
 
@@ -176,19 +185,20 @@ public class SearchSimulation : MonoBehaviour
             newEntry.name = "Entry_" + i;
             newEntry.transform.GetChild(0).GetComponent<Text>().text = simulations[i].ID.ToString();
             newEntry.transform.GetChild(1).GetComponent<Text>().text = simulations[i].name;
-
-            if (simulations[i].image != "")
-            {
-                Texture2D newTexture = new Texture2D(1, 1);
-                newTexture.LoadImage(Convert.FromBase64String(simulations[i].image));
-                newTexture.Apply();
-                newEntry.transform.GetChild(2).GetComponent<RawImage>().texture = newTexture;
-            }
+            newEntry.transform.GetChild(2).GetComponent<RawImage>().texture = applyBase64StringAsTexture(simulations[i].image);
             newEntry.transform.GetChild(2).GetChild(0).GetChild(0).GetComponent<Text>().text = "likes/dislikes = " + simulations[i].likesCount + "/" + simulations[i].dislikesCount;
             newEntry.transform.GetChild(2).GetChild(0).GetChild(1).GetComponent<Text>().text = simulations[i].description;
             newEntry.transform.SetParent(panel.transform);
             int currIndex = newEntry.transform.GetSiblingIndex();
             newEntry.transform.SetSiblingIndex(currIndex - 1);
         }
+    }
+
+    private Texture2D applyBase64StringAsTexture(string textureString)
+    {
+        Texture2D newTexture = new Texture2D(1, 1);
+        newTexture.LoadImage(Convert.FromBase64String(textureString));
+        newTexture.Apply();
+        return newTexture;
     }
 }

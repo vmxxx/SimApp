@@ -41,15 +41,14 @@ public class LikeOrDislike : MonoBehaviour
         //we display the success notification and put the received simulation data in the buffer
         if (www.text != "" && www.text[0] == '0')
         {
-            //Display the notification
             if (www.text[2] == '1') likeButton.transform.GetChild(0).GetComponent<Text>().text = "Unlike";
             else if (www.text[2] == '0') dislikeButton.transform.GetChild(0).GetComponent<Text>().text = "Undislike";
-
         }
         else //Display error notification
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
+            yield break;
         }
     }
 
@@ -76,9 +75,6 @@ public class LikeOrDislike : MonoBehaviour
         //we display the success notification and put the received simulation data in the buffer
         if (www.text != "" && www.text[0] == '0')
         {
-            //Display the notification
-            StartCoroutine(Notification.instance.showNotification(www.text));
-
             Buffer.instance.currentSimulation.likesCount++;
             likesCountText.text = Buffer.instance.currentSimulation.likesCount.ToString();
             likeButtonText.text = "Unlike";
@@ -93,6 +89,7 @@ public class LikeOrDislike : MonoBehaviour
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
+            yield break;
         }
     }
 
@@ -113,9 +110,6 @@ public class LikeOrDislike : MonoBehaviour
         //we display the success notification and put the received simulation data in the buffer
         if (www.text != "" && www.text[0] == '0')
         {
-            //Display the notification
-            StartCoroutine(Notification.instance.showNotification(www.text));
-
             Buffer.instance.currentSimulation.likesCount--;
             likesCountText.text = Buffer.instance.currentSimulation.likesCount.ToString();
             likeButtonText.text = "Like";
@@ -124,6 +118,7 @@ public class LikeOrDislike : MonoBehaviour
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
+            yield break;
         }
     }
 
@@ -149,9 +144,6 @@ public class LikeOrDislike : MonoBehaviour
         //we display the success notification and put the received simulation data in the buffer
         if (www.text != "" && www.text[0] == '0')
         {
-            //Display the notification
-            StartCoroutine(Notification.instance.showNotification(www.text));
-
             Buffer.instance.currentSimulation.dislikesCount++;
             dislikesCountText.text = Buffer.instance.currentSimulation.dislikesCount.ToString();
             dislikeButtonText.text = "Undislike";
@@ -166,6 +158,7 @@ public class LikeOrDislike : MonoBehaviour
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
+            yield break;
         }
     }
 
@@ -186,9 +179,6 @@ public class LikeOrDislike : MonoBehaviour
         //we display the success notification and put the received simulation data in the buffer
         if (www.text != "" && www.text[0] == '0')
         {
-            //Display the notification
-            StartCoroutine(Notification.instance.showNotification(www.text));
-
             Buffer.instance.currentSimulation.dislikesCount--;
             dislikesCountText.text = Buffer.instance.currentSimulation.dislikesCount.ToString();
             dislikeButtonText.text = "Dislike";
@@ -197,6 +187,7 @@ public class LikeOrDislike : MonoBehaviour
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
+            yield break;
         }
     }
 }
