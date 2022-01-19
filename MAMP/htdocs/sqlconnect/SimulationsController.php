@@ -37,7 +37,7 @@ class simulations extends core
 			if($data["onSearch"] == "true")
 			{
 				$search = $data["search"];
-				$SQL = "SELECT * FROM simulations WHERE name LIKE '%$search%' 10;";
+				$SQL = "SELECT * FROM simulations WHERE name LIKE '%$search%' LIMIT 10;";
 				
 				$result = $this -> con -> query ($SQL);
 				echo '0;'.$result->num_rows.'{';
@@ -102,7 +102,7 @@ class simulations extends core
 
     public function update($data)
     {
-		if($data["approval"] === "true")
+		if($data["onApproval"] === "true")
 		{
 			$ID = $data["ID"];
 			$approved = $data["approved"];

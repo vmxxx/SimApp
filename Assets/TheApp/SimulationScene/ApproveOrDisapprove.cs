@@ -28,7 +28,7 @@ public class ApproveOrDisapprove : MonoBehaviour
         WWWForm form = new WWWForm();
         form.AddField("class", "SimulationsController\\simulations");
         form.AddField("function", "update");
-        form.AddField("approval", "true");
+        form.AddField("onApproval", "true");
         form.AddField("approved", alreadyApproved ? "0" : "1");
         form.AddField("ID", Buffer.instance.currentSimulation.ID);
 
@@ -39,9 +39,6 @@ public class ApproveOrDisapprove : MonoBehaviour
         //we display the success notification and put the received simulation data in the buffer
         if (www.text != "" && www.text[0] == '0')
         {
-            //Display the notification
-            StartCoroutine(Notification.instance.showNotification(www.text));
-
             Buffer.instance.currentSimulation.approved = alreadyApproved ? false : true;
             approvedValText.text = alreadyApproved ? "no" : "yes";
             approveButtonText.text = alreadyApproved ? "Approve" : "Unapprove";
@@ -50,6 +47,7 @@ public class ApproveOrDisapprove : MonoBehaviour
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
+            yield break;
         }
     }
 }

@@ -4,18 +4,27 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UI;
 using UnityEngine.Networking;
+using System.IO;
 
 public class SetImage : MonoBehaviour
 {
-    string path;
+    private string path;
+    private string extension;
 
     public void setImage(RawImage rawImage)
     {
         //Opens file explorer
         path = EditorUtility.OpenFilePanel("Select image", "", "");
+        string extension = Path.GetExtension(path);
+        Debug.Log("extension: " + extension);
 
-        //Sets the image as a texture on the game object
-        StartCoroutine(getTexture(rawImage));
+        if (extension != ".jpg" && extension != ".bmp" && extension != ".png") StartCoroutine(Notification.instance.showNotification("The file must be of formats: .jpg, .bmp, .png"));
+        else
+        {
+            //Sets the image as a texture on the game object
+            StartCoroutine(getTexture(rawImage));
+        }
+
     }
 
     IEnumerator getTexture(RawImage rawImage)

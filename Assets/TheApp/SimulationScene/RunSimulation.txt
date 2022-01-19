@@ -38,7 +38,7 @@ public class RunSimulation : MonoBehaviour
 	
     private int varItr = 0;
 	
-    private bool initialized = false;
+    private bool initialized = false; public GameObject pauseButton;
 
 
     private int itr = 0;
@@ -63,13 +63,17 @@ public class RunSimulation : MonoBehaviour
     }
 
 	//This function gets called when the user clicks on the "restart" button
-    public void restart(GameObject pauseButton)
+    public void restart(GameObject pauseBtn)
     {
-        pauseButton.transform.GetChild(0).GetComponent<Text>().text = "Start";
-        WindoGraph.instance.clearGraph();
-        initialized = false; //If we want to initialize the simulation from the start we have to forget that we have initialized once already
-        paused = true;
-        itr = 0;
+		pauseButton = pauseBtn; if(pauseButton.transform.GetChild(0).GetComponent<Text>().text != "Start")
+		{
+			pauseButton.transform.GetChild(0).GetComponent<Text>().text = "Start";
+			WindoGraph.instance.clearGraph();
+			initialized = false; //If we want to initialize the simulation from the start we have to forget that we have initialized once already
+			paused = true;
+			itr = 0;
+		}
+		else { StartCoroutine(Notification.instance.showNotification("You can only restart, if the simulation is started.")); }
     }
 
 	//This function gets called when the user clicks on the "accelerate" button

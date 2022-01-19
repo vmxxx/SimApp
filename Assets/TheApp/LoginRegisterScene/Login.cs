@@ -42,8 +42,6 @@ public class Login : MonoBehaviour
 
         if (www.text != "" && www.text[0] == '0')
         {
-            //Display the notification
-            StartCoroutine(Notification.instance.showNotification("Login successful!"));
 
             Regex pattern = new Regex(@"{(.*?)}");
             MatchCollection matches = pattern.Matches(www.text);
@@ -64,6 +62,7 @@ public class Login : MonoBehaviour
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
+            yield break;
         }
     }
 
