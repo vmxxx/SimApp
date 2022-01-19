@@ -29,6 +29,7 @@ public class SearchAgent : MonoBehaviour
         }
     }
 
+    //This function resets the search field to empty, then (re)loads the full agent list for the user (the same function that gets called before the first frame update)
     public void clearAgents()
     {
         removeAgents(agentsListPanel);
@@ -36,6 +37,7 @@ public class SearchAgent : MonoBehaviour
         LoadAgentList.instance.Start();
     }
 
+    //This function will search the TOP 10 results which contain the substring in the search input field
     public void searchAgent()
     {
         if (agentsSearchField.text != "") StartCoroutine(searchAgents());
@@ -101,7 +103,6 @@ public class SearchAgent : MonoBehaviour
                 Buffer.instance.agents[i].authorID = Int32.Parse(authorID.Substring(9, authorID.Length - 10));
             }
 
-            Buffer.instance.printAgents();
             displayAgents();
         }
         else

@@ -10,8 +10,10 @@ public class LoadMainMenu : MonoBehaviour
     public GameObject logoutButton;
     public GameObject profileSettingsButton;
 
+    //Start gets called before the first frame update on scene (re)load
     void Start()
     {
+        //If guest user
         if (Buffer.instance.authenticatedUser.ID != 0)
         {
             loginRegisterButton.SetActive(false);
@@ -19,7 +21,7 @@ public class LoadMainMenu : MonoBehaviour
             logoutButton.SetActive(true);
             profileSettingsButton.SetActive(true);
         } 
-        else
+        else //If registered user
         {
             loginRegisterButton.SetActive(true);
             createSimulationButton.SetActive(false);

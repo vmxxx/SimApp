@@ -44,6 +44,7 @@ public class LoadOrRefreshSimulations : MonoBehaviour
 
     private IEnumerator loadPopularSimulations(int N)
     {
+        //Create an HTML form with the data
         WWWForm form = new WWWForm();
         form.AddField("class", "SimulationsController\\simulations");
         form.AddField("function", "read");
@@ -55,6 +56,7 @@ public class LoadOrRefreshSimulations : MonoBehaviour
         WWW www = new WWW("http://localhost/sqlconnect/index.php", form);
         yield return www; //tells Unity to put this on the backburner. Once we get the info back, we'll run the rest of the code
 
+        //If there is no NULL notification AND if the notification code is 0 (no error)
         if (www.text != "" && www.text[0] == '0')
         {
             int i = 0;
@@ -62,38 +64,47 @@ public class LoadOrRefreshSimulations : MonoBehaviour
             int userrSimulationsCount = 0;
             removeSimulations(popularSimulationsPanel, Buffer.instance.popularSimulations);
 
-                    MatchCollection entries = Regex.Matches(www.text, @"{{1}(.*?)}{1}");
-                    Buffer.instance.newPopularSimulationsArray(entries.Count);
-                    int j = 0;
-                    foreach (Match entry in entries)
-                    {
-                        string seperate_entry = entry.ToString();
-                        string ID = Regex.Match(seperate_entry, @"ID:(.*?),").Value;
-                        string name = Regex.Match(seperate_entry, @"name:(.*?),").Value;
-                        string image = Regex.Match(seperate_entry, @"image:(.*?),").Value;
-                        string description = Regex.Match(seperate_entry, @"description:(.*?),").Value;
-                        string likesCount = Regex.Match(seperate_entry, @"likesCount:(.*?),").Value;
-                        string dislikesCount = Regex.Match(seperate_entry, @"dislikesCount:(.*?),").Value;
-                        string approved = Regex.Match(seperate_entry, @"approved:(.*?),").Value;
-                        string authorID = Regex.Match(seperate_entry, @"authorID:(.*?)}").Value;
+            //Select the data set substrings
+            //Example: { ID: 5, name: "Hawk Dove", image: "@!$#-&%!*9&a7^*!#@", description: "The most basic game. Frequency of hawks is V/C.", likesCount: 10, dislikesCount: 2, authorID: 10},
+            //         { ID: 6, name: "Rock Paper Scissors", image: "@!$#-&%!*9&a7^*!#@", description: "The most impractical and pointless simulation", likesCount: 4, dislikesCount: 2, authorID: 10},
+            MatchCollection entries = Regex.Matches(www.text, @"{{1}(.*?)}{1}");
+            Buffer.instance.newPopularSimulationsArray(entries.Count);
+            int j = 0;
+            //For each every seperate entry in the www.text
+            foreach (Match entry in entries)
+            {
+                //Extract the data in string form
+                string seperate_entry = entry.ToString();
+                string ID = Regex.Match(seperate_entry, @"ID:(.*?),").Value;
+                string name = Regex.Match(seperate_entry, @"name:(.*?),").Value;
+                string image = Regex.Match(seperate_entry, @"image:(.*?),").Value;
+                string description = Regex.Match(seperate_entry, @"description:(.*?),").Value;
+                string likesCount = Regex.Match(seperate_entry, @"likesCount:(.*?),").Value;
+                string dislikesCount = Regex.Match(seperate_entry, @"dislikesCount:(.*?),").Value;
+                string approved = Regex.Match(seperate_entry, @"approved:(.*?),").Value;
+                string authorID = Regex.Match(seperate_entry, @"authorID:(.*?)}").Value;
 
-                        if (ID != "")
-                        {
-                            Buffer.instance.popularSimulations[j].ID = Int32.Parse(ID.Substring(3, ID.Length - 4));
-                            Buffer.instance.popularSimulations[j].name = name.Substring(6, name.Length - 8);
-                            Buffer.instance.popularSimulations[j].image = image.Substring(7, image.Length - 9);
-                            Buffer.instance.popularSimulations[j].description = description.Substring(13, description.Length - 15);
-                            Buffer.instance.popularSimulations[j].likesCount = Int32.Parse(likesCount.Substring(11, likesCount.Length - 12));
-                            Buffer.instance.popularSimulations[j].dislikesCount = Int32.Parse(dislikesCount.Substring(14, dislikesCount.Length - 15));
-                            Buffer.instance.popularSimulations[j].approved = (approved.Substring(9, approved.Length - 10) == "1") ? true : false;
-                            Buffer.instance.popularSimulations[j].authorID = Int32.Parse(authorID.Substring(9, authorID.Length - 10));
-                        }
-                        j++;
-                    }
+                //Convert numbers to their appropriate data types, let the strings stay as strings
+                //Save the object we've just got in the buffer
+                if (ID != "")
+                {
+                    Buffer.instance.popularSimulations[j].ID = Int32.Parse(ID.Substring(3, ID.Length - 4));
+                    Buffer.instance.popularSimulations[j].name = name.Substring(6, name.Length - 8);
+                    Buffer.instance.popularSimulations[j].image = image.Substring(7, image.Length - 9);
+                    Buffer.instance.popularSimulations[j].description = description.Substring(13, description.Length - 15);
+                    Buffer.instance.popularSimulations[j].likesCount = Int32.Parse(likesCount.Substring(11, likesCount.Length - 12));
+                    Buffer.instance.popularSimulations[j].dislikesCount = Int32.Parse(dislikesCount.Substring(14, dislikesCount.Length - 15));
+                    Buffer.instance.popularSimulations[j].approved = (approved.Substring(9, approved.Length - 10) == "1") ? true : false;
+                    Buffer.instance.popularSimulations[j].authorID = Int32.Parse(authorID.Substring(9, authorID.Length - 10));
+                }
+                j++;
+            }
+
+            //Display the list we just got
             displaySimulations(popularSimulationEntry, popularSimulationsPanel, Buffer.instance.popularSimulations);
             pN = pN + 1;
         }
-        else
+        else //Display error notification
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
@@ -103,6 +114,7 @@ public class LoadOrRefreshSimulations : MonoBehaviour
 
     private IEnumerator loadUserSimulations(int N)
     {
+        //Create an HTML form with the data
         WWWForm form = new WWWForm();
         form.AddField("class", "SimulationsController\\simulations");
         form.AddField("function", "read");
@@ -115,45 +127,55 @@ public class LoadOrRefreshSimulations : MonoBehaviour
         WWW www = new WWW("http://localhost/sqlconnect/index.php", form);
         yield return www; //tells Unity to put this on the backburner. Once we get the info back, we'll run the rest of the code
 
+        //If there is no NULL notification AND if the notification code is 0 (no error)
         if (www.text != "" && www.text[0] == '0')
         {
             int popularSimulationsCount = 0;
             int userrSimulationsCount = 0;
             removeSimulations(userSimulationsPanel, Buffer.instance.userSimulations);
 
-                    int j = 0;
-                    MatchCollection entries = Regex.Matches(www.text, @"{{1}(.*?)}{1}");
-                    Buffer.instance.newUserSimulationsArray(entries.Count);
-                    foreach (Match entry in entries)
-                    {
-                        string seperate_entry = entry.ToString();
-                        string ID = Regex.Match(seperate_entry, @"ID:(.*?),").Value;
-                        string name = Regex.Match(seperate_entry, @"name:(.*?),").Value;
-                        string image = Regex.Match(seperate_entry, @"image:(.*?),").Value;
-                        string description = Regex.Match(seperate_entry, @"description:(.*?),").Value;
-                        string likesCount = Regex.Match(seperate_entry, @"likesCount:(.*?),").Value;
-                        string dislikesCount = Regex.Match(seperate_entry, @"dislikesCount:(.*?),").Value;
-                        string approved = Regex.Match(seperate_entry, @"approved:(.*?),").Value;
-                        string authorID = Regex.Match(seperate_entry, @"authorID:(.*?)}").Value;
-                        if (ID != "")
-                        {
-                            Buffer.instance.userSimulations[j].ID = Int32.Parse(ID.Substring(3, ID.Length - 4));
-                            Buffer.instance.userSimulations[j].name = name.Substring(6, name.Length - 8);
-                            Buffer.instance.userSimulations[j].image = image.Substring(7, image.Length - 9);
-                            Buffer.instance.userSimulations[j].description = description.Substring(13, description.Length - 15);
-                            Buffer.instance.userSimulations[j].likesCount = Int32.Parse(likesCount.Substring(11, likesCount.Length - 12));
-                            Buffer.instance.userSimulations[j].dislikesCount = Int32.Parse(dislikesCount.Substring(14, dislikesCount.Length - 15));
-                            Buffer.instance.userSimulations[j].approved = (approved.Substring(9, approved.Length - 10) == "1") ? true : false;
-                            Buffer.instance.userSimulations[j].authorID = Int32.Parse(authorID.Substring(9, authorID.Length - 10));
-                        }
-                        j++;
-                    }
+            //Select the data set substrings
+            //Example: { ID: 5, name: "Hawk Dove", image: "@!$#-&%!*9&a7^*!#@", description: "The most basic game. Frequency of hawks is V/C.", likesCount: 10, dislikesCount: 2, authorID: 10},
+            //         { ID: 6, name: "Rock Paper Scissors", image: "@!$#-&%!*9&a7^*!#@", description: "The most impractical and pointless simulation", likesCount: 4, dislikesCount: 2, authorID: 10},
+            MatchCollection entries = Regex.Matches(www.text, @"{{1}(.*?)}{1}");
+            Buffer.instance.newUserSimulationsArray(entries.Count);
 
+            int j = 0;
+            //For each every seperate entry in the www.text
+            foreach (Match entry in entries)
+            {
+                //Extract the data in string form
+                string seperate_entry = entry.ToString();
+                string ID = Regex.Match(seperate_entry, @"ID:(.*?),").Value;
+                string name = Regex.Match(seperate_entry, @"name:(.*?),").Value;
+                string image = Regex.Match(seperate_entry, @"image:(.*?),").Value;
+                string description = Regex.Match(seperate_entry, @"description:(.*?),").Value;
+                string likesCount = Regex.Match(seperate_entry, @"likesCount:(.*?),").Value;
+                string dislikesCount = Regex.Match(seperate_entry, @"dislikesCount:(.*?),").Value;
+                string approved = Regex.Match(seperate_entry, @"approved:(.*?),").Value;
+                string authorID = Regex.Match(seperate_entry, @"authorID:(.*?)}").Value;
+
+                //Convert numbers to their appropriate data types, let the strings stay as strings
+                //Save the object we've just got in the buffer
+                if (ID != "")
+                {
+                    Buffer.instance.userSimulations[j].ID = Int32.Parse(ID.Substring(3, ID.Length - 4));
+                    Buffer.instance.userSimulations[j].name = name.Substring(6, name.Length - 8);
+                    Buffer.instance.userSimulations[j].image = image.Substring(7, image.Length - 9);
+                    Buffer.instance.userSimulations[j].description = description.Substring(13, description.Length - 15);
+                    Buffer.instance.userSimulations[j].likesCount = Int32.Parse(likesCount.Substring(11, likesCount.Length - 12));
+                    Buffer.instance.userSimulations[j].dislikesCount = Int32.Parse(dislikesCount.Substring(14, dislikesCount.Length - 15));
+                    Buffer.instance.userSimulations[j].approved = (approved.Substring(9, approved.Length - 10) == "1") ? true : false;
+                    Buffer.instance.userSimulations[j].authorID = Int32.Parse(authorID.Substring(9, authorID.Length - 10));
+                }
+                j++;
+            }
+
+            //Display the list we just got
             displaySimulations(userSimulationEntry, userSimulationsPanel, Buffer.instance.userSimulations);
-            Buffer.instance.printPopularSimulationsArray();
             uN = uN + 1;
         }
-        else
+        else //Display error notification
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));

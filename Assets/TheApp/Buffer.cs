@@ -3,24 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using static System.Math;
 
-public static class RecompileListener
-{
-    private static bool loaded;
-
-    // This should ban setting Loaded to false outside the class.
-    public static bool Loaded
-    {
-        get { return loaded; }
-        set { if (value != false) loaded = value; }
-    }
-
-    static RecompileListener()
-    {
-        // This is called on code recompile
-        loaded = false;
-    }
-}
-
 [System.Serializable]
 public class Buffer : MonoBehaviour
 {
@@ -63,20 +45,6 @@ public class Buffer : MonoBehaviour
             //Debug.Log("currentSimulationID: " + currentSimulationID);
         }
     }
-    /**/
-
-    void onReinitialize()
-    {
-        /*
-        authenticatedUser.ID = Buffer.instance.authenticatedUser.ID;
-        authenticatedUser.username = Buffer.instance.authenticatedUser.username
-        
-        currentSimulation.ID = Buffer.instance.currentSimulation.ID;
-        /**/
-authenticatedUser.ID = 0;
-authenticatedUser.username = "";
-currentSimulation.ID = 0;
-    }
 
     public void clearPayoffFormulas()
     {
@@ -105,88 +73,6 @@ currentSimulation.ID = 0;
         { 
             instance.agents[i] = new Agent();
             instance.agents[i].color = new Color( (i < 4) ? 1 : 0, (i % 4 < 2) ? 1 : 0, (i % 2 == 0) ? 1 : 0 );
-        }
-
-        /*
-        this.agents = new Agent[n];
-        for (int i = 0; i < this.agents.Length; i++) { this.agents[i] = new Agent(); }
-        */
-    }
-
-    public void printPayoffFormulas()
-    {
-
-        Debug.Log("Length: " + payoffFormulas.Count);
-
-        foreach (KeyValuePair<(int, int), PayoffFormula> formula in payoffFormulas)
-        {
-            Debug.Log("Key: " + formula.Key + ", value: " + formula.Value);
-            Debug.Log("ID: " + formula.Value.ID);
-            Debug.Log("agent1: " + formula.Value.agent1);
-            Debug.Log("agent2: " + formula.Value.agent2);
-            Debug.Log("payoffFormula: " + formula.Value.payoffFormula);
-            Debug.Log("authorID: " + formula.Value.authorID);
-        }
-    }
-
-    public void printPopularSimulationsArray()
-    {
-        if (instance.popularSimulations != null)
-        {
-            for (int i = 0; i < instance.popularSimulations.Length; i++)
-            {
-                Debug.Log(i + ". ID: " + instance.popularSimulations[i].ID);
-                Debug.Log(i + ". name: " + instance.popularSimulations[i].name);
-                Debug.Log(i + ". image: " + instance.popularSimulations[i].image);
-                Debug.Log(i + ". description: " + instance.popularSimulations[i].description);
-                Debug.Log(i + ". likesCount: " + instance.popularSimulations[i].likesCount);
-                Debug.Log(i + ". dislikesCount: " + instance.popularSimulations[i].dislikesCount);
-                Debug.Log(i + ". authorID: " + instance.popularSimulations[i].authorID);
-            }
-        }
-        else
-        {
-            Debug.Log("Buffer.instance.agents == null");
-        }
-    }
-
-    public void printUserSimulationsArray()
-    {
-        if (instance.userSimulations != null)
-        {
-            for (int i = 0; i < instance.userSimulations.Length; i++)
-            {
-                Debug.Log(i + ". ID: " + instance.userSimulations[i].ID);
-                Debug.Log(i + ". name: " + instance.userSimulations[i].name);
-                Debug.Log(i + ". image: " + instance.userSimulations[i].image);
-                Debug.Log(i + ". description: " + instance.userSimulations[i].description);
-                Debug.Log(i + ". likesCount: " + instance.userSimulations[i].likesCount);
-                Debug.Log(i + ". dislikesCount: " + instance.userSimulations[i].dislikesCount);
-                Debug.Log(i + ". authorID: " + instance.userSimulations[i].authorID);
-            }
-        }
-        else
-        {
-            Debug.Log("Buffer.instance.agents == null");
-        }
-    }
-
-    public void printAgents()
-    {
-        if(instance.agents != null)
-        {
-            for (int i = 0; i < instance.agents.Length; i++)
-            {
-                Debug.Log(i + ". agentID: " + instance.agents[i].agentID);
-                Debug.Log(i + ". icon: " + instance.agents[i].icon);
-                Debug.Log(i + ". agentName: " + instance.agents[i].agentName);
-                Debug.Log(i + ". agentDescription: " + instance.agents[i].agentDescription);
-                Debug.Log(i + ". authorID: " + instance.agents[i].authorID);
-            }
-        }
-        else
-        {
-            Debug.Log("Buffer.instance.agents == null"); 
         }
     }
 }
