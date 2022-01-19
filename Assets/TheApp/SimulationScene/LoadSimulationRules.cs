@@ -268,6 +268,9 @@ public class LoadSimulationRules : MonoBehaviour
 
     IEnumerator loadSimlation()
     {
+        //1. Get the simulation object
+
+        //Create an HTML form with the data
         WWWForm form = new WWWForm();
         form.AddField("class", "SimulationsController\\simulations");
         form.AddField("function", "read");
@@ -278,13 +281,20 @@ public class LoadSimulationRules : MonoBehaviour
         WWW www = new WWW("http://localhost/sqlconnect/index.php", form);
         yield return www; //tells Unity to put this on the backburner. Once we get the info back, we'll run the rest of the code
 
+        //If there is no NULL notification AND if the notification code is 0 (no error)
         if (www.text != "" && www.text[0] == '0')
         {
+            //Select the data set substring
+            //Example: { ID: 1, name: "Hawks Doves", image: "@!$#-&%!*9&a7^*!#@", description: "The most basic game. Frequency of hawks is V/C.", likesCount: 10, dislikesCount: 2, authorID: 10 }
             Regex pattern = new Regex(@"{(.*?)}");
+
+            //Find it in the www.text
             MatchCollection matches = pattern.Matches(www.text);
 
+            //Find the first such match (the only one)
             Match match = matches[0];
 
+            //Extract the data in string form
             string ID = Regex.Match(match.Value, @"ID:(.*?),").Value;
             string name = Regex.Match(match.Value, @"name:(.*?),").Value;
             string image = Regex.Match(match.Value, @"image:(.*?),").Value;
@@ -294,6 +304,8 @@ public class LoadSimulationRules : MonoBehaviour
             string approved = Regex.Match(match.Value, @"approved:(.*?),").Value;
             string authorID = Regex.Match(match.Value, @"authorID:(.*?)}").Value;
 
+            //Convert numbers to their appropriate data types, let the strings stay as strings
+            //Save the object we've just got in the buffer
             Buffer.instance.currentSimulation.ID = Int32.Parse(ID.Substring(3, ID.Length - 4));
             Buffer.instance.currentSimulation.name = name.Substring(6, name.Length - 8);
             Buffer.instance.currentSimulation.image = image.Substring(7, image.Length - 9);
@@ -305,7 +317,7 @@ public class LoadSimulationRules : MonoBehaviour
 
             Buffer.instance.currentSimulationID = Int32.Parse(ID.Substring(3, ID.Length - 4));
         }
-        else
+        else //Display error notification
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
@@ -313,56 +325,77 @@ public class LoadSimulationRules : MonoBehaviour
         }
 
 
+        //2. Get the simulation formulas
         form = new WWWForm();
         form.AddField("class", "PayoffFormulasController\\payoffFormulas");
         form.AddField("function", "read");
         form.AddField("scene", "creation");
         form.AddField("simulationID", Buffer.instance.currentSimulation.ID);
-        //form.AddField("authorID", Buffer.instance.authenticatedUser.ID);
         string agentsArray = "";
 
         www = new WWW("http://localhost/sqlconnect/index.php", form);
         yield return www; //tells Unity to put this on the backburner. Once we get the info back, we'll run the rest of the code
 
         int i;
+        //If there is no NULL notification AND if the notification code is 0 (no error)
         if (www.text != "" && www.text[0] == '0')
         {
+            //Determine how many formulas there are in the query
             amountOfFormulas = Int32.Parse(www.text.Substring(2, 1));
+            //amountOfAgents = sqrt(amountOfFormulas)
             amountOfAgents = (int)Sqrt(amountOfFormulas);
 
 
+            //DoveID = 9
+            //HawkID = 10
+
+            //Select the data set substring
+            //Example: { ID: 1, agent1: 9, agent2: 10, payoffFormula: "0", simulationID: 1 } { ID: 2, agent1: 10, agent2: 10, payoffFormula: "($V - $C) / 2", simulationID: 1 }
             Regex pattern = new Regex(@"{(.*?)}");
             Buffer.instance.payoffFormulas = new Dictionary<(int, int), PayoffFormula>();
+
+            //Find every formula object
             MatchCollection matches = pattern.Matches(www.text);
+
+            //For each formula object
             for (i = 0; i < matches.Count; i++)
             {
 
 
                 Match match = matches[i];
 
+                //Initialize a new formula
                 Buffer.instance.newFormula = new PayoffFormula();
 
+                //Extract the data in string form
                 string ID = Regex.Match(match.Value, @"ID:(.*?),").Value;
                 string agent1 = Regex.Match(match.Value, @"agent1:(.*?),").Value;
                 string agent2 = Regex.Match(match.Value, @"agent2:(.*?),").Value;
                 string payoffFormula = Regex.Match(match.Value, @"payoffFormula:(.*?),").Value;
                 string simulationID = Regex.Match(match.Value, @"simulationID:(.*?)}").Value;
 
+                //Convert numbers to their appropriate data types, let the strings stay as strings
+                //Save the object we've just got in the buffer
                 Buffer.instance.newFormula.ID = Int32.Parse(ID.Substring(3, ID.Length - 4));
                 Buffer.instance.newFormula.agent1 = Int32.Parse(agent1.Substring(7, agent1.Length - 8));
                 Buffer.instance.newFormula.agent2 = Int32.Parse(agent2.Substring(7, agent2.Length - 8));
                 Buffer.instance.newFormula.payoffFormula = payoffFormula.Substring(15, payoffFormula.Length - 17);
                 Buffer.instance.newFormula.authorID = Int32.Parse(simulationID.Substring(13, simulationID.Length - 14));
 
+                //Add the new formula object to the hash table
                 Buffer.instance.payoffFormulas.Add((Buffer.instance.newFormula.agent1, Buffer.instance.newFormula.agent2), Buffer.instance.newFormula);
 
 
+                //Take note of every unique agent ID we've got from the data set, and store them in a string in this format:
+                //9, 10, 11, 12,
                 if (i < amountOfAgents)
                 {
                     agentsArray = agentsArray + agent2.Substring(7, agent2.Length - 7);
                 }
             }
 
+            //delete the last coma 
+            //9, 10, 11, 12, -> 9, 10, 11, 12
             agentsArray = agentsArray.Substring(0, agentsArray.Length - 1);
         }
         else
@@ -373,6 +406,10 @@ public class LoadSimulationRules : MonoBehaviour
         }
 
 
+        //3. Get the agents objects
+
+
+        //If there is no NULL notification AND if the notification code is 0 (no error)
         form = new WWWForm();
         form.AddField("class", "AgentsController\\agents");
         form.AddField("function", "read");
@@ -386,21 +423,30 @@ public class LoadSimulationRules : MonoBehaviour
 
         if (www.text != "" && www.text[0] == '0')
         {
+            //Initialize a new agents array in the buffer
             Buffer.instance.newAgentsArray(amountOfAgents);
 
+            //Select the data set substring
+            //Example: { agentID: 9, icon: "$#!@$%0^&!!!&^%", agentName: "Dove", agentDescription: "doves are cowardly", authorID: 1 } { agentID: 10, icon: "$#!@$%0^&!!!&^%", agentName: "Hawk", agentDescription: "hawks are aggresive", authorID: 1 } 
+
+            //Find every agent object
             Regex pattern = new Regex(@"{(.*?)}");
+            //For each agent object
             MatchCollection matches = pattern.Matches(www.text);
             for (i = 0; i < amountOfAgents; i++)
             {
 
                 Match match = matches[i];
 
+                //Extract the data in string form
                 string ID = Regex.Match(match.Value, @"ID:(.*?),").Value;
                 string icon = Regex.Match(match.Value, @"icon:(.*?),").Value;
                 string agentName = Regex.Match(match.Value, @"name:(.*?),").Value;
                 string agentDescription = Regex.Match(match.Value, @"description:(.*?),").Value;
                 string authorID = Regex.Match(match.Value, @"authorID:(.*?)}").Value;
 
+                //Convert numbers to their appropriate data types, let the strings stay as strings
+                //Save the object we've just got in the buffer
                 Buffer.instance.agents[i].agentID = Int32.Parse(ID.Substring(3, ID.Length - 4));
                 Buffer.instance.agents[i].icon = icon.Substring(5, icon.Length - 6);
                 Buffer.instance.agents[i].agentName = agentName.Substring(5, agentName.Length - 6);
@@ -408,13 +454,15 @@ public class LoadSimulationRules : MonoBehaviour
                 Buffer.instance.agents[i].authorID = Int32.Parse(authorID.Substring(9, authorID.Length - 10));
             }
         }
-        else
+        else //Display error notification
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
             yield break;
         }
 
+        //In the simulation details panel
+        //write down its name, image and description
         nameInputField.text = Buffer.instance.currentSimulation.name;
         imageInputField.texture = applyBase64StringAsTexture(Buffer.instance.currentSimulation.image);
         descriptionInputField.text = Buffer.instance.currentSimulation.description;
@@ -448,11 +496,6 @@ public class LoadSimulationRules : MonoBehaviour
             }
         }
 
-        Debug.Log("payoffVariables.Count: " + payoffVariables.Count);
-        foreach(string entry in payoffVariables)
-        {
-            Debug.Log("PayoffVariable: " + entry);
-        }
         PayoffMatrix_2.instance.initialize();
         StartCoroutine(compileSimulationRules());
     }

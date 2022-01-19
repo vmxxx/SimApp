@@ -17,6 +17,7 @@ public class ApproveOrDisapprove : MonoBehaviour
         if (Buffer.instance.authenticatedUser.isAdmin) { approveButton.SetActive(true); }
     }
 
+    //This function gets called when an administrator user clicks on the "approve" button
     public void approve()
     {
         StartCoroutine(approveSimulation( (approvedValText.text == "yes") ? true : false ));
@@ -36,7 +37,6 @@ public class ApproveOrDisapprove : MonoBehaviour
         yield return www; //tells Unity to put this on the backburner. Once we get the info back, we'll run the rest of the code
 
         //If there is no NULL notification AND if the notification code is 0 (no error)
-        //we display the success notification and put the received simulation data in the buffer
         if (www.text != "" && www.text[0] == '0')
         {
             Buffer.instance.currentSimulation.approved = alreadyApproved ? false : true;

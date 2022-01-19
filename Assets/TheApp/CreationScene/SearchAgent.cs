@@ -61,7 +61,6 @@ public class SearchAgent : MonoBehaviour
         yield return www; //tells Unity to put this on the backburner. Once we get the info back, we'll run the rest of the code
 
         //If there is no NULL notification AND if the notification code is 0 (no error)
-        //we display the success notification and put the received simulation data in the buffer
         if (www.text != "" && www.text[0] == '0')
         {
             removeAgents(agentsListPanel);

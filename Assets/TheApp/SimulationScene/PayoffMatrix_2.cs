@@ -89,9 +89,6 @@ public class PayoffMatrix_2 : MonoBehaviour
 
     public void initialize()
     {
-
-        //text.text = "Brand new text";
-        //instance = this;
         tableCells[0].cell[0] = tableColumns[0].transform.GetChild(0).gameObject;
         for (int i = 0; i < Buffer.instance.agents.Length; i++)
         {
@@ -205,7 +202,6 @@ public class PayoffMatrix_2 : MonoBehaviour
     public void alignCells(bool onCollapse = true, int columnIndex = 0, float offset = 0f)
     {
         RectTransform rectTransform;
-        //int columnLength = (int)Round(Sqrt(childCount));
         int columnLength = payoffMatrixPanel.transform.childCount - 1;
         float fullPanelWidth = payoffMatrixPanel.GetComponent<RectTransform>().rect.width;
         float fullPanelHeight = payoffMatrixPanel.GetComponent<RectTransform>().rect.height;
@@ -296,8 +292,6 @@ public class PayoffMatrix_2 : MonoBehaviour
         }
         else
         {
-
-            /*--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
             float X;
             float Y;
             for (int i = 1; i < columnLength; i++)
@@ -305,7 +299,6 @@ public class PayoffMatrix_2 : MonoBehaviour
                 X = tableColumns[i].transform.GetComponent<RectTransform>().anchoredPosition.x;
                 Y = tableColumns[i].transform.GetComponent<RectTransform>().anchoredPosition.y;
                 if (i > columnIndex) tableColumns[i].transform.GetComponent<RectTransform>().anchoredPosition = new Vector2(X, (Y - offset));
-
             }
 
             X = lastInvisibleColumn.transform.GetComponent<RectTransform>().anchoredPosition.x;
