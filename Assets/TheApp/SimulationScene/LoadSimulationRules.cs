@@ -22,21 +22,15 @@ public class LoadSimulationRules : MonoBehaviour
     private int amountOfFormulas;
     private int amountOfAgents;
 
-    public GameObject loadingFilter;
-
-    public Text likesCountText;
-    public Text dislikesCountText;
-    public Text approvedValText;
-    public GameObject approveButton;
     public InputField nameInputField;
-    public RawImage imageInputField;
+    public InputField imageInputField;
     public InputField descriptionInputField;
 
     public List<string> payoffVariables = new List<string>();
     public string newPayoffVariable = "";
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         StartCoroutine(loadSimlation());
     }
@@ -75,41 +69,37 @@ public class LoadSimulationRules : MonoBehaviour
         //"payoffResults[(9, 9)] = some + formula;", not "payoffResults.Add((9, 9), some + formula );"
         foreach (KeyValuePair<(int, int), PayoffFormula> entry in Buffer.instance.payoffFormulas)
         {
-            txtLines.Insert(a + 123, "payoffResults.Add(" + entry.Key + ", 0 );"); a = a + 1;
+            txtLines.Insert(a + 119, "payoffResults.Add(" + entry.Key + ", 0 );"); a = a + 1;
         }
 
         //Here we create the "recalculateFormulas()" function
         //where we use "payoffResults[(9, 9)] = some + formula;"
         foreach (KeyValuePair<(int, int), PayoffFormula> entry in Buffer.instance.payoffFormulas)
         {
-            txtLines.Insert(a + 132, "payoffResults[" + entry.Key + "] = " + entry.Value.payoffFormula.Replace("$", "") + ";"); a = a + 1;
+            txtLines.Insert(a + 128, "payoffResults[" + entry.Key + "] = " + entry.Value.payoffFormula.Replace("$", "") + ";"); a = a + 1;
         }
 
         //In the Start() function we have create code that creates a "set $variable" button in the settings panel for each variable
         for (int i = 0; i < payoffVariables.Count; i++)
         {
             string entry = payoffVariables[i];
-            txtLines.Insert(a + 144, "//We have to create a \"Set" + entry + "\" button"); a = a + 1;
-            txtLines.Insert(a + 144, "newVariableSetting = Instantiate(variableSetting);"); a = a + 1;
-            txtLines.Insert(a + 144, "newVariableSetting.SetActive(true);"); a = a + 1;
-            txtLines.Insert(a + 144, "newVariableSetting.name = \"" + entry + "Setting\";"); a = a + 1;
-            txtLines.Insert(a + 144, "newVariableSetting.transform.Find(\"CurrentValue\").GetComponent<Text>().text = \"" + entry + ": 0\";"); a = a + 1;
-            txtLines.Insert(a + 144, "newVariableSetting.transform.Find(\"InputField\").GetComponent<InputField>().text = \"0\";"); a = a + 1;
-            txtLines.Insert(a + 144, "newVariableSetting.transform.Find(\"Button\").GetChild(0).GetComponent<Text>().text = \"Set " + entry + "\";"); a = a + 1;
-            txtLines.Insert(a + 144, "newVariableSetting.transform.Find(\"Button\").GetComponent<Button>().onClick.AddListener(delegate"); a = a + 1;
-            txtLines.Insert(a + 144, "{"); a = a + 1;
-            txtLines.Insert(a + 144, "if(pauseButton.transform.GetChild(0).GetComponent<Text>().text == \"Start\")"); a = a + 1;
-            txtLines.Insert(a + 144, "{"); a = a + 1;
-            txtLines.Insert(a + 144, "val = setVariable(simulationVariables.transform.Find(\"" + entry + "Setting\").Find(\"InputField\").gameObject);"); a = a + 1;
-            txtLines.Insert(a + 144, entry.Substring(1) + " = val;"); a = a + 1;
-            txtLines.Insert(a + 144, "simulationVariables.transform.Find(\"" + entry + "Setting\").Find(\"CurrentValue\").GetComponent<Text>().text = \"" + entry + ": \" + val;"); a = a + 1;
-            txtLines.Insert(a + 144, "}"); a = a + 1;
-            txtLines.Insert(a + 144, "else { StartCoroutine(Notification.instance.showNotification(\"You may only change this value, if the simulation isn't (re)started yet.\")); }"); a = a + 1;
-            txtLines.Insert(a + 144, "});"); a = a + 1;
-            txtLines.Insert(a + 144, "newVariableSetting.transform.SetParent(simulationVariables.transform);"); a = a + 1;
-            txtLines.Insert(a + 144, "newVariableSetting.transform.position = variableSetting.transform.position - new Vector3(0f, (60 * varItr), 0);"); a = a + 1;
-            txtLines.Insert(a + 144, "varItr++;"); a = a + 1;
-            txtLines.Insert(a + 144, ""); a = a + 1;
+            txtLines.Insert(a + 140, "//We have to create a \"Set" + entry + "\" button"); a = a + 1;
+            txtLines.Insert(a + 140, "newVariableSetting = Instantiate(variableSetting);"); a = a + 1;
+            txtLines.Insert(a + 140, "newVariableSetting.SetActive(true);"); a = a + 1;
+            txtLines.Insert(a + 140, "newVariableSetting.name = \"" + entry + "Setting\";"); a = a + 1;
+            txtLines.Insert(a + 140, "newVariableSetting.transform.Find(\"CurrentValue\").GetComponent<Text>().text = \"" + entry + ": 0\";"); a = a + 1;
+            txtLines.Insert(a + 140, "newVariableSetting.transform.Find(\"InputField\").GetComponent<InputField>().text = \"0\";"); a = a + 1;
+            txtLines.Insert(a + 140, "newVariableSetting.transform.Find(\"Button\").GetChild(0).GetComponent<Text>().text = \"Set " + entry + "\";"); a = a + 1;
+            txtLines.Insert(a + 140, "newVariableSetting.transform.Find(\"Button\").GetComponent<Button>().onClick.AddListener(delegate"); a = a + 1;
+            txtLines.Insert(a + 140, "{"); a = a + 1;
+            txtLines.Insert(a + 140, "val = setVariable(simulationVariables.transform.Find(\"" + entry + "Setting\").Find(\"InputField\").gameObject);"); a = a + 1;
+            txtLines.Insert(a + 140, entry.Substring(1) + " = val;"); a = a + 1;
+            txtLines.Insert(a + 140, "simulationVariables.transform.Find(\"" + entry + "Setting\").Find(\"CurrentValue\").GetComponent<Text>().text = \"" + entry + ": \" + val;"); a = a + 1;
+            txtLines.Insert(a + 140, "});"); a = a + 1;
+            txtLines.Insert(a + 140, "newVariableSetting.transform.SetParent(simulationVariables.transform);"); a = a + 1;
+            txtLines.Insert(a + 140, "newVariableSetting.transform.position = variableSetting.transform.position - new Vector3(0f, (60 * varItr), 0);"); a = a + 1;
+            txtLines.Insert(a + 140, "varItr++;"); a = a + 1;
+            txtLines.Insert(a + 140, ""); a = a + 1;
         }
 
         //In the "initialize()" function (which is called every time we (re)start the simulation)
@@ -117,41 +107,41 @@ public class LoadSimulationRules : MonoBehaviour
         for (int i = 0; i < Buffer.instance.agents.Length; i++)
         {
             Agent entry = Buffer.instance.agents[i];
-            txtLines.Insert(a + 151, "//These next 15 lines are created by the code generator"); a = a + 1;
-            txtLines.Insert(a + 151, "//The simulation starts with 10 " + entry.agentName + "s (at the start (or at the restart))"); a = a + 1;
-            txtLines.Insert(a + 151, entry.agentName + "s = new SortedSet<agent>(new agentComparer());"); a = a + 1;
-            txtLines.Insert(a + 151, "for (int i = 0; i < startingNumberOf" + entry.agentName + "s; i++)"); a = a + 1;
-            txtLines.Insert(a + 151, "{"); a = a + 1;
-            txtLines.Insert(a + 151, "agent newAgent = new agent();"); a = a + 1;
-            txtLines.Insert(a + 151, "newAgent.ID = " + entry.agentID + ";"); a = a + 1;
-            txtLines.Insert(a + 151, "newAgent.agentName = \"" + entry.agentName + "\";"); a = a + 1;
-            txtLines.Insert(a + 151, "newAgent.agentDescription = \"\";"); a = a + 1;
-            txtLines.Insert(a + 151, "newAgent.authorID = " + entry.authorID + ";"); a = a + 1;
-            txtLines.Insert(a + 151, "newAgent.fitness = 0;"); a = a + 1;
-            txtLines.Insert(a + 151, ""); a = a + 1;
-            txtLines.Insert(a + 151, "while (" + entry.agentName + "s.Contains(newAgent)) { newAgent.key++; }"); a = a + 1;
-            txtLines.Insert(a + 151, ""); a = a + 1;
-            txtLines.Insert(a + 151, entry.agentName + "s.Add(newAgent);"); a = a + 1;
-            txtLines.Insert(a + 151, "totalAmountOfIndividuals = totalAmountOfIndividuals + 1;"); a = a + 1;
-            txtLines.Insert(a + 151, "}"); a = a + 1;
-            txtLines.Insert(a + 151, ""); a = a + 1;
+            txtLines.Insert(a + 147, "//These next 15 lines are created by the code generator"); a = a + 1;
+            txtLines.Insert(a + 147, "//The simulation starts with 10 " + entry.agentName + "s (at the start (or at the restart))"); a = a + 1;
+            txtLines.Insert(a + 147, entry.agentName + "s = new SortedSet<agent>(new agentComparer());"); a = a + 1;
+            txtLines.Insert(a + 147, "for (int i = 0; i < startingNumberOf" + entry.agentName + "s; i++)"); a = a + 1;
+            txtLines.Insert(a + 147, "{"); a = a + 1;
+            txtLines.Insert(a + 147, "agent newAgent = new agent();"); a = a + 1;
+            txtLines.Insert(a + 147, "newAgent.ID = " + entry.agentID + ";"); a = a + 1;
+            txtLines.Insert(a + 147, "newAgent.agentName = \"" + entry.agentName + "\";"); a = a + 1;
+            txtLines.Insert(a + 147, "newAgent.agentDescription = \"\";"); a = a + 1;
+            txtLines.Insert(a + 147, "newAgent.authorID = " + entry.authorID + ";"); a = a + 1;
+            txtLines.Insert(a + 147, "newAgent.fitness = 0;"); a = a + 1;
+            txtLines.Insert(a + 147, ""); a = a + 1;
+            txtLines.Insert(a + 147, "while (" + entry.agentName + "s.Contains(newAgent)) { newAgent.key++; }"); a = a + 1;
+            txtLines.Insert(a + 147, ""); a = a + 1;
+            txtLines.Insert(a + 147, entry.agentName + "s.Add(newAgent);"); a = a + 1;
+            txtLines.Insert(a + 147, "totalAmountOfIndividuals = totalAmountOfIndividuals + 1;"); a = a + 1;
+            txtLines.Insert(a + 147, "}"); a = a + 1;
+            txtLines.Insert(a + 147, ""); a = a + 1;
         }
 
         //If the simulation was restarted, then after the "initialize()" function, we have to add the first initial values to the graph
         for (int i = 0; i < Buffer.instance.agents.Length; i++)
         {
             Agent entry = Buffer.instance.agents[i];
-            txtLines.Insert(a + 170, "WindoGraph.instance.addInitialValue(startingNumberOf" + entry.agentName + "s, \"" + entry.agentName + "s\", new Color(1f, 1f, 1f));"); a = a + 1;
+            txtLines.Insert(a + 166, "WindoGraph.instance.addInitialValue(startingNumberOf" + entry.agentName + "s, \"" + entry.agentName + "s\", new Color(1f, 1f, 1f));"); a = a + 1;
         }
         for (int i = 0; i < Buffer.instance.agents.Length; i++)
         {
             Agent entry = Buffer.instance.agents[i];
-            txtLines.Insert(a + 170, "WindoGraph.instance.yMaximum = (" + entry.agentName + "s.Count > WindoGraph.instance.yMaximum) ? " + entry.agentName + "s.Count : WindoGraph.instance.yMaximum;"); a = a + 1;
+            txtLines.Insert(a + 166, "WindoGraph.instance.yMaximum = (" + entry.agentName + "s.Count > WindoGraph.instance.yMaximum) ? " + entry.agentName + "s.Count : WindoGraph.instance.yMaximum;"); a = a + 1;
         }
         for (int i = 0; i < Buffer.instance.agents.Length; i++)
         {
             Agent entry = Buffer.instance.agents[i];
-            txtLines.Insert(a + 170, "WindoGraph.instance.realignObjects(\"" + entry.agentName + "s\");"); a = a + 1;
+            txtLines.Insert(a + 166, "WindoGraph.instance.realignObjects(\"" + entry.agentName + "s\");"); a = a + 1;
         }
 
 
@@ -160,7 +150,7 @@ public class LoadSimulationRules : MonoBehaviour
         for (int i = 0; i < Buffer.instance.agents.Length; i++)
         {
             Agent entry = Buffer.instance.agents[i];
-            txtLines.Insert(a + 184, "killOrDuplicateEachIndividual(" + entry.agentName + "s);"); a = a + 1;
+            txtLines.Insert(a + 180, "killOrDuplicateEachIndividual(" + entry.agentName + "s);"); a = a + 1;
         }
 
 
@@ -170,18 +160,18 @@ public class LoadSimulationRules : MonoBehaviour
         for (int i = 0; i < Buffer.instance.agents.Length; i++)
         {
             Agent entry = Buffer.instance.agents[i];
-            txtLines.Insert(a + 186, "WindoGraph.instance.newValue = " + entry.agentName + "s.Count;"); a = a + 1; string entryColor = entry.color.ToString();
-            txtLines.Insert(a + 186, "WindoGraph.instance.addNewValue(\"" + entry.agentName + "s\", new Color(" + entry.color.r + "f, " + entry.color.g + "f, " + entry.color.b + "f));"); a = a + 1;
+            txtLines.Insert(a + 182, "WindoGraph.instance.newValue = " + entry.agentName + "s.Count;"); a = a + 1; string entryColor = entry.color.ToString();
+            txtLines.Insert(a + 182, "WindoGraph.instance.addNewValue(\"" + entry.agentName + "s\", new Color(" + entry.color.r + "f, " + entry.color.g + "f, " + entry.color.b + "f));"); a = a + 1;
         }
         for (int i = 0; i < Buffer.instance.agents.Length; i++)
         {
             Agent entry = Buffer.instance.agents[i];
-            txtLines.Insert(a + 186, "WindoGraph.instance.yMaximum = (" + entry.agentName + "s.Count > WindoGraph.instance.yMaximum) ? " + entry.agentName + "s.Count : WindoGraph.instance.yMaximum;"); a = a + 1;
+            txtLines.Insert(a + 182, "WindoGraph.instance.yMaximum = (" + entry.agentName + "s.Count > WindoGraph.instance.yMaximum) ? " + entry.agentName + "s.Count : WindoGraph.instance.yMaximum;"); a = a + 1;
         }
         for (int i = 0; i < Buffer.instance.agents.Length; i++)
         {
             Agent entry = Buffer.instance.agents[i];
-            txtLines.Insert(a + 186, "WindoGraph.instance.realignObjects(\"" + entry.agentName + "s\");"); a = a + 1;
+            txtLines.Insert(a + 182, "WindoGraph.instance.realignObjects(\"" + entry.agentName + "s\");"); a = a + 1;
         }
 
 
@@ -192,78 +182,77 @@ public class LoadSimulationRules : MonoBehaviour
         for (int i = 0; i < Buffer.instance.agents.Length; i++)
         {
             Agent entry = Buffer.instance.agents[i];
-            txtLines.Insert(a + 248, "SortedSet<agent> alreadyAssigned" + entry.agentName + "s = new SortedSet<agent>(new agentComparer());"); a = a + 1;
+            txtLines.Insert(a + 246, "SortedSet<agent> alreadyAssigned" + entry.agentName + "s = new SortedSet<agent>(new agentComparer());"); a = a + 1;
         }
 
         //If totalNumberOfIndividuals in the simulation is odd
         //we have to randomly select an agent from all agent sets and put it in the alreadyAssignedAgent set.
-        txtLines.Insert(a + 262, "randomIndex = rand.Next(" + totalAgentCount + ");"); a = a + 1;
-        txtLines.Insert(a + 262, "if (randomIndex < " + totalAgentCount.Substring(0, indexes[0]) + ")"); a = a + 1;
-        txtLines.Insert(a + 262, "{"); a = a + 1;
-        txtLines.Insert(a + 262, "agent1 = " + Buffer.instance.agents[0].agentName + "s.ElementAt(randomIndex);"); a = a + 1;
-        txtLines.Insert(a + 262, "alreadyAssigned" + Buffer.instance.agents[0].agentName + "s.Add(agent1);"); a = a + 1;
-        txtLines.Insert(a + 262, Buffer.instance.agents[0].agentName + "s.Remove(agent1);"); a = a + 1;
-        txtLines.Insert(a + 262, "}"); a = a + 1;
+        txtLines.Insert(a + 258, "randomIndex = rand.Next(" + totalAgentCount + ");"); a = a + 1;
+        txtLines.Insert(a + 258, "if (randomIndex < " + totalAgentCount.Substring(0, indexes[0]) + ")"); a = a + 1;
+        txtLines.Insert(a + 258, "{"); a = a + 1;
+        txtLines.Insert(a + 258, "agent1 = " + Buffer.instance.agents[0].agentName + "s.ElementAt(randomIndex);"); a = a + 1;
+        txtLines.Insert(a + 258, "alreadyAssigned" + Buffer.instance.agents[0].agentName + "s.Add(agent1);"); a = a + 1;
+        txtLines.Insert(a + 258, Buffer.instance.agents[0].agentName + "s.Remove(agent1);"); a = a + 1;
+        txtLines.Insert(a + 258, "}"); a = a + 1;
         for (int i = 1; i < Buffer.instance.agents.Length; i++)
         {
-            txtLines.Insert(a + 262, "else if (randomIndex < " + totalAgentCount.Substring(0, indexes[i]) + ")"); a = a + 1;
-            txtLines.Insert(a + 262, "{"); a = a + 1;
-            txtLines.Insert(a + 262, "agent1 = " + Buffer.instance.agents[i].agentName + "s.ElementAt(randomIndex - (" + totalAgentCount.Substring(0, indexes[i - 1]) + "));"); a = a + 1;
-            txtLines.Insert(a + 262, "alreadyAssigned" + Buffer.instance.agents[i].agentName + "s.Add(agent1);"); a = a + 1;
-            txtLines.Insert(a + 262, Buffer.instance.agents[i].agentName + "s.Remove(agent1);"); a = a + 1;
-            txtLines.Insert(a + 262, "}"); a = a + 1;
+            txtLines.Insert(a + 258, "else if (randomIndex < " + totalAgentCount.Substring(0, indexes[i]) + ")"); a = a + 1;
+            txtLines.Insert(a + 258, "{"); a = a + 1;
+            txtLines.Insert(a + 258, "agent1 = " + Buffer.instance.agents[i].agentName + "s.ElementAt(randomIndex - (" + totalAgentCount.Substring(0, indexes[i - 1]) + "));"); a = a + 1;
+            txtLines.Insert(a + 258, "alreadyAssigned" + Buffer.instance.agents[i].agentName + "s.Add(agent1);"); a = a + 1;
+            txtLines.Insert(a + 258, Buffer.instance.agents[i].agentName + "s.Remove(agent1);"); a = a + 1;
+            txtLines.Insert(a + 258, "}"); a = a + 1;
         }
 
         //To select the first agent
         //we have to randomly select an agent from all agent sets and put it in the alreadyAssignedAgent set.
-        txtLines.Insert(a + 268, "randomIndex = rand.Next(" + totalAgentCount + ");"); a = a + 1;
-        txtLines.Insert(a + 268, "if (randomIndex < " + totalAgentCount.Substring(0, indexes[0]) + ")"); a = a + 1;
-        txtLines.Insert(a + 268, "{"); a = a + 1;
-        txtLines.Insert(a + 268, "agent1 = " + Buffer.instance.agents[0].agentName + "s.ElementAt(randomIndex);"); a = a + 1;
-        txtLines.Insert(a + 268, "alreadyAssigned" + Buffer.instance.agents[0].agentName + "s.Add(agent1);"); a = a + 1;
-        txtLines.Insert(a + 268, Buffer.instance.agents[0].agentName + "s.Remove(agent1);"); a = a + 1;
-        txtLines.Insert(a + 268, "}"); a = a + 1;
+        txtLines.Insert(a + 264, "randomIndex = rand.Next(" + totalAgentCount + ");"); a = a + 1;
+        txtLines.Insert(a + 264, "if (randomIndex < " + totalAgentCount.Substring(0, indexes[0]) + ")"); a = a + 1;
+        txtLines.Insert(a + 264, "{"); a = a + 1;
+        txtLines.Insert(a + 264, "agent1 = " + Buffer.instance.agents[0].agentName + "s.ElementAt(randomIndex);"); a = a + 1;
+        txtLines.Insert(a + 264, "alreadyAssigned" + Buffer.instance.agents[0].agentName + "s.Add(agent1);"); a = a + 1;
+        txtLines.Insert(a + 264, Buffer.instance.agents[0].agentName + "s.Remove(agent1);"); a = a + 1;
+        txtLines.Insert(a + 264, "}"); a = a + 1;
         for (int i = 1; i < Buffer.instance.agents.Length; i++)
         {
-            txtLines.Insert(a + 268, "else if (randomIndex < " + totalAgentCount.Substring(0, indexes[i]) + ")"); a = a + 1;
-            txtLines.Insert(a + 268, "{"); a = a + 1;
-            txtLines.Insert(a + 268, "agent1 = " + Buffer.instance.agents[i].agentName + "s.ElementAt(randomIndex - (" + totalAgentCount.Substring(0, indexes[i - 1]) + "));"); a = a + 1;
-            txtLines.Insert(a + 268, "alreadyAssigned" + Buffer.instance.agents[i].agentName + "s.Add(agent1);"); a = a + 1;
-            txtLines.Insert(a + 268, Buffer.instance.agents[i].agentName + "s.Remove(agent1);"); a = a + 1;
-            txtLines.Insert(a + 268, "}"); a = a + 1;
+            txtLines.Insert(a + 264, "else if (randomIndex < " + totalAgentCount.Substring(0, indexes[i]) + ")"); a = a + 1;
+            txtLines.Insert(a + 264, "{"); a = a + 1;
+            txtLines.Insert(a + 264, "agent1 = " + Buffer.instance.agents[i].agentName + "s.ElementAt(randomIndex - (" + totalAgentCount.Substring(0, indexes[i - 1]) + "));"); a = a + 1;
+            txtLines.Insert(a + 264, "alreadyAssigned" + Buffer.instance.agents[i].agentName + "s.Add(agent1);"); a = a + 1;
+            txtLines.Insert(a + 264, Buffer.instance.agents[i].agentName + "s.Remove(agent1);"); a = a + 1;
+            txtLines.Insert(a + 264, "}"); a = a + 1;
         }
 
         //To select the second agent
         //we have to randomly select an agent from all agent sets and put it in the alreadyAssignedAgent set.
-        txtLines.Insert(a + 268, "randomIndex = rand.Next(" + totalAgentCount + ");"); a = a + 1;
-        txtLines.Insert(a + 268, "if (randomIndex < " + totalAgentCount.Substring(0, indexes[0]) + ")"); a = a + 1;
-        txtLines.Insert(a + 268, "{"); a = a + 1;
-        txtLines.Insert(a + 268, "agent2 = " + Buffer.instance.agents[0].agentName + "s.ElementAt(randomIndex);"); a = a + 1;
-        txtLines.Insert(a + 268, "alreadyAssigned" + Buffer.instance.agents[0].agentName + "s.Add(agent2);"); a = a + 1;
-        txtLines.Insert(a + 268, Buffer.instance.agents[0].agentName + "s.Remove(agent2);"); a = a + 1;
-        txtLines.Insert(a + 268, "}"); a = a + 1;
+        txtLines.Insert(a + 264, "randomIndex = rand.Next(" + totalAgentCount + ");"); a = a + 1;
+        txtLines.Insert(a + 264, "if (randomIndex < " + totalAgentCount.Substring(0, indexes[0]) + ")"); a = a + 1;
+        txtLines.Insert(a + 264, "{"); a = a + 1;
+        txtLines.Insert(a + 264, "agent2 = " + Buffer.instance.agents[0].agentName + "s.ElementAt(randomIndex);"); a = a + 1;
+        txtLines.Insert(a + 264, "alreadyAssigned" + Buffer.instance.agents[0].agentName + "s.Add(agent2);"); a = a + 1;
+        txtLines.Insert(a + 264, Buffer.instance.agents[0].agentName + "s.Remove(agent2);"); a = a + 1;
+        txtLines.Insert(a + 264, "}"); a = a + 1;
         for (int i = 1; i < Buffer.instance.agents.Length; i++)
         {
-            txtLines.Insert(a + 268, "else if (randomIndex < " + totalAgentCount.Substring(0, indexes[i]) + ")"); a = a + 1;
-            txtLines.Insert(a + 268, "{"); a = a + 1;
-            txtLines.Insert(a + 268, "agent2 = " + Buffer.instance.agents[i].agentName + "s.ElementAt(randomIndex - (" + totalAgentCount.Substring(0, indexes[i - 1]) + "));"); a = a + 1;
-            txtLines.Insert(a + 268, "alreadyAssigned" + Buffer.instance.agents[i].agentName + "s.Add(agent2);"); a = a + 1;
-            txtLines.Insert(a + 268, Buffer.instance.agents[i].agentName + "s.Remove(agent2);"); a = a + 1;
-            txtLines.Insert(a + 268, "}"); a = a + 1;
+            txtLines.Insert(a + 264, "else if (randomIndex < " + totalAgentCount.Substring(0, indexes[i]) + ")"); a = a + 1;
+            txtLines.Insert(a + 264, "{"); a = a + 1;
+            txtLines.Insert(a + 264, "agent2 = " + Buffer.instance.agents[i].agentName + "s.ElementAt(randomIndex - (" + totalAgentCount.Substring(0, indexes[i - 1]) + "));"); a = a + 1;
+            txtLines.Insert(a + 264, "alreadyAssigned" + Buffer.instance.agents[i].agentName + "s.Add(agent2);"); a = a + 1;
+            txtLines.Insert(a + 264, Buffer.instance.agents[i].agentName + "s.Remove(agent2);"); a = a + 1;
+            txtLines.Insert(a + 264, "}"); a = a + 1;
         }
 
         //After we're done with the contests we put all the assigned agents back into their original sets
         for (int i = 0; i < Buffer.instance.agents.Length; i++)
         {
             Agent entry = Buffer.instance.agents[i];
-            txtLines.Insert(a + 276, entry.agentName + "s = alreadyAssigned" + entry.agentName + "s;"); a = a + 1;
+            txtLines.Insert(a + 272, entry.agentName + "s = alreadyAssigned" + entry.agentName + "s;"); a = a + 1;
         }
 
         //Generate the simulation code
         File.WriteAllLines("Assets/TheApp/SimulationScene/RunSimulation.cs", txtLines);
         AssetDatabase.Refresh();
         yield return new RecompileScripts();
-        loadingFilter.SetActive(false);
     }
 
     IEnumerator loadSimlation()
@@ -280,6 +269,8 @@ public class LoadSimulationRules : MonoBehaviour
 
         if (www.text != "" && www.text[0] == '0')
         {
+            Debug.Log("0; Load succesful;" + www.text);
+
             Regex pattern = new Regex(@"{(.*?)}");
             MatchCollection matches = pattern.Matches(www.text);
 
@@ -291,25 +282,21 @@ public class LoadSimulationRules : MonoBehaviour
             string description = Regex.Match(match.Value, @"description:(.*?),").Value;
             string likesCount = Regex.Match(match.Value, @"likesCount:(.*?),").Value;
             string dislikesCount = Regex.Match(match.Value, @"dislikesCount:(.*?),").Value;
-            string approved = Regex.Match(match.Value, @"approved:(.*?),").Value;
             string authorID = Regex.Match(match.Value, @"authorID:(.*?)}").Value;
 
             Buffer.instance.currentSimulation.ID = Int32.Parse(ID.Substring(3, ID.Length - 4));
             Buffer.instance.currentSimulation.name = name.Substring(6, name.Length - 8);
-            Buffer.instance.currentSimulation.image = image.Substring(7, image.Length - 9);
+            //Buffer.instance.currentSimulation.image = image.Substring(6, image.Length - 7);
             Buffer.instance.currentSimulation.description = description.Substring(13, description.Length - 15);
             Buffer.instance.currentSimulation.likesCount = Int32.Parse(likesCount.Substring(11, likesCount.Length - 12));
             Buffer.instance.currentSimulation.dislikesCount = Int32.Parse(dislikesCount.Substring(14, dislikesCount.Length - 15));
-            Buffer.instance.currentSimulation.approved = (approved.Substring(9, approved.Length - 10) == "1") ? true : false;
             Buffer.instance.currentSimulation.authorID = Int32.Parse(authorID.Substring(9, authorID.Length - 10));
 
             Buffer.instance.currentSimulationID = Int32.Parse(ID.Substring(3, ID.Length - 4));
         }
         else
         {
-            if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
-            else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
-            yield break;
+            Debug.Log("Loading simulations failed. Error #" + www.text);
         }
 
 
@@ -327,6 +314,7 @@ public class LoadSimulationRules : MonoBehaviour
         int i;
         if (www.text != "" && www.text[0] == '0')
         {
+            Debug.Log("0; Load succesful;" + www.text);
             amountOfFormulas = Int32.Parse(www.text.Substring(2, 1));
             amountOfAgents = (int)Sqrt(amountOfFormulas);
 
@@ -367,9 +355,7 @@ public class LoadSimulationRules : MonoBehaviour
         }
         else
         {
-            if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
-            else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
-            yield break;
+            Debug.Log("Loading simulations failed. Error #" + www.text);
         }
 
 
@@ -407,29 +393,26 @@ public class LoadSimulationRules : MonoBehaviour
                 Buffer.instance.agents[i].agentDescription = agentDescription.Substring(13, agentDescription.Length - 15);
                 Buffer.instance.agents[i].authorID = Int32.Parse(authorID.Substring(9, authorID.Length - 10));
             }
+
+            Debug.Log("0; Load succesful;" + www.text);
         }
         else
         {
-            if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
-            else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
-            yield break;
+            Debug.Log("Loading simulations failed. Error #" + www.text);
         }
 
         nameInputField.text = Buffer.instance.currentSimulation.name;
-        imageInputField.texture = applyBase64StringAsTexture(Buffer.instance.currentSimulation.image);
+        imageInputField.text = "Temporary image name";
         descriptionInputField.text = Buffer.instance.currentSimulation.description;
-        likesCountText.text = Buffer.instance.currentSimulation.likesCount.ToString();
-        dislikesCountText.text = Buffer.instance.currentSimulation.dislikesCount.ToString();
-        approvedValText.text = (Buffer.instance.currentSimulation.approved == true) ? "yes" : "no";
-        approveButton.transform.GetChild(0).GetComponent<Text>().text = (Buffer.instance.currentSimulation.approved == true) ? "Unapprove" : "Approve";
-
 
         bool variableFound = false;
         foreach (KeyValuePair<(int, int), PayoffFormula> entry in Buffer.instance.payoffFormulas)
         {
+            Debug.Log("entry: " + entry.Value.payoffFormula);
             string formula = entry.Value.payoffFormula;
             for (int j = 0; j < formula.Length; j++)
             {
+                Debug.Log("(formula[j] == '$'): " + (formula[j] == '$'));
                 if (formula[j] == '$') variableFound = true;
                 if (variableFound == true)
                 {
@@ -455,13 +438,5 @@ public class LoadSimulationRules : MonoBehaviour
         }
         PayoffMatrix_2.instance.initialize();
         StartCoroutine(compileSimulationRules());
-    }
-
-    private Texture2D applyBase64StringAsTexture(string textureString)
-    {
-        Texture2D newTexture = new Texture2D(1, 1);
-        newTexture.LoadImage(Convert.FromBase64String(textureString));
-        newTexture.Apply();
-        return newTexture;
     }
 }

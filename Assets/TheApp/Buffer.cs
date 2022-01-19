@@ -36,7 +36,7 @@ public class Buffer : MonoBehaviour
     public PayoffFormula newFormula = new PayoffFormula();
     public Dictionary<(int, int), PayoffFormula> payoffFormulas = new Dictionary<(int, int), PayoffFormula>();
     public PayoffFormula[] payoffFormula;
-    public int formulaTesterCompilationIndex = -1;
+    public int formulaTesterCompilationIndex = 0;
     //public (int, int) doubleInt = (10, 4);
 
     void Awake()
@@ -54,13 +54,13 @@ public class Buffer : MonoBehaviour
     {
         if (Buffer.instance == null)
         {
-            //Debug.Log("currentSimulationDOTIDBEFORE: " + currentSimulation.ID);
+            Debug.Log("currentSimulationDOTIDBEFORE: " + currentSimulation.ID);
             this.gameObject.name = "Buffer";
             instance = this;
             DontDestroyOnLoad(this.gameObject);
-            //Debug.Log("buffer instance SETTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT!");
-            //Debug.Log("currentSimulationDOTIDAFTER: " + currentSimulation.ID);
-            //Debug.Log("currentSimulationID: " + currentSimulationID);
+            Debug.Log("buffer instance SETTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT!");
+            Debug.Log("currentSimulationDOTIDAFTER: " + currentSimulation.ID);
+            Debug.Log("currentSimulationID: " + currentSimulationID);
         }
     }
     /**/
@@ -188,6 +188,24 @@ currentSimulation.ID = 0;
         {
             Debug.Log("Buffer.instance.agents == null"); 
         }
+
+        /*
+        if (this.agents != null)
+        {
+            for (int i = 0; i < this.agents.Length; i++)
+            {
+                Debug.Log(i + ". agentID: " + this.agents[i].agentID);
+                Debug.Log(i + ". icon: " + this.agents[i].icon);
+                Debug.Log(i + ". agentName: " + this.agents[i].agentName);
+                Debug.Log(i + ". agentDescription: " + this.agents[i].agentDescription);
+                Debug.Log(i + ". authorID: " + this.agents[i].authorID);
+            }
+        }
+        else
+        {
+            Debug.Log("Buffer.instance.agents == null");
+        }
+        */
     }
 }
 [System.Serializable]
@@ -206,7 +224,6 @@ public class User
 {
     public int ID;
     public string username;
-    public bool isAdmin;
 }
 [System.Serializable]
 public class Simulation
@@ -218,7 +235,6 @@ public class Simulation
     public int likesCount;
     public int dislikesCount;
     public int authorID;
-    public bool approved;
 
     private int amountOfCorrespondingFormulas;
     //private int amountOfCorrespondingAgents = sqrt(amountOfCorrespondingFormulas);

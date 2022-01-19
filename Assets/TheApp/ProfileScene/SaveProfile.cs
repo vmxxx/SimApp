@@ -43,7 +43,6 @@ public class SaveProfile : MonoBehaviour
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
-            yield break;
         }
     }
 

@@ -12,6 +12,7 @@ public class Notification : MonoBehaviour
     {
         if(Notification.instance == null)
         {
+            this.gameObject.name = "Notification";
             instance = this;
             DontDestroyOnLoad(this.gameObject);
         }

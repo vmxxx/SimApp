@@ -35,6 +35,8 @@ public class Register : MonoBehaviour
         //we display the success notification and put the received simulation data in the buffer
         if (www.text != "" && www.text[0] == '0')
         {
+            //Display the notification
+            StartCoroutine( Notification.instance.showNotification("Registration successful!"));
 
             //Login the user
             StartCoroutine(Login.instance.LoginPlayer(usernameField.text, passwordField.text));
@@ -43,7 +45,6 @@ public class Register : MonoBehaviour
         {
             if (www.text != "") StartCoroutine( Notification.instance.showNotification(www.text) );
             else StartCoroutine( Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet.") );
-            yield break;
         }
     }
 

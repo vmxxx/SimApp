@@ -8,8 +8,6 @@ using System.Text.RegularExpressions;
 
 public class SearchSimulation : MonoBehaviour
 {
-    public static SearchSimulation instance;
-
     public InputField popularSimulationsSearchField;
     public InputField userSimulationsSearchField;
 
@@ -18,11 +16,6 @@ public class SearchSimulation : MonoBehaviour
     public GameObject entry;
     private int pN = 1;
     private int uN = 1;
-
-    private void Update()
-    {
-        if (SearchSimulation.instance == null) instance = this;
-    }
 
     public void clearPopular()
     {
@@ -81,7 +74,6 @@ public class SearchSimulation : MonoBehaviour
                 string description = Regex.Match(seperate_entry, @"description:(.*?),").Value;
                 string likesCount = Regex.Match(seperate_entry, @"likesCount:(.*?),").Value;
                 string dislikesCount = Regex.Match(seperate_entry, @"dislikesCount:(.*?),").Value;
-                string approved = Regex.Match(seperate_entry, @"approved:(.*?),").Value;
                 string authorID = Regex.Match(seperate_entry, @"authorID:(.*?)}").Value;
 
 
@@ -93,7 +85,6 @@ public class SearchSimulation : MonoBehaviour
                     Buffer.instance.popularSimulations[j].description = description.Substring(13, description.Length - 15);
                     Buffer.instance.popularSimulations[j].likesCount = Int32.Parse(likesCount.Substring(11, likesCount.Length - 12));
                     Buffer.instance.popularSimulations[j].dislikesCount = Int32.Parse(dislikesCount.Substring(14, dislikesCount.Length - 15));
-                    Buffer.instance.popularSimulations[j].approved = (approved.Substring(9, approved.Length - 10) == "1") ? true : false;
                     Buffer.instance.popularSimulations[j].authorID = Int32.Parse(authorID.Substring(9, authorID.Length - 10));
                 }
                 j++;
@@ -104,7 +95,6 @@ public class SearchSimulation : MonoBehaviour
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
-            yield break;
         }
     }
 
@@ -141,7 +131,6 @@ public class SearchSimulation : MonoBehaviour
                 string description = Regex.Match(seperate_entry, @"description:(.*?),").Value;
                 string likesCount = Regex.Match(seperate_entry, @"likesCount:(.*?),").Value;
                 string dislikesCount = Regex.Match(seperate_entry, @"dislikesCount:(.*?),").Value;
-                string approved = Regex.Match(seperate_entry, @"approved:(.*?),").Value;
                 string authorID = Regex.Match(seperate_entry, @"authorID:(.*?)}").Value;
 
                 if (ID != "")
@@ -152,7 +141,6 @@ public class SearchSimulation : MonoBehaviour
                     Buffer.instance.userSimulations[j].description = description.Substring(13, description.Length - 15);
                     Buffer.instance.userSimulations[j].likesCount = Int32.Parse(likesCount.Substring(11, likesCount.Length - 12));
                     Buffer.instance.userSimulations[j].dislikesCount = Int32.Parse(dislikesCount.Substring(14, dislikesCount.Length - 15));
-                    Buffer.instance.userSimulations[j].approved = (approved.Substring(9, approved.Length - 10) == "1") ? true : false;
                     Buffer.instance.userSimulations[j].authorID = Int32.Parse(authorID.Substring(9, authorID.Length - 10));
                 }
                 j++;
@@ -163,7 +151,6 @@ public class SearchSimulation : MonoBehaviour
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
-            yield break;
         }
     }
 
@@ -185,20 +172,19 @@ public class SearchSimulation : MonoBehaviour
             newEntry.name = "Entry_" + i;
             newEntry.transform.GetChild(0).GetComponent<Text>().text = simulations[i].ID.ToString();
             newEntry.transform.GetChild(1).GetComponent<Text>().text = simulations[i].name;
-            newEntry.transform.GetChild(2).GetComponent<RawImage>().texture = applyBase64StringAsTexture(simulations[i].image);
+
+            if (simulations[i].image != "")
+            {
+                Texture2D newTexture = new Texture2D(1, 1);
+                newTexture.LoadImage(Convert.FromBase64String(simulations[i].image));
+                newTexture.Apply();
+                newEntry.transform.GetChild(2).GetComponent<RawImage>().texture = newTexture;
+            }
             newEntry.transform.GetChild(2).GetChild(0).GetChild(0).GetComponent<Text>().text = "likes/dislikes = " + simulations[i].likesCount + "/" + simulations[i].dislikesCount;
             newEntry.transform.GetChild(2).GetChild(0).GetChild(1).GetComponent<Text>().text = simulations[i].description;
             newEntry.transform.SetParent(panel.transform);
             int currIndex = newEntry.transform.GetSiblingIndex();
             newEntry.transform.SetSiblingIndex(currIndex - 1);
         }
-    }
-
-    private Texture2D applyBase64StringAsTexture(string textureString)
-    {
-        Texture2D newTexture = new Texture2D(1, 1);
-        newTexture.LoadImage(Convert.FromBase64String(textureString));
-        newTexture.Apply();
-        return newTexture;
     }
 }

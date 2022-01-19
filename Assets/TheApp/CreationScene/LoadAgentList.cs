@@ -97,7 +97,6 @@ public class LoadAgentList : MonoBehaviour
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
-            yield break;
         }
     }
 
@@ -112,19 +111,18 @@ public class LoadAgentList : MonoBehaviour
             agentCells[i].SetActive(true);
             agentCells[i].name = "Agent_" + i;
             agentCells[i].transform.Find("ID").GetComponent<Text>().text = Buffer.instance.agents[i].agentID.ToString();
-            agentCells[i].transform.Find("Icon").GetComponent<RawImage>().texture = applyBase64StringAsTexture(Buffer.instance.agents[i].icon);
+
+            if (Buffer.instance.agents[i].icon != "")
+            {
+                Texture2D newTexture = new Texture2D(1, 1);
+                newTexture.LoadImage(Convert.FromBase64String(Buffer.instance.agents[i].icon));
+                newTexture.Apply();
+                agentCells[i].transform.Find("Icon").GetComponent<RawImage>().texture = newTexture;
+            }
             agentCells[i].transform.Find("Name").GetComponent<Text>().text = Buffer.instance.agents[i].agentName;
             agentCells[i].transform.Find("Icon").GetChild(0).Find("Name").GetComponent<Text>().text = Buffer.instance.agents[i].agentName;
             agentCells[i].transform.Find("Icon").GetChild(0).Find("Description").GetComponent<Text>().text = Buffer.instance.agents[i].agentDescription;
         }
 
-    }
-
-    private Texture2D applyBase64StringAsTexture(string textureString)
-    {
-        Texture2D newTexture = new Texture2D(1, 1);
-        newTexture.LoadImage(Convert.FromBase64String(textureString));
-        newTexture.Apply();
-        return newTexture;
     }
 }

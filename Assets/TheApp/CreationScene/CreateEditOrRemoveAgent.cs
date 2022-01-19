@@ -36,20 +36,20 @@ public class CreateEditOrRemoveAgent : MonoBehaviour
 
         if (www.text != "" && www.text[0] == '0')
         {
-            SearchAgent.instance.clearAgents();
+            StartCoroutine(Notification.instance.showNotification("Agent deleted successfully!"));
+            refreshAgents();
         }
         else
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
-            yield break;
         }
     }
 
     public void save()
     {
-        if (iconSetting.GetComponent<RawImage>().texture != null && nameSetting.text != "" && descriptionSetting.text != "") { StartCoroutine(saveAgent()); SearchAgent.instance.clearAgents(); }
-        else StartCoroutine(Notification.instance.showNotification("Agent name, icon and description cannot be NULL!"));
+        StartCoroutine(saveAgent());
+        SearchAgent.instance.clearAgents();
     }
 
     private IEnumerator saveAgent()
@@ -69,24 +69,23 @@ public class CreateEditOrRemoveAgent : MonoBehaviour
         if (www.text != "" && www.text[0] == '0')
         {
             StartCoroutine(Notification.instance.showNotification("Agent saved!"));
-            SearchAgent.instance.clearAgents();
         }
         else
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
-            yield break;
         }
     }
 
     public void createAsNew()
     {
-        if(iconSetting.GetComponent<RawImage>().texture != null && nameSetting.text != "" && descriptionSetting.text != "") { StartCoroutine(createAgentAsNew()); }
-        else StartCoroutine(Notification.instance.showNotification("Agent name, icon and description cannot be NULL!"));
+        StartCoroutine(createAgentAsNew());
+        SearchAgent.instance.clearAgents();
     }
 
     private IEnumerator createAgentAsNew()
     {
+
         WWWForm form = new WWWForm();
         form.AddField("class", "AgentsController\\agents");
         form.AddField("function", "create");
@@ -101,13 +100,11 @@ public class CreateEditOrRemoveAgent : MonoBehaviour
         if (www.text != "" && www.text[0] == '0')
         {
             StartCoroutine(Notification.instance.showNotification("Agent created!"));
-            SearchAgent.instance.clearAgents();
         }
         else
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
-            yield break;
         }
     }
 
@@ -141,6 +138,7 @@ public class CreateEditOrRemoveAgent : MonoBehaviour
             GameObject temp = agentsList.transform.Find("Agent_" + i).gameObject;
             Destroy(temp);
         }
+        //StartCoroutine(loadAgents());
     }
 
     public GameObject agentsList;

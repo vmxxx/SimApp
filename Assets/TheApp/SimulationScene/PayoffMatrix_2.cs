@@ -121,7 +121,14 @@ public class PayoffMatrix_2 : MonoBehaviour
             tableCells[0].cell[newIndex].transform.Find("AgentID").GetComponent<Text>().text = Buffer.instance.agents[i].agentID.ToString();
 
 
-            tableCells[0].cell[newIndex].transform.Find("Button").GetChild(1).GetComponent<RawImage>().texture = applyBase64StringAsTexture(Buffer.instance.agents[i].icon);
+            try
+            {
+                Texture2D newTexture = new Texture2D(1, 1);
+                newTexture.LoadImage(Convert.FromBase64String(Buffer.instance.agents[i].icon));
+                newTexture.Apply();
+                tableCells[0].cell[newIndex].transform.Find("Button").GetChild(1).GetComponent<RawImage>().texture = newTexture;
+            }
+            catch { }
             tableCells[0].cell[newIndex].transform.Find("Button").GetChild(1).GetChild(0).Find("Name").GetComponent<Text>().text = Buffer.instance.agents[i].agentName;
             tableCells[0].cell[newIndex].transform.Find("Button").GetChild(1).GetChild(0).Find("Description").GetComponent<Text>().text = Buffer.instance.agents[i].agentDescription;
             tableCells[0].cell[newIndex].transform.Find("Button").GetChild(0).GetComponent<Text>().color = Buffer.instance.agents[i].color;
@@ -133,7 +140,14 @@ public class PayoffMatrix_2 : MonoBehaviour
             tableCells[newIndex].cell[0].name = "TableCell_" + newIndex + "_0";
             tableCells[newIndex].cell[0].transform.SetParent(tableColumns[0].transform);
             tableCells[newIndex].cell[0].transform.Find("AgentID").GetComponent<Text>().text = Buffer.instance.agents[i].agentID.ToString();
-            tableCells[newIndex].cell[0].transform.Find("Button").GetChild(1).GetComponent<RawImage>().texture = applyBase64StringAsTexture(Buffer.instance.agents[i].icon);
+            try
+            {
+                Texture2D newTexture = new Texture2D(1, 1);
+                newTexture.LoadImage(Convert.FromBase64String(Buffer.instance.agents[i].icon));
+                newTexture.Apply();
+                tableCells[newIndex].cell[0].transform.Find("Button").GetChild(1).GetComponent<RawImage>().texture = newTexture;
+            }
+            catch { }
             tableCells[newIndex].cell[0].transform.Find("Button").GetChild(1).GetChild(0).Find("Name").GetComponent<Text>().text = Buffer.instance.agents[i].agentName;
             tableCells[newIndex].cell[0].transform.Find("Button").GetChild(1).GetChild(0).Find("Description").GetComponent<Text>().text = Buffer.instance.agents[i].agentDescription;
             tableCells[newIndex].cell[0].transform.Find("Button").GetChild(0).GetComponent<Text>().color = Buffer.instance.agents[i].color;
@@ -302,6 +316,7 @@ public class PayoffMatrix_2 : MonoBehaviour
             float Y;
             for (int i = 1; i < columnLength; i++)
             {
+                Debug.Log("i: " + i + ", columnIndex: " + columnIndex);
                 X = tableColumns[i].transform.GetComponent<RectTransform>().anchoredPosition.x;
                 Y = tableColumns[i].transform.GetComponent<RectTransform>().anchoredPosition.y;
                 if (i > columnIndex) tableColumns[i].transform.GetComponent<RectTransform>().anchoredPosition = new Vector2(X, (Y - offset));
@@ -349,14 +364,6 @@ public class PayoffMatrix_2 : MonoBehaviour
             offset = offset - 90f;
         }
         alignCells(false, columnIndex, offset);
-    }
-
-    private Texture2D applyBase64StringAsTexture(string textureString)
-    {
-        Texture2D newTexture = new Texture2D(1, 1);
-        newTexture.LoadImage(Convert.FromBase64String(textureString));
-        newTexture.Apply();
-        return newTexture;
     }
 }
 

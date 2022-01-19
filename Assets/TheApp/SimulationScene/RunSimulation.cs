@@ -38,7 +38,7 @@ public class RunSimulation : MonoBehaviour
 	
     private int varItr = 0;
 	
-    private bool initialized = false; public GameObject pauseButton;
+    private bool initialized = false;
 
 
     private int itr = 0;
@@ -63,17 +63,13 @@ public class RunSimulation : MonoBehaviour
     }
 
 	//This function gets called when the user clicks on the "restart" button
-    public void restart(GameObject pauseBtn)
+    public void restart(GameObject pauseButton)
     {
-		pauseButton = pauseBtn; if(pauseButton.transform.GetChild(0).GetComponent<Text>().text != "Start")
-		{
-			pauseButton.transform.GetChild(0).GetComponent<Text>().text = "Start";
-			WindoGraph.instance.clearGraph();
-			initialized = false; //If we want to initialize the simulation from the start we have to forget that we have initialized once already
-			paused = true;
-			itr = 0;
-		}
-		else { StartCoroutine(Notification.instance.showNotification("You can only restart, if the simulation is started.")); }
+        pauseButton.transform.GetChild(0).GetComponent<Text>().text = "Start";
+        WindoGraph.instance.clearGraph();
+        initialized = false; //If we want to initialize the simulation from the start we have to forget that we have initialized once already
+        paused = true;
+        itr = 0;
     }
 
 	//This function gets called when the user clicks on the "accelerate" button
@@ -297,132 +293,4 @@ public class agentComparer : IComparer<agent>
         // TODO: Handle x or y being null, or them not having names
         return x.key.CompareTo(y.key);
     }
-}
-
-public class IndexedSortedSet
-{
-	public IndexedSortedSet instance;
-	public int val;
-	public int Count = 0;
-	public int currPower = 0;
-	public int nextPower = 1;
-	public int currPowerOfTwo = 1;
-	public int nextPowerOfTwo = 2;
-	public int index = -1;
-	public List<IndexedSortedSet> pointers = new List<IndexedSortedSet>();
-	public int supposedCount;
-
-	public int ElementAt(int idx, int prevPowerOfTwo = -1)
-	{
-		//Console.WriteLine("0. val: " + val + ", Count: " + Count + ", currPower: " + currPower + ", nextPower: " + nextPower + ", currPowerOfTwo: " + currPowerOfTwo + ", nextPowerOfTwo: " + nextPowerOfTwo + ", index: " + index + ", idx: " + idx + ", pointers.Count: " + ((pointers != null) ? (pointers.Count) : (0)));
-
-		if (index == idx)
-		{
-			Debug.Log("1. val: " + val + ", Count: " + Count + ", currPower: " + currPower + ", nextPower: " + nextPower + ", currPowerOfTwo: " + currPowerOfTwo + ", nextPowerOfTwo: " + nextPowerOfTwo + ", index: " + index + ", idx: " + idx + ", pointers.Count: " + ((pointers != null) ? (pointers.Count) : (0)));
-
-			return val;
-		}
-		else
-		{
-			/*
-			int subtractor = idx + 1;
-			if (currPowerOfTwo - (idx + 1) < 0) { subtractor = (idx - (index - Count)) + 1; }
-			int pointerIdx = -1;
-			for(int i = currPowerOfTwo; i > currPowerOfTwo - subtractor; i = i - (i / 2))
-			{
-				pointerIdx++;
-			}
-			/**/
-			int pointerIdx = 0;
-			while (pointers[pointerIdx].index < idx) pointerIdx++;
-			Debug.Log("2. val: " + val + ", Count: " + Count + ", currPower: " + currPower + ", nextPower: " + nextPower + ", currPowerOfTwo: " + currPowerOfTwo + ", nextPowerOfTwo: " + nextPowerOfTwo + ", index: " + index + ", idx: " + idx + ", pointers.Count: " + ((pointers != null) ? (pointers.Count) : (0)) + ", pointerIdx: " + pointerIdx);
-
-			return pointers[pointerIdx].ElementAt(idx);
-		}
-	}
-
-	public void Add(int v, bool pushOldValDeeper = true, int idx = -1)
-	{
-		if (idx == -1) idx = Count;
-		Count = Count + 1;
-
-
-
-
-		//if amount of children is less than 2^(nodes.Count)
-		if (Count < currPowerOfTwo)
-		{
-			//The node index that this should be put under:
-			int subtractor = idx + 1;
-			if (currPowerOfTwo - (idx + 1) < 0) { subtractor = (idx - (index - Count)) + 1; }
-			int pointerIndex = -1;
-			//if (Count == 11) pointerIndex = 0;
-			for (int i = currPowerOfTwo; i > currPowerOfTwo - subtractor; i = i - (i / 2))
-			{
-				pointerIndex = pointerIndex + 1;
-			}
-
-			Debug.Log("currPowerOfTwo: " + currPowerOfTwo + ", Count: " + Count + ", pointerIndex: " + pointerIndex);
-
-			//if the pointers index isnt out of bounds
-			if ((Count - (currPowerOfTwo / 2)) % 2 == 0)
-			{
-				Debug.Log("if(pointerIndex < pointers.Count), pointerIndex: " + pointerIndex + ", pointers.Count: " + pointers.Count);
-				//pointers[pointerIndex].Add(v, false, idx);
-				/*NEW---------------------------------------------------------------------------------------------------------------------*/
-				Debug.Log(Count + "el, " + currPowerOfTwo + ", index: " + index + ", idx: " + idx);
-				//Copy this subtree
-				List<IndexedSortedSet> prevPointers = pointers;
-				//Initialize a new empty subtree
-				pointers = new List<IndexedSortedSet>();
-				for (int i = 0; i < pointerIndex; i++)
-				{
-					pointers.Add(prevPointers[i]);
-				}
-				for (int i = 0; i < pointerIndex; i++)
-				{
-					prevPointers.RemoveAt(0);
-				}
-				//Add a new node with a new value to it (which also owns the copy of the copied subtree)
-				pointers.Add(new IndexedSortedSet((pushOldValDeeper == false) ? val : v, prevPointers[0].Count + 1, prevPointers[0].currPower + 1, prevPointers[0].nextPower + 1, prevPointers[0].currPowerOfTwo * 2, prevPointers[0].nextPowerOfTwo * 2, (pushOldValDeeper == false) ? index : idx, prevPointers));
-				if (pushOldValDeeper == false) val = v;
-				if (pushOldValDeeper == false) index = idx;
-				/*------------------------------------------------------------------------------------------------------------------------*/
-			}
-			else //else create a new pointer (if the index is out of bounds)
-			{
-				Debug.Log("createNewPointer");
-				pointers.Add(new IndexedSortedSet(v, 0, 0, 1, 1, 2, idx, new List<IndexedSortedSet>()));
-			}
-		}
-		else
-		{
-			Debug.Log(Count + "else, " + currPowerOfTwo + ", index: " + index + ", idx: " + idx);
-			//Copy this subtree
-			List<IndexedSortedSet> prevPointers = pointers;
-			//Initialize a new empty subtree
-			pointers = new List<IndexedSortedSet>();
-			//Add a new node with a new value to it (which also owns the copy of the copied subtree)
-			pointers.Add(new IndexedSortedSet((pushOldValDeeper == false) ? val : v, Count - 1, currPower, nextPower, currPowerOfTwo, nextPowerOfTwo, (pushOldValDeeper == false) ? index : idx, prevPointers));
-			if (pushOldValDeeper == false) val = v;
-			if (pushOldValDeeper == false) index = idx;
-			currPower++;
-			nextPower++;
-			currPowerOfTwo = currPowerOfTwo * 2;
-			nextPowerOfTwo = nextPowerOfTwo * 2;
-		}
-
-	}
-
-	public IndexedSortedSet(int v = 0, int Cnt = 0, int currPow = 0, int nextPow = 1, int currPowOf2 = 1, int nextPowOf2 = 2, int idx = -1, List<IndexedSortedSet> ptrs = null, int suppCnt = 0)
-	{
-		val = v;
-		Count = Cnt;
-		currPower = currPow;
-		nextPower = nextPow;
-		currPowerOfTwo = currPowOf2;
-		nextPowerOfTwo = nextPowOf2;
-		index = idx;
-		pointers = ptrs;
-	}
 }

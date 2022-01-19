@@ -29,13 +29,12 @@ public class SaveSimulation : MonoBehaviour
     public string newPayoffVariable = "";
     public bool scriptsRecompiled = false;
 
-    public bool messageDisplayed = true;
+    public bool messageDisplayed = false;
     public bool secondIteration = false;
-    public GameObject loadingFilter;
 
     public IEnumerator testFormulas()
     {
-        if (readFormulasFromTheMatrix() == "containsErrors") { StartCoroutine(Notification.instance.showNotification("There cannot be duplicate agents!")); yield break; }
+        readFormulasFromTheMatrix();
 
         detectPayoffVariables(); //For example "$V - $C" contains 2 variables: "$V" and "$C"
 
@@ -63,18 +62,10 @@ public class SaveSimulation : MonoBehaviour
             }
 
             Buffer.instance.formulaTesterCompilationIndex++;
-            //txtLines.Insert(a + 44, "compilationIndex = " + Buffer.instance.formulaTesterCompilationIndex + "; scriptsRecompiled = true;"); a = a + 1;
+            txtLines.Insert(a + 44, "compilationIndex = " + Buffer.instance.formulaTesterCompilationIndex + "; scriptsRecompiled = true;"); a = a + 1;
 
             //Write them to the file
             File.WriteAllLines("Assets/TheApp/CreationScene/formulaTester.cs", txtLines);
-
-            /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-            txtLines = File.ReadAllLines("Assets/TheApp/ClearGeneratableScriptFiles.cs").ToList();
-
-            txtLines[41] = "compilationIndex = " + Buffer.instance.formulaTesterCompilationIndex + "; scriptsRecompiled = true;";
-
-            File.WriteAllLines("Assets/TheApp/ClearGeneratableScriptFiles.cs", txtLines);
-        /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
         //After we've generated a formula tester script:
 
@@ -85,7 +76,7 @@ public class SaveSimulation : MonoBehaviour
         yield return new RecompileScripts();
         yield return new WaitForSeconds(2);
         messageDisplayed = false;
-        //scriptsRecompiled = true;
+        scriptsRecompiled = true;
     }
 
     public void Start()
@@ -101,37 +92,29 @@ public class SaveSimulation : MonoBehaviour
     public void Update()
     {
         //If we haven't displayed a success/error message SINCE the last time we pressed "SAVE"
-        if (ClearGeneratableScriptFiles.instance != null && messageDisplayed == false && messageDisplayed == false )
+        if (messageDisplayed == false)
         {
-            if(true)
+            //If the formulas DONT contain errors
+            if (Buffer.instance.formulaTesterCompilationIndex == FormulaTester.instance.compilationIndex)
             {
-                //If the formulas DONT contain errors
-                if (Buffer.instance.formulaTesterCompilationIndex == ClearGeneratableScriptFiles.instance.compilationIndex)
-                {
-                    if (nameInputField.GetComponent<InputField>().text != "" && imageInputField.GetComponent<RawImage>().texture != null && descriptionInputField.GetComponent<InputField>().text != "")
-                    { StartCoroutine(saveSimulation((Buffer.instance.currentSimulation.ID == 0) ? true : false)); }
-                    else StartCoroutine(Notification.instance.showNotification("The simulation name, image and description cannot be NULL."));
-
-                    scriptsRecompiled = false;
-                    FormulaTester.instance.scriptsRecompiled = false;
-                }
-                else //If the formulas DO contain errors
-                {
-                    StartCoroutine(Notification.instance.showNotification("The payoff formulas have errors"));
-                }
+                StartCoroutine(saveSimulation((Buffer.instance.currentSimulation.ID == 0) ? true : false));
+                StartCoroutine(Notification.instance.showNotification("The payoff formulas DONT have errors"));
+                scriptsRecompiled = false;
+                FormulaTester.instance.scriptsRecompiled = false;
             }
-            scriptsRecompiled = false;
+            else //If the formulas DO contain errors
+            {
+                StartCoroutine(Notification.instance.showNotification("The payoff formulas have errors"));
+            }
             messageDisplayed = true; //Now we take note that we shouldn't display it again
-            loadingFilter.SetActive(false);
         }
-        /**/
+
         //In case the scripts gets recompiled (because then the instance variable is forgotten)
         //we reset the script instance to this script
         if (SaveSimulation.instance == null)
         {
             instance = this;
             messageDisplayed = false;
-            scriptsRecompiled = true;
         }
     }
 
@@ -145,18 +128,8 @@ public class SaveSimulation : MonoBehaviour
         childCount = payoffMatrixPanel.transform.childCount;
         formulaCount = agentCount * agentCount;
 
-        loadingFilter.SetActive(true);
-
-        for (int i = 1; i <= agentCount; i++)
-        {
-            GameObject agent1Cell = payoffMatrixPanel.transform.Find("TableColumn_0").Find("TableCell_" + i + "_0").gameObject;
-            string agent1 = agent1Cell.transform.Find("AgentID").GetComponent<Text>().text;
-            if (agent1 == "X") { StartCoroutine(Notification.instance.showNotification("Agent cells are empty.")); return; }
-        }
-
-        //First we test the formulas, if there are no errors then the saveSimulation() will be called (line 110)
-        if (imageInputField.GetComponent<RawImage>().texture != null) { StartCoroutine(testFormulas()); }
-        else StartCoroutine(Notification.instance.showNotification("Simulation image cannot be NULL!"));
+        //First we test the formulas, if there are no errors then the saveSimulation() will be called (line 138)
+        StartCoroutine(testFormulas());
     }
 
     IEnumerator saveSimulation(bool newSimulation)
@@ -170,7 +143,6 @@ public class SaveSimulation : MonoBehaviour
         form.AddField("image", Convert.ToBase64String( ImageConversion.EncodeToPNG( (Texture2D)imageInputField.GetComponent<RawImage>().texture )) );
         form.AddField("description", descriptionInputField.GetComponent<InputField>().text);
         form.AddField("authorID", Buffer.instance.authenticatedUser.ID);
-        form.AddField("onApproval", "false");
 
         WWW www = new WWW("http://localhost/sqlconnect/index.php", form);
         yield return www; //tells Unity to put this on the backburner. Once we get the info back, we'll run the rest of the code
@@ -186,7 +158,6 @@ public class SaveSimulation : MonoBehaviour
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
-            yield break;
         }
 
 
@@ -228,11 +199,10 @@ public class SaveSimulation : MonoBehaviour
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
-            yield break;
         }
     }
 
-    public string readFormulasFromTheMatrix()
+    public void readFormulasFromTheMatrix()
     {
         Buffer.instance.payoffFormulas = new Dictionary<(int, int), PayoffFormula>();
         for (int i = 1; i <= agentCount; i++)
@@ -253,11 +223,9 @@ public class SaveSimulation : MonoBehaviour
                 Buffer.instance.newFormula.agent2 = agent2;
                 Buffer.instance.newFormula.payoffFormula = payoffFormula;
 
-                if (!Buffer.instance.payoffFormulas.ContainsKey((agent1, agent2))) Buffer.instance.payoffFormulas.Add((agent1, agent2), Buffer.instance.newFormula);
-                else return "containsErrors";
+                Buffer.instance.payoffFormulas.Add((Buffer.instance.newFormula.agent1, Buffer.instance.newFormula.agent2), Buffer.instance.newFormula);
             }
         }
-        return "ok";
     }
 
     public void detectPayoffVariables()
@@ -286,5 +254,4 @@ public class SaveSimulation : MonoBehaviour
             }
         }
     }
-
 }

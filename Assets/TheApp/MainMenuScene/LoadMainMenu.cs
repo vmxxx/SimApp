@@ -10,6 +10,30 @@ public class LoadMainMenu : MonoBehaviour
     public GameObject logoutButton;
     public GameObject profileSettingsButton;
 
+    public void showBuffer()
+    {
+        Debug.Log("Buffer: ");
+        //Debug.Log(authenticatedUser.ID);
+        //Debug.Log(authenticatedUser.username);
+        Debug.Log("AuthenticatedUser (ID): " + Buffer.instance.authenticatedUser.ID);
+        Debug.Log("authenticatedUser (Username): " + Buffer.instance.authenticatedUser.username);
+        Debug.Log("CurrentSimulation.123 (ID): " + Buffer.instance.currentSimulationID);
+        Debug.Log("CurrentSimulation (ID): " + Buffer.instance.currentSimulation.ID);
+        //Buffer.instance.printPayoffFormulas();
+
+        Debug.Log(Buffer.instance.currentSimulation.ID);
+        Debug.Log(Buffer.instance.currentSimulation.name);
+        Debug.Log(Buffer.instance.currentSimulation.image);
+        Debug.Log(Buffer.instance.currentSimulation.description);
+        Debug.Log(Buffer.instance.currentSimulation.likesCount);
+        Debug.Log(Buffer.instance.currentSimulation.dislikesCount);
+        Debug.Log(Buffer.instance.currentSimulation.authorID);
+
+        Buffer.instance.printPayoffFormulas();
+
+
+    }
+
     void Start()
     {
         if (Buffer.instance.authenticatedUser.ID != 0)

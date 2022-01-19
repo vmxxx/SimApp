@@ -33,7 +33,7 @@ public class LoadSimulation : MonoBehaviour
     //Start() gets called before the first frame update.
     private void Start()
     {
-        if(Buffer.instance.currentSimulation.ID != 0) StartCoroutine(loadSimulation());
+        StartCoroutine(loadSimulation());
     }
 
     IEnumerator loadSimulation()
@@ -70,7 +70,6 @@ public class LoadSimulation : MonoBehaviour
             string description = Regex.Match(match.Value, @"description:(.*?),").Value;
             string likesCount = Regex.Match(match.Value, @"likesCount:(.*?),").Value;
             string dislikesCount = Regex.Match(match.Value, @"dislikesCount:(.*?),").Value;
-            string approved = Regex.Match(match.Value, @"approved:(.*?),").Value;
             string authorID = Regex.Match(match.Value, @"authorID:(.*?)}").Value;
 
             //Convert numbers to their appropriate data types, let the strings stay as strings
@@ -81,14 +80,12 @@ public class LoadSimulation : MonoBehaviour
             Buffer.instance.currentSimulation.description = description.Substring(13, description.Length - 15);
             Buffer.instance.currentSimulation.likesCount = Int32.Parse(likesCount.Substring(11, likesCount.Length - 12));
             Buffer.instance.currentSimulation.dislikesCount = Int32.Parse(dislikesCount.Substring(14, dislikesCount.Length - 15));
-            Buffer.instance.currentSimulation.approved = (approved.Substring(9, approved.Length - 10) == "1") ? true : false;
             Buffer.instance.currentSimulation.authorID = Int32.Parse(authorID.Substring(9, authorID.Length - 10));
         }
         else //Display error notification
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
-            yield break;
         }
 
         //2. Get the formulas objects
@@ -164,10 +161,9 @@ public class LoadSimulation : MonoBehaviour
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
-            yield break;
         }
 
-        //3. Get the agents objects
+        //2. Get the agents objects
 
         form = new WWWForm();
         form.AddField("class", "AgentsController\\agents");
@@ -214,13 +210,11 @@ public class LoadSimulation : MonoBehaviour
                 Buffer.instance.agents[i].authorID = Int32.Parse(authorID.Substring(9, authorID.Length - 10));
             }
 
-
         }
         else //Display error notification
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
-            yield break;
         }
 
         //In the simulation details panel
@@ -228,8 +222,11 @@ public class LoadSimulation : MonoBehaviour
         nameInputField.text = Buffer.instance.currentSimulation.name;
 
         Debug.Log(Buffer.instance.currentSimulation.image);
-        Debug.Log(Convert.FromBase64String(Buffer.instance.currentSimulation.image));
-        imageInputField.GetComponent<RawImage>().texture = applyBase64StringAsTexture(Buffer.instance.currentSimulation.image);
+        Debug.Log( Convert.FromBase64String(Buffer.instance.currentSimulation.image) );
+        Texture2D newTexture = new Texture2D(1, 1);
+        newTexture.LoadImage(Convert.FromBase64String(Buffer.instance.currentSimulation.image));
+        newTexture.Apply();
+        imageInputField.GetComponent<RawImage>().texture = newTexture;
         descriptionInputField.text = Buffer.instance.currentSimulation.description;
 
         //Add extra columns in the payoff matrix for the amount of agents this simulation has
@@ -257,26 +254,32 @@ public class LoadSimulation : MonoBehaviour
             //In the zeroth table column we set the agent names (and hide their IDs, so its easier to reference them later)
             PayoffMatrix.instance.tableCells[j].cell[0].transform.Find("AgentID").GetComponent<Text>().text = agentID;
             PayoffMatrix.instance.tableCells[j].cell[0].transform.Find("Button").GetChild(0).GetComponent<Text>().text = agentName;
-            PayoffMatrix.instance.tableCells[j].cell[0].transform.Find("Button").GetChild(1).GetComponent<RawImage>().texture = applyBase64StringAsTexture(agentIcon);
+            try
+            {
+                newTexture = new Texture2D(1, 1);
+                newTexture.LoadImage(Convert.FromBase64String(agentIcon));
+                newTexture.Apply();
+                PayoffMatrix.instance.tableCells[j].cell[0].transform.Find("Button").GetChild(1).GetComponent<RawImage>().texture = newTexture;
+            }
+            catch { }
             PayoffMatrix.instance.tableCells[j].cell[0].transform.Find("Button").GetChild(1).GetChild(0).Find("Name").GetComponent<Text>().text = agentName;
             PayoffMatrix.instance.tableCells[j].cell[0].transform.Find("Button").GetChild(1).GetChild(0).Find("Description").GetComponent<Text>().text = agentDescription;
 
             //In the zeroth table row we set the agent names (and hide their IDs, so its easier to reference them later)
             PayoffMatrix.instance.tableCells[0].cell[j].transform.Find("AgentID").GetComponent<Text>().text = agentID;
             PayoffMatrix.instance.tableCells[0].cell[j].transform.Find("Button").GetChild(0).GetComponent<Text>().text = agentName;
-            PayoffMatrix.instance.tableCells[0].cell[j].transform.Find("Button").GetChild(1).GetComponent<RawImage>().texture = applyBase64StringAsTexture(agentIcon);
+
+            if(agentIcon != "")
+            {
+                newTexture = new Texture2D(1, 1);
+                newTexture.LoadImage(Convert.FromBase64String(agentIcon));
+                newTexture.Apply();
+                PayoffMatrix.instance.tableCells[0].cell[j].transform.Find("Button").GetChild(1).GetComponent<RawImage>().texture = newTexture;
+            }
             PayoffMatrix.instance.tableCells[0].cell[j].transform.Find("Button").GetChild(1).GetChild(0).Find("Name").GetComponent<Text>().text = agentName;
             PayoffMatrix.instance.tableCells[0].cell[j].transform.Find("Button").GetChild(1).GetChild(0).Find("Description").GetComponent<Text>().text = agentDescription;
         }
 
         SearchAgent.instance.clearAgents();
-    }
-
-    private Texture2D applyBase64StringAsTexture(string textureString)
-    {
-        Texture2D newTexture = new Texture2D(1, 1);
-        newTexture.LoadImage(Convert.FromBase64String(textureString));
-        newTexture.Apply();
-        return newTexture;
     }
 }

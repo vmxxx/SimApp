@@ -42,6 +42,8 @@ public class Login : MonoBehaviour
 
         if (www.text != "" && www.text[0] == '0')
         {
+            //Display the notification
+            StartCoroutine(Notification.instance.showNotification("Login successful!"));
 
             Regex pattern = new Regex(@"{(.*?)}");
             MatchCollection matches = pattern.Matches(www.text);
@@ -49,12 +51,10 @@ public class Login : MonoBehaviour
 
 
             string ID = Regex.Match(match.Value, @"ID:(.*?),").Value;
-            username = Regex.Match(match.Value, @"username:(.*?),").Value;
-            string isAdmin = Regex.Match(match.Value, @"isAdmin:(.*?)}").Value;
+            username = Regex.Match(match.Value, @"username:(.*?)}").Value;
 
             Buffer.instance.authenticatedUser.ID = Int32.Parse(ID.Substring(3, ID.Length - 4));
             Buffer.instance.authenticatedUser.username = username.Substring(10, username.Length - 12);
-            Buffer.instance.authenticatedUser.isAdmin = (isAdmin.Substring(8, isAdmin.Length - 9) == "1") ? true : false;
 
             SceneManager.LoadScene("MainMenuScene");
         }
@@ -62,7 +62,6 @@ public class Login : MonoBehaviour
         {
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
-            yield break;
         }
     }
 
