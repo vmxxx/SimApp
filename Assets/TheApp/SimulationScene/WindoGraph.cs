@@ -102,9 +102,6 @@ public class WindoGraph : MonoBehaviour
         valueCount = 1;
         graphWidth = graphContainer.sizeDelta.x;
         graphHeight = graphContainer.sizeDelta.y;
-        //yMaximum = (val > yMaximum) ? val : yMaximum;
-        //oldYMaximum = yMaximum;
-        //xSize = graphWidth / (valueCount - 1);
 
         lastXPosition = 0f;
         lastYPosition = 0f;
@@ -115,22 +112,12 @@ public class WindoGraph : MonoBehaviour
         float yPosition = (val / yMaximum) * graphHeight;
         GameObject circleGameObject = CreateCircle(new Vector2(xPosition, yPosition), agentContainer, agentColor);
         lastCircleGameObject = circleGameObject;
-
-        //lastXPosition = xPosition;
-        //lastYPosition = yPosition;
-
-        //oldYMaximum = yMaximum;
     }
 
     public void addNewValue(string container, Color agentColor)
     {
         GameObject agentContainer = graphContainer.transform.Find(container).gameObject;
-        //newValue = Int32.Parse(newValInputBox.transform.GetChild(2).GetComponent<Text>().text);
-        //valueCount = valueCount + 1;
         valueCount = (agentContainer.transform.childCount / 2) + 1 + 1;
-        //graphWidth = graphContainer.sizeDelta.x;
-        //graphHeight = graphContainer.sizeDelta.y;
-        //yMaximum = (newValue > yMaximum) ? newValue : yMaximum;
         xSize = graphWidth / (valueCount - 1);
         int i = valueCount;
 
@@ -224,8 +211,6 @@ public class WindoGraph : MonoBehaviour
 
 
         //X axis
-        Debug.Log("graphWidth: " + graphWidth);
-
         GameObject xAxisArrowHead = XAxis.transform.GetChild(1).gameObject;
         xAxisArrowHead.GetComponent<RectTransform>().anchoredPosition = new Vector2(graphWidth - 5, 0);
 
@@ -251,20 +236,14 @@ public class WindoGraph : MonoBehaviour
             {
                 xPosition = xPosition * newWidthProportion;
             }
-            //Debug.Log("xPosition: " + xPosition + ", xPosition * newWidthProportion: " + (xPosition * newWidthProportion));
-            //xPosition = xPosition * newWidthProportion;
-
 
             XlabelValue = (xPosition / graphWidth) * daysPassed;
-
-
 
             rectTransform.anchoredPosition = new Vector2(xPosition, 0);
             label.Find("Text").GetComponent<Text>().text = (XlabelValue).ToString();
 
-            if (onScreenResize == false) { if (xPosition < graphWidth - 30) { label.gameObject.SetActive(true); Debug.Log("label.gameObject.SetActive(true);"); } }
+            if (onScreenResize == false) { if (xPosition < graphWidth - 30) { label.gameObject.SetActive(true); } }
         }
-        /**/
 
         
         label = XAxis.transform.GetChild(10);
@@ -284,8 +263,6 @@ public class WindoGraph : MonoBehaviour
 
         rectTransform.anchoredPosition = new Vector2(xPosition, 0);
         label.Find("Text").GetComponent<Text>().text = (XlabelValue).ToString();
-
-        //Debug.Log("(xPosition < graphWidth - 30): " + (xPosition < graphWidth - 30) + ", xPosition: " + xPosition + ", graphWidth: " + graphWidth);
         
         if(onScreenResize == false)
         {
@@ -306,14 +283,13 @@ public class WindoGraph : MonoBehaviour
                 {
                     xPosition = xPosition * newWidthProportion;
                 }
-                Debug.Log(i + ". XlabelValue = (xPosition / graphWidth) * daysPassed: " + XlabelValue + " = (" + xPosition + " / " + graphWidth + ") * " + daysPassed);
 
 
 
                 rectTransform.anchoredPosition = new Vector2(xPosition, 0);
                 label.Find("Text").GetComponent<Text>().text = (XlabelValue).ToString();
 
-                if (xPosition >= graphWidth - 30) { label.gameObject.SetActive(false); Debug.Log("label.gameObject.SetActive(false);"); }
+                if (xPosition >= graphWidth - 30) { label.gameObject.SetActive(false); }
             }
         }
         }
@@ -430,7 +406,6 @@ public class WindoGraph : MonoBehaviour
         rectTransform.sizeDelta = new Vector2(distance, 3f);
         rectTransform.anchoredPosition = dotPositionA + dir * distance * 0.5f;
         rectTransform.localEulerAngles = new Vector3(0, 0, GetAngleFromVectorFloat(dir));
-        //return gameObject;
     }
 
     private static float GetAngleFromVectorFloat(Vector3 dir)

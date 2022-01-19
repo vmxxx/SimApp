@@ -24,15 +24,15 @@ public class ClearGeneratableScriptFiles : MonoBehaviour
     {
         if (ClearGeneratableScriptFiles.instance == null)
         {
-            compilationIndex = 0; scriptsRecompiled = false;
-            instance = this;
+            compilationIndex = 0; instance = this;
         }
         StartCoroutine(clearGeneratableScriptFiles());
     }
 
     public void Update()
     {
-        if(scriptsRecompiled == true)
+        
+        if (scriptsRecompiled == true || Buffer.instance.formulaTesterCompilationIndex == 0)
         {
             loadingFilter.SetActive(false);
             scriptsRecompiled = false;
@@ -40,7 +40,7 @@ public class ClearGeneratableScriptFiles : MonoBehaviour
         if (ClearGeneratableScriptFiles.instance == null)
         { 
 compilationIndex = 0; scriptsRecompiled = true;
-            instance = this;
+            instance = this; 
         }
     }
 

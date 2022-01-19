@@ -19,7 +19,6 @@ public class Buffer : MonoBehaviour
     public Dictionary<(int, int), PayoffFormula> payoffFormulas = new Dictionary<(int, int), PayoffFormula>();
     public PayoffFormula[] payoffFormula;
     public int formulaTesterCompilationIndex = -1;
-    //public (int, int) doubleInt = (10, 4);
 
     void Awake()
     {
@@ -36,13 +35,9 @@ public class Buffer : MonoBehaviour
     {
         if (Buffer.instance == null)
         {
-            //Debug.Log("currentSimulationDOTIDBEFORE: " + currentSimulation.ID);
             this.gameObject.name = "Buffer";
             instance = this;
             DontDestroyOnLoad(this.gameObject);
-            //Debug.Log("buffer instance SETTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT!");
-            //Debug.Log("currentSimulationDOTIDAFTER: " + currentSimulation.ID);
-            //Debug.Log("currentSimulationID: " + currentSimulationID);
         }
     }
 
@@ -107,9 +102,6 @@ public class Simulation
     public bool approved;
 
     private int amountOfCorrespondingFormulas;
-    //private int amountOfCorrespondingAgents = sqrt(amountOfCorrespondingFormulas);
-
-    //public PayoffMatrix PayoffFormulas[,] = new PayoffMatrix[amountOfCorrespondingAgents, amountOfCorrespondingAgents];
 }
 [System.Serializable]
 public class Agent

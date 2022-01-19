@@ -17,8 +17,6 @@ public class LikeOrDislike : MonoBehaviour
 
     public void Start()
     {
-        //likesCountText.text = Buffer.instance.currentSimulation.likesCount.ToString();
-        //dislikesCountText.text = Buffer.instance.currentSimulation.dislikesCount.ToString();
         likeButtonText = likeButton.transform.GetChild(0).GetComponent<Text>();
         dislikeButtonText = dislikeButton.transform.GetChild(0).GetComponent<Text>();
         if (Buffer.instance.authenticatedUser.ID == 0) { likeButton.SetActive(false); dislikeButton.SetActive(false); }
@@ -38,7 +36,6 @@ public class LikeOrDislike : MonoBehaviour
         yield return www; //tells Unity to put this on the backburner. Once we get the info back, we'll run the rest of the code
 
         //If there is no NULL notification AND if the notification code is 0 (no error)
-        //we display the success notification and put the received simulation data in the buffer
         if (www.text != "" && www.text[0] == '0')
         {
             if (www.text[2] == '1') likeButton.transform.GetChild(0).GetComponent<Text>().text = "Unlike";
@@ -72,7 +69,6 @@ public class LikeOrDislike : MonoBehaviour
         yield return www; //tells Unity to put this on the backburner. Once we get the info back, we'll run the rest of the code
 
         //If there is no NULL notification AND if the notification code is 0 (no error)
-        //we display the success notification and put the received simulation data in the buffer
         if (www.text != "" && www.text[0] == '0')
         {
             Buffer.instance.currentSimulation.likesCount++;
@@ -107,7 +103,6 @@ public class LikeOrDislike : MonoBehaviour
         yield return www; //tells Unity to put this on the backburner. Once we get the info back, we'll run the rest of the code
 
         //If there is no NULL notification AND if the notification code is 0 (no error)
-        //we display the success notification and put the received simulation data in the buffer
         if (www.text != "" && www.text[0] == '0')
         {
             Buffer.instance.currentSimulation.likesCount--;
@@ -141,7 +136,6 @@ public class LikeOrDislike : MonoBehaviour
         yield return www; //tells Unity to put this on the backburner. Once we get the info back, we'll run the rest of the code
 
         //If there is no NULL notification AND if the notification code is 0 (no error)
-        //we display the success notification and put the received simulation data in the buffer
         if (www.text != "" && www.text[0] == '0')
         {
             Buffer.instance.currentSimulation.dislikesCount++;
@@ -176,7 +170,6 @@ public class LikeOrDislike : MonoBehaviour
         yield return www; //tells Unity to put this on the backburner. Once we get the info back, we'll run the rest of the code
 
         //If there is no NULL notification AND if the notification code is 0 (no error)
-        //we display the success notification and put the received simulation data in the buffer
         if (www.text != "" && www.text[0] == '0')
         {
             Buffer.instance.currentSimulation.dislikesCount--;
