@@ -8,6 +8,6 @@ public class Logout : MonoBehaviour
     public void logOut()
     {
         Buffer.instance.authenticatedUser = new User();
-        SceneManager.LoadScene("MainMenuScene");
+        SceneManager.LoadScene("MainMenuScene"); //Reload the scene so that his data (his simulations) are also hidden
     }
 }

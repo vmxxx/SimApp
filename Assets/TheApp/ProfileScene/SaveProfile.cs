@@ -6,11 +6,23 @@ using UnityEngine.UI;
 public class SaveProfile : MonoBehaviour
 {
 
+    public static SaveProfile instance;
+
     public InputField usernameField;
     public InputField passwordField;
     public InputField confirmPasswordField;
 
     public Button submitButton;
+
+    private void Start()
+    {
+        if (SaveProfile.instance == null) instance = this;
+    }
+
+    private void Update()
+    {
+        if (SaveProfile.instance == null) instance = this;
+    }
 
     //When the user click on "Submit" button this function gets called
     public void CallSave()

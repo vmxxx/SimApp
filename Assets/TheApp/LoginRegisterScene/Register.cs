@@ -6,11 +6,23 @@ using UnityEngine.UI;
 public class Register : MonoBehaviour
 {
 
+    public static Register instance;
+
     public InputField usernameField;
     public InputField passwordField;
     public InputField confirmPasswordField;
 
     public Button submitButton;
+
+    private void Start()
+    {
+        if (Register.instance == null) instance = this;
+    }
+
+    private void Update()
+    {
+        if (Register.instance == null) instance = this;
+    }
 
     //When the user click on "Submit" button this function gets called
     public void CallRegister()
@@ -32,10 +44,8 @@ public class Register : MonoBehaviour
         yield return www; //tells Unity to put this on the backburner. Once we get the info back, we'll run the rest of the code
 
         //If there is no NULL notification AND if the notification code is 0 (no error)
-        //we display the success notification and put the received simulation data in the buffer
         if (www.text != "" && www.text[0] == '0')
         {
-
             //Login the user
             StartCoroutine(Login.instance.LoginPlayer(usernameField.text, passwordField.text));
         }
