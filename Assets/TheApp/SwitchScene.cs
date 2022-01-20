@@ -26,6 +26,7 @@ public class SwitchScene : MonoBehaviour
             /**/
             if (simulationID != "Text")
             {
+                Buffer.instance.currentSimulationID = Int32.Parse(simulationID);
                 Buffer.instance.currentSimulation.ID = Int32.Parse(simulationID);
                 Buffer.instance.currentSimulation.name = simulationName;
                 //Buffer.instance.currentSimulation.image = simulationImage;

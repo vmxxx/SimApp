@@ -21,19 +21,24 @@ public class LoadSimulation : MonoBehaviour
     private int amountOfFormulas;
     private int amountOfAgents;
 
+    private bool simulationLoaded = false;
+
     //The Update() function gets called every new frame.
     //As soon as we detect that the instance is forgotten we have to reset it 
     //(It is forgotten every time the scripts get recompiled.
     //The scripts are recompiled so that the compiler can test the payoffFormulas we have entered in the payoff matrix by putting them in a testing file).
     private void Update()
     {
-        if (LoadSimulation.instance == null) instance = this;
+        if (LoadSimulation.instance == null)
+        {
+            instance = this;
+            if (Buffer.instance.currentSimulation.ID != 0 && simulationLoaded == false) StartCoroutine(loadSimulation());
+        }
     }
 
     //Start() gets called before the first frame update.
     private void Start()
     {
-        if(Buffer.instance.currentSimulation.ID != 0) StartCoroutine(loadSimulation());
     }
 
     IEnumerator loadSimulation()
@@ -86,10 +91,12 @@ public class LoadSimulation : MonoBehaviour
         }
         else //Display error notification
         {
+            Debug.Log("ERROR: " + www.text);
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
             yield break;
         }
+        Debug.Log("SUCCESS: " + www.text);
 
         //2. Get the formulas objects
 
@@ -101,13 +108,16 @@ public class LoadSimulation : MonoBehaviour
         string agentsArray = "";
 
         www = new WWW("http://localhost/sqlconnect/index.php", form);
+        Debug.Log("SUCCESS: " + www.text);
         yield return www; //Tells Unity to put this on the backburner. Once we get the info back, we'll run the rest of the code.
+        Debug.Log("SUCCESS: " + www.text);
 
         int i;
         //If there is no NULL notification AND if the notification code is 0 (no error)
         //we display the success notification and put the received simulation data in the buffer
         if (www.text != "" && www.text[0] == '0')
         {
+            Debug.Log("SUCCESS: " + www.text);
             //Determine how many formulas there are in the query
             amountOfFormulas = Int32.Parse(www.text.Substring(2, 1));
             //amountOfAgents = sqrt(amountOfFormulas)
@@ -162,10 +172,12 @@ public class LoadSimulation : MonoBehaviour
         }
         else //Display error notification
         {
+            Debug.Log("ERROR");
             if (www.text != "") StartCoroutine(Notification.instance.showNotification(www.text));
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
             yield break;
         }
+        Debug.Log("SUCCESS: " + www.text);
 
         //3. Get the agents objects
 
@@ -222,6 +234,7 @@ public class LoadSimulation : MonoBehaviour
             else StartCoroutine(Notification.instance.showNotification("Couldn't connect to server. Either we have technical difficulties or you have no internet."));
             yield break;
         }
+        Debug.Log("SUCCESS: " + www.text);
 
         //In the simulation details panel
         //write down its name, image and description
@@ -270,6 +283,8 @@ public class LoadSimulation : MonoBehaviour
         }
 
         SearchAgent.instance.clearAgents();
+
+        simulationLoaded = true;
     }
 
     private Texture2D applyBase64StringAsTexture(string textureString)

@@ -13,7 +13,6 @@ class simulations extends core
 		$authorID = $data["authorID"];
         $SQL = "INSERT INTO simulations (name, image, description, likesCount, dislikeCount, authorID, approved) VALUES (\"$name\", \"$image\", \"$description\", 0, 0, $authorID, 0);";
 		
-		echo $image;
 		$result = $this -> con -> query ($SQL);
 		$last_id = $this -> con -> insert_id;
 		echo "0; $last_id";

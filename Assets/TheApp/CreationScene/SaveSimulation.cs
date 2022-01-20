@@ -93,6 +93,7 @@ public class SaveSimulation : MonoBehaviour
         //When the scene gets reloaded we have (re)set the script instance to this script
         if (SaveSimulation.instance == null)
         {
+            messageDisplayed = true;
             scriptsRecompiled = false;
             instance = this;
         }
@@ -108,9 +109,7 @@ public class SaveSimulation : MonoBehaviour
                 //If the formulas DONT contain errors
                 if (Buffer.instance.formulaTesterCompilationIndex == ClearGeneratableScriptFiles.instance.compilationIndex)
                 {
-                    if (nameInputField.GetComponent<InputField>().text != "" && imageInputField.GetComponent<RawImage>().texture != null && descriptionInputField.GetComponent<InputField>().text != "")
-                    { StartCoroutine(saveSimulation((Buffer.instance.currentSimulation.ID == 0) ? true : false)); }
-                    else StartCoroutine(Notification.instance.showNotification("The simulation name, image and description cannot be NULL."));
+                    StartCoroutine(saveSimulation((Buffer.instance.currentSimulation.ID == 0) ? true : false));
 
                     scriptsRecompiled = false;
                     FormulaTester.instance.scriptsRecompiled = false;
@@ -155,7 +154,7 @@ public class SaveSimulation : MonoBehaviour
         }
 
         //First we test the formulas, if there are no errors then the saveSimulation() will be called (line 110)
-        if (imageInputField.GetComponent<RawImage>().texture != null) { StartCoroutine(testFormulas()); }
+        if (nameInputField.GetComponent<InputField>().text != "" && imageInputField.GetComponent<RawImage>().texture != null && descriptionInputField.GetComponent<InputField>().text != "") { StartCoroutine(testFormulas()); }
         else StartCoroutine(Notification.instance.showNotification("Simulation image cannot be NULL!"));
     }
 
@@ -173,14 +172,16 @@ public class SaveSimulation : MonoBehaviour
         form.AddField("onApproval", "false");
 
         WWW www = new WWW("http://localhost/sqlconnect/index.php", form);
+        Debug.Log("www.text: " + www.text);
         yield return www; //tells Unity to put this on the backburner. Once we get the info back, we'll run the rest of the code
+        Debug.Log("www.text: " + www.text);
 
         //If there is no NULL notification AND if the notification code is 0 (no error)
         if (www.text != "" && www.text[0] == '0')
         {
             //Incase we created a new simulation (NOT updated it) we have to set the current simulation ID to the new entry's ID,
             //since next time we press "SAVE" we are going to update it
-            Buffer.instance.currentSimulation.ID = Int32.Parse(www.text.Substring(2, www.text.Length-2));
+            if (newSimulation) Buffer.instance.currentSimulation.ID = Int32.Parse(www.text.Substring(3));
         }
         else //Display error notification
         {
