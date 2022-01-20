@@ -39,7 +39,7 @@ public class ClearGeneratableScriptFiles : MonoBehaviour
         }
         if (ClearGeneratableScriptFiles.instance == null)
         { 
-compilationIndex = 4; scriptsRecompiled = true;
+compilationIndex = 0; scriptsRecompiled = true;
             instance = this; 
         }
     }

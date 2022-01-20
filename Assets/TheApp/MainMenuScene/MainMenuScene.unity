@@ -7264,7 +7264,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2116177326}
         m_TargetAssemblyTypeName: LoadOrRefreshSimulations, Assembly-CSharp
-        m_MethodName: loadUser
+        m_MethodName: loadPopular
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
