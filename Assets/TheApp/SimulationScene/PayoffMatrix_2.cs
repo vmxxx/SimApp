@@ -112,7 +112,7 @@ public class PayoffMatrix_2 : MonoBehaviour
             //Create a new '+' cell on the 0th vertical column
             Destroy(tableCells[0].cell[newIndex]);
             tableCells[0].cell[newIndex] = Instantiate(dragAndDropCell);
-            tableCells[0].cell[newIndex].GetComponent<RawImage>().color = Buffer.instance.agents[i].color;
+            tableCells[0].cell[newIndex].transform.Find("Button").GetComponent<Image>().color = Buffer.instance.agents[i].color;
             tableCells[0].cell[newIndex].name = "TableCell_0_" + newIndex;
             tableCells[0].cell[newIndex].transform.SetParent(tableColumns[newIndex].transform);
             tableCells[0].cell[newIndex].transform.Find("AgentID").GetComponent<Text>().text = Buffer.instance.agents[i].agentID.ToString();
@@ -126,7 +126,7 @@ public class PayoffMatrix_2 : MonoBehaviour
             //Create a new '+' cell on the 0th horizontal column
             Destroy(tableCells[newIndex].cell[0]);
             tableCells[newIndex].cell[0] = Instantiate(dragAndDropCell);
-            tableCells[newIndex].cell[0].GetComponent<RawImage>().color = Buffer.instance.agents[i].color;
+            tableCells[newIndex].cell[0].transform.Find("Button").GetComponent<Image>().color = Buffer.instance.agents[i].color;
             tableCells[newIndex].cell[0].name = "TableCell_" + newIndex + "_0";
             tableCells[newIndex].cell[0].transform.SetParent(tableColumns[0].transform);
             tableCells[newIndex].cell[0].transform.Find("AgentID").GetComponent<Text>().text = Buffer.instance.agents[i].agentID.ToString();

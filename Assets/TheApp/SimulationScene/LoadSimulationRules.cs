@@ -63,12 +63,12 @@ public class LoadSimulationRules : MonoBehaviour
 
 
         //We should be able to initialize the agent sets
-        //All sets will start 10 individuals in each one
+        //All sets will start 200 individuals in each one
         for (int i = 0; i < Buffer.instance.agents.Length; i++)
         {
             Agent entry = Buffer.instance.agents[i];
             txtLines.Insert(a + 38, "private SortedSet<agent> " + entry.agentName + "s = new SortedSet<agent>(new agentComparer());"); a = a + 1;
-            txtLines.Insert(a + 38, "public int startingNumberOf" + entry.agentName + "s = 10;"); a = a + 1;
+            txtLines.Insert(a + 38, "public int startingNumberOf" + entry.agentName + "s = 200;"); a = a + 1;
         }
 
         //We initialize EMPTY cells for the payoffResults, because to recalculate the result (when changing the variables) we will instead use:
